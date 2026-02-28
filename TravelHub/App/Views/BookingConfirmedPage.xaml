@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:App.ViewModels"
+             x:Class="App.Views.BookingConfirmedPage"
+             Title="{Binding Title}"
+             Shell.NavBarIsVisible="False">
+
+    <ContentPage.BindingContext>
+        <vm:BookingConfirmedViewModel />
+    </ContentPage.BindingContext>
+
+    <ScrollView BackgroundColor="{StaticResource Background}">
+        <VerticalStackLayout Padding="24" Spacing="16"
+                             VerticalOptions="Center">
+
+            <!-- Icono de exito -->
+            <Border WidthRequest="80" HeightRequest="80"
+                    BackgroundColor="{StaticResource Success}"
+                    StrokeShape="RoundRectangle 40"
+                    Stroke="Transparent"
+                    HorizontalOptions="Center">
+                <Label Text="&#x2713;"
+                       TextColor="{StaticResource White}"
+                       FontSize="40"
+                       HorizontalTextAlignment="Center"
+                       VerticalTextAlignment="Center" />
+            </Border>
+
+            <Label Text="Reserva Confirmada!"
+                   Style="{StaticResource Headline}"
+                   HorizontalTextAlignment="Center" />
+
+            <Label Text="Tu reserva ha sido registrada exitosamente"
+                   Style="{StaticResource Subtitle}"
+                   HorizontalTextAlignment="Center" />
+
+            <!-- Codigo de reserva -->
+            <Border Padding="20"
+                    BackgroundColor="White"
+                    StrokeShape="RoundRectangle 12"
+                    Stroke="Transparent"
+                    HorizontalOptions="Center">
+                <VerticalStackLayout Spacing="4" HorizontalOptions="Center">
+                    <Label Text="Codigo de Reserva"
+                           Style="{StaticResource Caption}"
+                           HorizontalTextAlignment="Center"
+                           TextColor="{StaticResource PrimaryDark}" />
+                    <Label Text="{Binding Reservation.BookingCode}"
+                           FontFamily="OpenSansSemibold"
+                           FontSize="24"
+                           HorizontalTextAlignment="Center"
+                           TextColor="{StaticResource PrimaryDark}" />
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Detalles -->
+            <Border Padding="16"
+                    BackgroundColor="{StaticResource Surface}"
+                    StrokeShape="RoundRectangle 12"
+                    Stroke="{StaticResource Gray100}">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="Detalles de la Reserva" Style="{StaticResource Title}" />
+
+                    <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="6">
+                        <Label Text="Hotel:" Style="{StaticResource Caption}" />
+                        <Label Grid.Column="1" Text="{Binding Reservation.Property.Name}"
+                               FontFamily="OpenSansSemibold" FontSize="13" />
+
+                        <Label Grid.Row="1" Text="Habitacion:" Style="{StaticResource Caption}" />
+                        <Label Grid.Row="1" Grid.Column="1" Text="{Binding Reservation.Room.Name}"
+                               FontSize="13" />
+
+                        <Label Grid.Row="2" Text="Check-in:" Style="{StaticResource Caption}" />
+                        <Label Grid.Row="2" Grid.Column="1"
+                               Text="{Binding Reservation.CheckIn, StringFormat='{0:dd/MM/yyyy}'}"
+                               FontSize="13" />
+
+                        <Label Grid.Row="3" Text="Check-out:" Style="{StaticResource Caption}" />
+                        <Label Grid.Row="3" Grid.Column="1"
+                               Text="{Binding Reservation.CheckOut, StringFormat='{0:dd/MM/yyyy}'}"
+                               FontSize="13" />
+                    </Grid>
+
+                    <BoxView HeightRequest="1" Color="{StaticResource Gray200}" Margin="0,4" />
+
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Text="Total" FontFamily="OpenSansSemibold" FontSize="16" />
+                        <Label Grid.Column="1"
+                               Text="{Binding Reservation.TotalPrice, StringFormat='${0:F0}'}"
+                               Style="{StaticResource Price}" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Botones -->
+            <Button Text="Ir al Inicio"
+                    Command="{Binding GoHomeCommand}"
+                    HorizontalOptions="Fill" />
+
+            <Button Text="Ver Mis Reservas"
+                    Command="{Binding ViewBookingsCommand}"
+                    Style="{StaticResource OutlineButton}"
+                    HorizontalOptions="Fill" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

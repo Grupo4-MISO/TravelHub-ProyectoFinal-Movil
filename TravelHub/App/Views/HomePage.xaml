@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:App.ViewModels"
+             xmlns:controls="clr-namespace:App.Controls"
+             xmlns:converters="clr-namespace:App.Converters"
+             x:Class="App.Views.HomePage"
+             IconImageSource="ic_search.png"
+             Shell.NavBarIsVisible="False">
+
+    <ContentPage.Resources>
+        <converters:RatingToStarsConverter x:Key="RatingToStars" />
+    </ContentPage.Resources>
+
+    <ContentPage.BindingContext>
+        <vm:HomeViewModel />
+    </ContentPage.BindingContext>
+
+    <Grid RowDefinitions="Auto,*">
+        <!-- TopBar -->
+        <controls:TopBar Grid.Row="0" />
+
+        <ScrollView Grid.Row="1" BackgroundColor="{StaticResource Background}">
+            <VerticalStackLayout Spacing="0">
+                
+                <!-- Carousel Promocional -->
+                <CarouselView ItemsSource="{Binding PromotionalImages}"
+                              HeightRequest="200"
+                              Loop="True"
+                              IndicatorView="promoIndicator">
+                    <CarouselView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Image Source="{Binding .}"
+                                       Aspect="AspectFill"
+                                       HeightRequest="200" />
+                                <BoxView Color="#40000000" />
+                            </Grid>
+                        </DataTemplate>
+                    </CarouselView.ItemTemplate>
+                </CarouselView>
+                <IndicatorView x:Name="promoIndicator"
+                               HorizontalOptions="Center"
+                               Margin="0,8,0,0"
+                               IndicatorColor="{StaticResource Gray300}"
+                               SelectedIndicatorColor="{StaticResource Primary}" />
+
+                <!-- Motor de Busqueda -->
+                <Border Margin="16,16,16,0"
+                        Padding="16"
+                        BackgroundColor="{StaticResource Surface}"
+                        StrokeShape="RoundRectangle 16"
+                        Stroke="{StaticResource Gray100}">
+                    <Border.Shadow>
+                        <Shadow Brush="#20000000" Offset="0,2" Radius="8" />
+                    </Border.Shadow>
+                    <VerticalStackLayout Spacing="12">
+                        <Label Text="Buscar Hospedaje"
+                               Style="{StaticResource SubHeadline}" />
+
+                        <!-- Ciudad -->
+                        <Border Padding="12,4"
+                                BackgroundColor="{StaticResource Background}"
+                                StrokeShape="RoundRectangle 10"
+                                Stroke="{StaticResource Gray200}">
+                            <Picker Title="Ciudad destino"
+                                     SelectedIndex="0"
+                                    ItemsSource="{Binding PopularCities}"
+                                    SelectedItem="{Binding SelectedCity}" />
+                        </Border>
+
+                        <!-- Fechas -->
+                        <Grid ColumnDefinitions="*,16,*">
+                            <Border Padding="12,4"
+                                    BackgroundColor="{StaticResource Background}"
+                                    StrokeShape="RoundRectangle 10"
+                                    Stroke="{StaticResource Gray200}">
+                                <VerticalStackLayout>
+                                    <Label Text="Check-in" Style="{StaticResource Caption}" />
+                                    <DatePicker Date="{Binding CheckInDate}"
+                                                MinimumDate="{Binding MinDate}"
+                                                Format="dd/MM/yyyy" />
+                                </VerticalStackLayout>
+                            </Border>
+                            <Border Grid.Column="2" Padding="12,4"
+                                    BackgroundColor="{StaticResource Background}"
+                                    StrokeShape="RoundRectangle 10"
+                                    Stroke="{StaticResource Gray200}">
+                                <VerticalStackLayout>
+                                    <Label Text="Check-out" Style="{StaticResource Caption}" />
+                                    <DatePicker Date="{Binding CheckOutDate}"
+                                                MinimumDate="{Binding CheckInDate}"
+                                                Format="dd/MM/yyyy" />
+                                </VerticalStackLayout>
+                            </Border>
+                        </Grid>
+
+                        <!-- Resumen Personas y habitaciones -->
+                        <Border Padding="12,4"
+                                BackgroundColor="{StaticResource Background}"
+                                StrokeShape="RoundRectangle 10"
+                                Stroke="{StaticResource Gray200}">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding ToggleGuestConfigCommand}" />
+                            </Border.GestureRecognizers>
+                            <Grid ColumnDefinitions="auto, *, auto" ColumnSpacing="10">
+                                <Image Grid.Column="0" Source="ic_account.png" WidthRequest="20" />
+                                <Label Grid.Column="1" Text="{Binding GuestSummary}" VerticalTextAlignment="Center" />
+                                <Label Grid.Column="2" Text="{Binding IsGuestConfigVisible, StringFormat='{0}'}"
+                                       IsVisible="False" />
+                            </Grid>
+                        </Border>
+
+                        <!-- Adultos / Ninos / Habitaciones -->
+                        <Grid ColumnDefinitions="*"
+                              RowDefinitions="auto,auto,auto"
+                              RowSpacing="10"
+                              ColumnSpacing="10"
+                              IsVisible="{Binding IsGuestConfigVisible}">
+                            <!-- Adultos -->
+                            <Grid Grid.Row="0" ColumnDefinitions="*,auto">
+                                <Label Grid.Column="0" Text="Adultos" Style="{StaticResource Caption}" 
+                                       HorizontalTextAlignment="Start" VerticalTextAlignment="Center" />
+                                <Grid Grid.Column="1" ColumnDefinitions="Auto,*,Auto" HorizontalOptions="Center">
+                                    <Button Text="-" Command="{Binding DecrementAdultsCommand}"
+                                            WidthRequest="36" HeightRequest="36"
+                                            MaximumWidthRequest="36"
+                                            MaximumHeightRequest="36"
+                                            BackgroundColor="WhiteSmoke"
+                                            TextColor="Black"
+                                            Padding="0" CornerRadius="18" FontSize="18" />
+                                    <Label Grid.Column="1" Text="{Binding Adults}"
+                                           HorizontalTextAlignment="Center" VerticalTextAlignment="Center"
+                                           FontSize="16" FontFamily="OpenSansSemibold"
+                                           WidthRequest="36" />
+                                    <Button Grid.Column="2" Text="+" Command="{Binding IncrementAdultsCommand}"
+                                            WidthRequest="36" HeightRequest="36"
+                                            MaximumWidthRequest="36"
+                                            MaximumHeightRequest="36"
+                                            BackgroundColor="WhiteSmoke"
+                                            TextColor="Black"
+                                            Padding="0" CornerRadius="18" FontSize="18" />
+                                </Grid>
+                            </Grid>
+
+                            <!-- Ninos -->
+                            <Grid Grid.Row="1" ColumnDefinitions="*,auto">
+                                <Label Grid.Column="0" Text="Ninos" Style="{StaticResource Caption}" 
+                                         HorizontalTextAlignment="Start" VerticalTextAlignment="Center" />
+                                <Grid Grid.Column="1" ColumnDefinitions="Auto,*,Auto" HorizontalOptions="Center">
+                                    <Button Text="-" Command="{Binding DecrementChildrenCommand}"
+                                            WidthRequest="36" HeightRequest="36"
+                                            MaximumWidthRequest="36"
+                                            MaximumHeightRequest="36"
+                                            BackgroundColor="WhiteSmoke"
+                                            TextColor="Black"
+                                            Padding="0" CornerRadius="18" FontSize="18" />
+                                    <Label Grid.Column="1" Text="{Binding Children}"
+                                           HorizontalTextAlignment="Center" VerticalTextAlignment="Center"
+                                           FontSize="16" FontFamily="OpenSansSemibold"
+                                           WidthRequest="36" />
+                                    <Button Grid.Column="2" Text="+" Command="{Binding IncrementChildrenCommand}"
+                                            WidthRequest="36" HeightRequest="36"
+                                            MaximumWidthRequest="36"
+                                            MaximumHeightRequest="36"
+                                            BackgroundColor="WhiteSmoke"
+                                            TextColor="Black"
+                                            Padding="0" CornerRadius="18" FontSize="18" />
+                                </Grid>
+                            </Grid>
+
+                            <!-- Habitaciones -->
+                            <Grid Grid.Row="2" ColumnDefinitions="*,auto">
+                                <Label Grid.Column="0" Text="Habitaciones" Style="{StaticResource Caption}" 
+                                         HorizontalTextAlignment="Start" VerticalTextAlignment="Center" />
+                                <Grid Grid.Column="1" ColumnDefinitions="Auto,*,Auto" HorizontalOptions="Center">
+                                    <Button Text="-" Command="{Binding DecrementRoomsCommand}"
+                                            WidthRequest="36" HeightRequest="36"
+                                            MaximumWidthRequest="36"
+                                            MaximumHeightRequest="36"
+                                            BackgroundColor="WhiteSmoke"
+                                            TextColor="Black"
+                                            Padding="0" CornerRadius="18" FontSize="18" />
+                                    <Label Grid.Column="1" Text="{Binding Rooms}"
+                                           HorizontalTextAlignment="Center" VerticalTextAlignment="Center"
+                                           FontSize="16" FontFamily="OpenSansSemibold"
+                                           WidthRequest="36" />
+                                    <Button Grid.Column="2" Text="+" Command="{Binding IncrementRoomsCommand}"
+                                            WidthRequest="36" HeightRequest="36"
+                                            MaximumWidthRequest="36"
+                                            MaximumHeightRequest="36"
+                                            BackgroundColor="WhiteSmoke"
+                                            TextColor="Black"
+                                            Padding="0" CornerRadius="18" FontSize="18" />
+                                </Grid>
+                            </Grid>
+                        </Grid>
+
+                        <!-- Boton Buscar -->
+                        <Button Text="Buscar"
+                                Command="{Binding SearchCommand}"
+                                Style="{StaticResource AccentButton}"
+                                HorizontalOptions="Fill" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Propiedades Recomendadas -->
+                <Label Text="Recomendados"
+                       Style="{StaticResource SubHeadline}"
+                       Margin="16,20,16,8" />
+
+                <CollectionView ItemsSource="{Binding FeaturedProperties}"
+                                HeightRequest="240"
+                                Margin="10,0,0,16">
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Horizontal" ItemSpacing="12" />
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Border WidthRequest="240"
+                                    Margin="4,0"
+                                    BackgroundColor="{StaticResource Surface}"
+                                    StrokeShape="RoundRectangle 14"
+                                    Stroke="{StaticResource Gray100}"
+                                    Padding="0">
+                                <Border.Shadow>
+                                    <Shadow Brush="#18000000" Offset="0,3" Radius="10" />
+                                </Border.Shadow>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=PropertySelectedCommand}"
+                                                          CommandParameter="{Binding .}" />
+                                </Border.GestureRecognizers>
+                                <Grid RowDefinitions="140,*">
+                                    <Image Source="{Binding ImageUrl}"
+                                           Aspect="AspectFill"
+                                           HeightRequest="140" />
+                                    <VerticalStackLayout Grid.Row="1" Padding="12,8" Spacing="4">
+                                        <Label Text="{Binding Name}"
+                                               FontFamily="OpenSansSemibold"
+                                               FontSize="15"
+                                               LineBreakMode="TailTruncation"
+                                               MaxLines="1" />
+                                        <Label Text="{Binding City}"
+                                               Style="{StaticResource Caption}" />
+                                        <Grid ColumnDefinitions="Auto,Auto,*">
+                                            <Label Text="{Binding Rating, Converter={StaticResource RatingToStars}}"
+                                                   TextColor="{StaticResource Star}"
+                                                   FontSize="14" />
+                                            <Label Grid.Column="1"
+                                                   Text="{Binding Rating, StringFormat=' {0:F1}'}"
+                                                   FontFamily="OpenSansSemibold"
+                                                   FontSize="13"
+                                                   VerticalTextAlignment="Center" />
+                                            <Label Grid.Column="2"
+                                                   Text="{Binding PricePerNight, StringFormat='${0:F0}/noche'}"
+                                                   Style="{StaticResource Price}"
+                                                   FontSize="15"
+                                                   HorizontalTextAlignment="End"
+                                                   VerticalTextAlignment="Center" />
+                                        </Grid>
+                                    </VerticalStackLayout>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

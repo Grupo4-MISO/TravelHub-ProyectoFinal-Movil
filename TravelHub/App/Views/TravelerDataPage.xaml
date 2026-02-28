@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:App.ViewModels"
+             x:Class="App.Views.TravelerDataPage"
+             Title="{Binding Title}">
+
+    <ContentPage.BindingContext>
+        <vm:TravelerDataViewModel />
+    </ContentPage.BindingContext>
+
+    <Grid RowDefinitions="*,Auto" BackgroundColor="{StaticResource Background}">
+        <ScrollView Grid.Row="0">
+            <VerticalStackLayout Padding="16" Spacing="16">
+
+                <!-- Info de la reserva -->
+                <Border Padding="14"
+                        BackgroundColor="WhiteSmoke"
+                        StrokeShape="RoundRectangle 12"
+                        Stroke="Transparent">
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                        <Image Source="{Binding Property.ImageUrl}"
+                               WidthRequest="70" HeightRequest="70"
+                               Aspect="AspectFill" />
+                        <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                            <Label Text="{Binding Property.Name}"
+                                   FontFamily="OpenSansSemibold" FontSize="15"
+                                   TextColor="{StaticResource PrimaryDark}" />
+                            <Label Text="{Binding Room.Name}"
+                                   FontSize="13"
+                                   TextColor="{StaticResource PrimaryDark}" />
+                            <Label Text="{Binding Room.PricePerNight, StringFormat='${0:F0} / noche'}"
+                                   FontFamily="OpenSansSemibold" FontSize="13"
+                                   TextColor="{StaticResource Primary}" />
+                        </VerticalStackLayout>
+                    </Grid>
+                </Border>
+
+                <!-- Formulario -->
+                <Border Padding="16"
+                        BackgroundColor="{StaticResource Surface}"
+                        StrokeShape="RoundRectangle 12"
+                        Stroke="{StaticResource Gray100}">
+                    <VerticalStackLayout Spacing="14">
+                        <Label Text="Datos del Viajero" Style="{StaticResource Title}" />
+
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Nombre" Style="{StaticResource Caption}" />
+                            <Border Padding="10,0"
+                                    BackgroundColor="{StaticResource Background}"
+                                    StrokeShape="RoundRectangle 10"
+                                    Stroke="{StaticResource Gray200}">
+                                <Entry Placeholder="Mi nombre"
+                                       Text="{Binding FirstName}" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Apellido" Style="{StaticResource Caption}" />
+                            <Border Padding="10,0"
+                                    BackgroundColor="{StaticResource Background}"
+                                    StrokeShape="RoundRectangle 10"
+                                    Stroke="{StaticResource Gray200}">
+                                <Entry Placeholder="Mi apellido"
+                                       Text="{Binding LastName}" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Email" Style="{StaticResource Caption}" />
+                            <Border Padding="10,0"
+                                    BackgroundColor="{StaticResource Background}"
+                                    StrokeShape="RoundRectangle 10"
+                                    Stroke="{StaticResource Gray200}">
+                                <Entry Placeholder="micorreo@email.com"
+                                       Text="{Binding Email}"
+                                       Keyboard="Email" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Telefono" Style="{StaticResource Caption}" />
+                            <Border Padding="10,0"
+                                    BackgroundColor="{StaticResource Background}"
+                                    StrokeShape="RoundRectangle 10"
+                                    Stroke="{StaticResource Gray200}">
+                                <Entry Placeholder="+00 0000000000"
+                                       Text="{Binding Phone}"
+                                       Keyboard="Telephone" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Documento de identidad" Style="{StaticResource Caption}" />
+                            <Border Padding="10,0"
+                                    BackgroundColor="{StaticResource Background}"
+                                    StrokeShape="RoundRectangle 10"
+                                    Stroke="{StaticResource Gray200}">
+                                <Entry Placeholder="Número de identificación"
+                                       Text="{Binding DocumentNumber}" />
+                            </Border>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Border>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Boton Continuar -->
+        <Border Grid.Row="1" Padding="16,12"
+                BackgroundColor="{StaticResource Surface}"
+                Stroke="{StaticResource Gray100}">
+            <Button Text="Continuar"
+                    Command="{Binding ContinueCommand}"
+                    Style="{StaticResource AccentButton}"
+                    HorizontalOptions="Fill" />
+        </Border>
+    </Grid>
+</ContentPage>

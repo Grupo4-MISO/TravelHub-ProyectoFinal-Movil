@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:App.ViewModels"
+             x:Class="App.Views.ActiveBookingsPage"
+             Title="{Binding Title}"
+             IconImageSource="ic_reserve.png"
+             Shell.NavBarIsVisible="False">
+
+    <ContentPage.BindingContext>
+        <vm:ActiveBookingsViewModel />
+    </ContentPage.BindingContext>
+
+    <Grid RowDefinitions="Auto,*" BackgroundColor="{StaticResource Background}" RowSpacing="10">
+
+        <!-- Header -->
+        <Grid Grid.Row="0" Padding="16,14" BackgroundColor="{StaticResource Primary}">
+            <Label Text="Mis Reservas"
+                   TextColor="{StaticResource White}"
+                   FontFamily="OpenSansSemibold"
+                   FontSize="18" />
+        </Grid>
+
+        <RefreshView Grid.Row="1"
+                     IsRefreshing="{Binding IsRefreshing}"
+                     Command="{Binding RefreshCommand}">
+            <CollectionView ItemsSource="{Binding Reservations}"
+                            Margin="20,12">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="10" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Border BackgroundColor="{StaticResource Surface}"
+                                StrokeShape="RoundRectangle 14"
+                                Stroke="{StaticResource Gray100}"
+                                Margin="10,0"
+                                Padding="0">
+                            <Border.Shadow>
+                                <Shadow Brush="#18000000" Offset="0,2" Radius="8" />
+                            </Border.Shadow>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ActiveBookingsViewModel}}, Path=BookingSelectedCommand}"
+                                                      CommandParameter="{Binding .}" />
+                            </Border.GestureRecognizers>
+                            <VerticalStackLayout>
+                                <Image Source="{Binding Property.ImageUrl}"
+                                       Aspect="AspectFill"
+                                       HeightRequest="140" />
+                                <VerticalStackLayout Padding="14" Spacing="6">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <Label Text="{Binding Property.Name}"
+                                               FontFamily="OpenSansSemibold" FontSize="16" />
+                                        <Border Grid.Column="1"
+                                                BackgroundColor="{StaticResource Success}"
+                                                StrokeShape="RoundRectangle 6"
+                                                Stroke="Transparent"
+                                                Padding="8,3">
+                                            <Label Text="{Binding Status}"
+                                                   TextColor="{StaticResource White}"
+                                                   FontSize="11" />
+                                        </Border>
+                                    </Grid>
+                                    <Label Text="{Binding Property.City}" Style="{StaticResource Caption}" />
+                                    <Label Text="{Binding Room.Name}" Style="{StaticResource Subtitle}" />
+
+                                    <Grid ColumnDefinitions="*,*" Margin="0,4,0,0">
+                                        <VerticalStackLayout>
+                                            <Label Text="Check-in" Style="{StaticResource Caption}" />
+                                            <Label Text="{Binding CheckIn, StringFormat='{0:dd MMM yyyy}'}"
+                                                   FontFamily="OpenSansSemibold" FontSize="13" />
+                                        </VerticalStackLayout>
+                                        <VerticalStackLayout Grid.Column="1">
+                                            <Label Text="Check-out" Style="{StaticResource Caption}" />
+                                            <Label Text="{Binding CheckOut, StringFormat='{0:dd MMM yyyy}'}"
+                                                   FontFamily="OpenSansSemibold" FontSize="13" />
+                                        </VerticalStackLayout>
+                                    </Grid>
+
+                                    <Grid ColumnDefinitions="*,Auto" Margin="0,6,0,0">
+                                        <Label Text="{Binding BookingCode}"
+                                               Style="{StaticResource Caption}"
+                                               VerticalTextAlignment="Center" />
+                                        <Button Grid.Column="1" Text="Hacer Check-in"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ActiveBookingsViewModel}}, Path=CheckInCommand}"
+                                                CommandParameter="{Binding .}"
+                                                Padding="12,6" FontSize="12"
+                                                MinimumHeightRequest="36" />
+                                    </Grid>
+                                </VerticalStackLayout>
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="8" Padding="40">
+                        <Label Text="Sin reservas activas"
+                               Style="{StaticResource SubHeadline}"
+                               HorizontalTextAlignment="Center" />
+                        <Label Text="Busca y reserva tu proximo viaje"
+                               Style="{StaticResource Subtitle}"
+                               HorizontalTextAlignment="Center" />
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
+            </CollectionView>
+        </RefreshView>
+    </Grid>
+</ContentPage>

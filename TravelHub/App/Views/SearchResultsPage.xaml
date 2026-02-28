@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:App.ViewModels"
+             xmlns:converters="clr-namespace:App.Converters"
+             x:Class="App.Views.SearchResultsPage"
+             Title="{Binding Title}">
+
+    <ContentPage.Resources>
+        <converters:RatingToStarsConverter x:Key="RatingToStars" />
+    </ContentPage.Resources>
+
+    <ContentPage.BindingContext>
+        <vm:SearchResultsViewModel />
+    </ContentPage.BindingContext>
+
+    <Grid RowDefinitions="Auto,Auto,*" BackgroundColor="{StaticResource Background}">
+
+        <!-- Filtro Bar -->
+        <Grid Grid.Row="0" Padding="16,8" ColumnDefinitions="*,Auto" BackgroundColor="{StaticResource Surface}">
+            <HorizontalStackLayout Spacing="8">
+                <Button Text="Filtros" Command="{Binding ToggleFilterCommand}"
+                        Style="{StaticResource OutlineButton}"
+                        Padding="12,6" FontSize="13" MinimumHeightRequest="36" />
+            </HorizontalStackLayout>
+            <Picker Grid.Column="1"
+                    Title="Ordenar"
+                    SelectedItem="{Binding SortBy}"
+                    WidthRequest="160">
+                <Picker.ItemsSource>
+                    <x:Array Type="{x:Type x:String}">
+                        <x:String>Recomendados</x:String>
+                        <x:String>Precio menor</x:String>
+                        <x:String>Precio mayor</x:String>
+                        <x:String>Mejor calificado</x:String>
+                    </x:Array>
+                </Picker.ItemsSource>
+            </Picker>
+        </Grid>
+
+        <!-- Panel de Filtros -->
+        <Border Grid.Row="1"
+                IsVisible="{Binding IsFilterVisible}"
+                BackgroundColor="{StaticResource Surface}"
+                Padding="16"
+                Margin="0,0,0,0"
+                StrokeShape="RoundRectangle 0,0,12,12">
+            <VerticalStackLayout Spacing="12">
+                <Label Text="Precio por noche" Style="{StaticResource Title}" />
+                <Grid ColumnDefinitions="*,Auto">
+                    <Slider Minimum="0" Maximum="500" Value="{Binding MaxPrice}" />
+                    <Label Grid.Column="1" Text="{Binding MaxPrice, StringFormat='Hasta ${0:F0}'}"
+                           VerticalTextAlignment="Center" Margin="8,0,0,0" />
+                </Grid>
+
+                <Label Text="Calificación minima" Style="{StaticResource Title}" />
+                <Grid ColumnDefinitions="*,Auto">
+                    <Slider Minimum="0" Maximum="5" Value="{Binding MinRating}" />
+                    <Label Grid.Column="1" Text="{Binding MinRating, StringFormat='{0:F1}+'}"
+                           VerticalTextAlignment="Center" Margin="8,0,0,0" />
+                </Grid>
+
+                <Grid ColumnDefinitions="*,12,*">
+                    <Button Text="Aplicar" Command="{Binding ApplyFilterCommand}" />
+                    <Button Grid.Column="2" Text="Limpiar" Command="{Binding ClearFilterCommand}"
+                            Style="{StaticResource OutlineButton}" />
+                </Grid>
+            </VerticalStackLayout>
+        </Border>
+
+        <!-- Lista de Resultados -->
+        <CollectionView Grid.Row="2"
+                        ItemsSource="{Binding Properties}"
+                        Margin="16,8">
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="12" />
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border BackgroundColor="{StaticResource Surface}"
+                            StrokeShape="RoundRectangle 14"
+                            Stroke="{StaticResource Gray100}"
+                            Padding="0">
+                        <Border.Shadow>
+                            <Shadow Brush="#18000000" Offset="0,2" Radius="8" />
+                        </Border.Shadow>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:SearchResultsViewModel}}, Path=PropertySelectedCommand}"
+                                                  CommandParameter="{Binding .}" />
+                        </Border.GestureRecognizers>
+                        <Grid ColumnDefinitions="130,*">
+                            <Image Source="{Binding ImageUrl}"
+                                   Aspect="AspectFill"
+                                   WidthRequest="130"
+                                   HeightRequest="130" />
+                            <VerticalStackLayout Grid.Column="1" Padding="12" Spacing="4"
+                                                 VerticalOptions="Center">
+                                <Label Text="{Binding Name}"
+                                       FontFamily="OpenSansSemibold"
+                                       FontSize="16"
+                                       LineBreakMode="TailTruncation"
+                                       MaxLines="1" />
+                                <Label Text="{Binding City}" Style="{StaticResource Caption}" />
+                                <HorizontalStackLayout Spacing="4">
+                                    <Label Text="{Binding Rating, Converter={StaticResource RatingToStars}}"
+                                           TextColor="{StaticResource Star}" FontSize="13" />
+                                    <Label Text="{Binding Rating, StringFormat='{0:F1}'}"
+                                           FontFamily="OpenSansSemibold" FontSize="13" />
+                                    <Label Text="{Binding ReviewCount, StringFormat='({0} reseñas)'}"
+                                           Style="{StaticResource Caption}" />
+                                </HorizontalStackLayout>
+                                <Label Text="{Binding PricePerNight, StringFormat='${0:F0} / noche'}"
+                                       Style="{StaticResource Price}" FontSize="16" />
+                                <Border BackgroundColor="{StaticResource Success}"
+                                        StrokeShape="RoundRectangle 4"
+                                        Stroke="Transparent"
+                                        Padding="8,2"
+                                        HorizontalOptions="Start"
+                                        IsVisible="{Binding IsAvailable}">
+                                    <Label Text="Disponible" TextColor="{StaticResource White}" FontSize="11" />
+                                </Border>
+                            </VerticalStackLayout>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+            <CollectionView.EmptyView>
+                <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="8" Padding="40">
+                    <Label Text="No se encontraron resultados"
+                           Style="{StaticResource SubHeadline}"
+                           HorizontalTextAlignment="Center" />
+                    <Label Text="Intenta modificar los filtros de busqueda"
+                           Style="{StaticResource Subtitle}"
+                           HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+        </CollectionView>
+    </Grid>
+</ContentPage>

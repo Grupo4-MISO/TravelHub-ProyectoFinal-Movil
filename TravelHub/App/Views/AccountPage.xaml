@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:App.ViewModels"
+             x:Class="App.Views.AccountPage"
+             Title="{Binding Title}"
+             IconImageSource="ic_account.png"
+             Shell.NavBarIsVisible="False">
+
+    <ContentPage.BindingContext>
+        <vm:AccountViewModel />
+    </ContentPage.BindingContext>
+
+    <Grid BackgroundColor="{StaticResource Background}">
+
+        <!-- ===== VISTA PERFIL (logueado) ===== -->
+        <Grid RowDefinitions="Auto,*" IsVisible="{Binding IsLoggedIn}">
+
+            <!-- Header -->
+            <Grid Grid.Row="0" Padding="16,14" BackgroundColor="{StaticResource Primary}">
+                <Label Text="Mi Cuenta"
+                       TextColor="{StaticResource White}"
+                       FontFamily="OpenSansSemibold"
+                       FontSize="18" />
+            </Grid>
+
+            <ScrollView Grid.Row="1">
+                <VerticalStackLayout Padding="16" Spacing="16">
+
+                    <!-- Perfil -->
+                    <Border Padding="20"
+                            BackgroundColor="{StaticResource Surface}"
+                            StrokeShape="RoundRectangle 16"
+                            Stroke="{StaticResource Gray100}">
+                        <Border.Shadow>
+                            <Shadow Brush="#15000000" Offset="0,2" Radius="8" />
+                        </Border.Shadow>
+                        <VerticalStackLayout Spacing="8" HorizontalOptions="Center">
+                            <Border HeightRequest="150" WidthRequest="150"
+                                    BackgroundColor="White">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="150"/>
+                                </Border.StrokeShape>
+                                <Image Source="{Binding User.Photo}" Aspect="AspectFill" />
+                            </Border>
+                            <Label Text="{Binding User.FullName}"
+                                   FontFamily="OpenSansSemibold" FontSize="20"
+                                   HorizontalTextAlignment="Center" />
+                            <Label Text="{Binding User.Email}"
+                                   Style="{StaticResource Subtitle}"
+                                   HorizontalTextAlignment="Center" />
+                            <Label Text="{Binding User.Phone}"
+                                   Style="{StaticResource Caption}"
+                                   HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- Opciones -->
+                    <Border Padding="0"
+                            BackgroundColor="{StaticResource Surface}"
+                            StrokeShape="RoundRectangle 12"
+                            Stroke="{StaticResource Gray100}">
+                        <VerticalStackLayout>
+                            <Grid Padding="16,14" ColumnDefinitions="*,Auto">
+                                <Label Text="Editar Perfil" FontSize="15" VerticalTextAlignment="Center" />
+                                <Label Grid.Column="1" Text=">" Style="{StaticResource Caption}"
+                                       FontSize="18" VerticalTextAlignment="Center" />
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding EditProfileCommand}" />
+                                </Grid.GestureRecognizers>
+                            </Grid>
+                            <BoxView HeightRequest="1" Color="{StaticResource Gray100}" />
+
+                            <Grid Padding="16,14" ColumnDefinitions="*,Auto">
+                                <Label Text="Historial de Reservas" FontSize="15" VerticalTextAlignment="Center" />
+                                <Label Grid.Column="1" Text=">" Style="{StaticResource Caption}"
+                                       FontSize="18" VerticalTextAlignment="Center" />
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding ViewHistoryCommand}" />
+                                </Grid.GestureRecognizers>
+                            </Grid>
+                            <BoxView HeightRequest="1" Color="{StaticResource Gray100}" />
+
+                            <Grid Padding="16,14" ColumnDefinitions="*,Auto">
+                                <VerticalStackLayout>
+                                    <Label Text="Documento" FontSize="15" />
+                                    <Label Text="{Binding User.DocumentNumber, StringFormat='CC {0}'}"
+                                           Style="{StaticResource Caption}" />
+                                </VerticalStackLayout>
+                            </Grid>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- Cerrar Sesion -->
+                    <Button Text="Cerrar Sesion"
+                            Command="{Binding LogoutCommand}"
+                            BackgroundColor="{StaticResource Primary}"
+                            TextColor="{StaticResource White}"
+                            HorizontalOptions="Fill" />
+
+                    <Label Text="TravelHub v1.0"
+                           Style="{StaticResource Caption}"
+                           HorizontalTextAlignment="Center"
+                           Margin="0,8,0,0" />
+                </VerticalStackLayout>
+            </ScrollView>
+        </Grid>
+
+        <!-- ===== VISTA LOGIN (no logueado) ===== -->
+        <ScrollView IsVisible="{Binding IsNotLoggedIn}">
+            <VerticalStackLayout Padding="32" Spacing="20" VerticalOptions="Center">
+
+                <VerticalStackLayout Spacing="8" HorizontalOptions="Center" Margin="0,40,0,20">
+                    <!--<Border WidthRequest="70" HeightRequest="70"
+                            BackgroundColor="{StaticResource Primary}"
+                            StrokeShape="RoundRectangle 16"
+                            Stroke="Transparent"
+                            HorizontalOptions="Center">
+                        <Label Text="TH"
+                               TextColor="{StaticResource White}"
+                               FontFamily="OpenSansSemibold" FontSize="28"
+                               HorizontalTextAlignment="Center"
+                               VerticalTextAlignment="Center" />
+                    </Border>-->
+                    <Image Source="travelhub.png" Aspect="AspectFill" />
+                    <!--<Label Text="TravelHub"
+                           Style="{StaticResource Headline}"
+                           HorizontalTextAlignment="Center" />-->
+                    <Label Text="Inicia sesion para continuar"
+                           Style="{StaticResource Subtitle}"
+                           HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+
+                <Border Padding="20"
+                        BackgroundColor="{StaticResource Surface}"
+                        StrokeShape="RoundRectangle 16"
+                        Stroke="{StaticResource Gray100}">
+                    <Border.Shadow>
+                        <Shadow Brush="#15000000" Offset="0,3" Radius="10" />
+                    </Border.Shadow>
+                    <VerticalStackLayout Spacing="16">
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Email" Style="{StaticResource Caption}" />
+                            <Border Padding="12,0"
+                                    BackgroundColor="{StaticResource Background}"
+                                    StrokeShape="RoundRectangle 10"
+                                    Stroke="{StaticResource Gray200}">
+                                <Entry Placeholder="micorreo@email.com"
+                                       Text="{Binding Email}"
+                                       Keyboard="Email" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Password" Style="{StaticResource Caption}" />
+                            <Border Padding="12,0"
+                                    BackgroundColor="{StaticResource Background}"
+                                    StrokeShape="RoundRectangle 10"
+                                    Stroke="{StaticResource Gray200}">
+                                <Entry Placeholder="Password"
+                                       Text="{Binding Password}"
+                                       IsPassword="True" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <Button Text="Iniciar Sesion"
+                                Command="{Binding LoginCommand}"
+                                HorizontalOptions="Fill" />
+
+                        <HorizontalStackLayout Spacing="4" HorizontalOptions="Center">
+                            <Label Text="No tienes cuenta?"
+                                   Style="{StaticResource Caption}"
+                                   VerticalTextAlignment="Center" />
+                            <Label Text="Registrate"
+                                   TextColor="{StaticResource Primary}"
+                                   FontFamily="OpenSansSemibold" FontSize="13"
+                                   VerticalTextAlignment="Center">
+                                <Label.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding RegisterCommand}" />
+                                </Label.GestureRecognizers>
+                            </Label>
+                        </HorizontalStackLayout>
+                    </VerticalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+        </ScrollView>
+
+    </Grid>
+</ContentPage>

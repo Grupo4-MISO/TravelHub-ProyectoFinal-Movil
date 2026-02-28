@@ -3,12 +3,27 @@
     x:Class="App.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:App"
-    Title="App">
+    xmlns:views="clr-namespace:App.Views"
+    Title="TravelHub">
 
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+    <TabBar>
+        <ShellContent
+            Title="Buscar"
+            Icon="ic_search.png"
+            ContentTemplate="{DataTemplate views:HomePage}"
+            Route="home" />
+
+        <ShellContent
+            Title="Reservas"
+            Icon="ic_reserve.png"
+            ContentTemplate="{DataTemplate views:ActiveBookingsPage}"
+            Route="bookings" />
+
+        <ShellContent
+            Title="Mi Cuenta"
+            Icon="ic_account.png"
+            ContentTemplate="{DataTemplate views:AccountPage}"
+            Route="account" />
+    </TabBar>
 
 </Shell>
