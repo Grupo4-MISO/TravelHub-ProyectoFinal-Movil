@@ -19,6 +19,7 @@ public class Property
     public string PropertyType { get; set; } = "Hotel";
     public double Latitude { get; set; }
     public double Longitude { get; set; }
+    public Country Country { get; set; } = new(); // Nueva propiedad
 }
 
 public class Review

@@ -56,7 +56,8 @@
                                 <Button Text="Seleccionar"
                                         Command="{Binding Source={RelativeSource AncestorType={x:Type vm:RoomSelectionViewModel}}, Path=SelectRoomCommand}"
                                         CommandParameter="{Binding .}"
-                                        Style="{StaticResource OutlineButton}"
+                                        BackgroundColor="{StaticResource Primary}"
+                                        TextColor="{StaticResource White}"
                                         HorizontalOptions="Fill"
                                         Margin="0,6,0,0" />
                             </VerticalStackLayout>

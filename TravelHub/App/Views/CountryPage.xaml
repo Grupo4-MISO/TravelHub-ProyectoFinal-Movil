@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:App.ViewModels"
+             xmlns:models="clr-namespace:App.ViewModels"
+             x:Class="App.Views.CountryPage"
+             Title="Seleccionar Pais">
+    
+    <ContentPage.BindingContext>
+        <vm:CountryViewModel />
+    </ContentPage.BindingContext>
+    
+    <Grid RowDefinitions="Auto,*" BackgroundColor="{StaticResource Background}">
+        
+        <!-- Header -->
+        <VerticalStackLayout Grid.Row="0" 
+                            Padding="16" 
+                            BackgroundColor="{StaticResource Surface}">
+            <Label Text="Elige tu país" 
+                   Style="{StaticResource Headline}" 
+                   FontSize="24" />
+            <Label Text="Selecciona el país donde deseas buscar hospedajes" 
+                   Style="{StaticResource Subtitle}"
+                   Margin="0,4,0,0" />
+        </VerticalStackLayout>
+
+        <!-- Lista de países -->
+        <CollectionView Grid.Row="1"
+                       ItemsSource="{Binding Countries}"
+                       SelectionMode="None"
+                       Margin="16">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:CountryItem">
+                    <Border Padding="16"
+                            Margin="0,0,0,12"
+                            BackgroundColor="{StaticResource Surface}"
+                            StrokeShape="RoundRectangle 12"
+                            Stroke="{StaticResource Gray100}">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer 
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CountryViewModel}}, Path=SelectCountryCommand}"
+                                CommandParameter="{Binding .}" />
+                        </Border.GestureRecognizers>
+                        
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                            <!-- Bandera -->
+                            <Label Grid.Column="0"
+                                   Text="{Binding FlagEmoji}"
+                                   FontSize="32"
+                                   VerticalOptions="Center" />
+                            
+                            <!-- Información del país -->
+                            <VerticalStackLayout Grid.Column="1" 
+                                                Spacing="2"
+                                                VerticalOptions="Center">
+                                <Label Text="{Binding Name}"
+                                       FontFamily="OpenSansSemibold"
+                                       FontSize="16" />
+                                <Label Text="{Binding CurrencyCode, StringFormat='Moneda: {0}'}"
+                                       Style="{StaticResource Caption}"
+                                       FontSize="12" />
+                            </VerticalStackLayout>
+                            
+                            <!-- Indicador de selección -->
+                            <Label Grid.Column="2"
+                                   Text="->"
+                                   FontSize="24"
+                                   TextColor="{StaticResource Primary}"
+                                   IsVisible="{Binding IsSelected}"
+                                   VerticalOptions="Center" />
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>

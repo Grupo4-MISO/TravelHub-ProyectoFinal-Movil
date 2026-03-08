@@ -31,6 +31,7 @@ public static class MauiProgram
         builder.Services.AddTransient<LoginPage>();
         builder.Services.AddTransient<ActiveBookingsPage>();
         builder.Services.AddTransient<AccountPage>();
+        builder.Services.AddTransient<CountryPage>();
 
         // Register ViewModels
         builder.Services.AddTransient<HomeViewModel>();
@@ -43,6 +44,7 @@ public static class MauiProgram
         builder.Services.AddTransient<LoginViewModel>();
         builder.Services.AddTransient<ActiveBookingsViewModel>();
         builder.Services.AddTransient<AccountViewModel>();
+        builder.Services.AddTransient<CountryViewModel>();
 
 #if DEBUG
         builder.Logging.AddDebug();

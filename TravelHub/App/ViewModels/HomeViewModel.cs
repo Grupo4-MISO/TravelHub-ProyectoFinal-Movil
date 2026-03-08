@@ -18,7 +18,7 @@ public class HomeViewModel : BaseViewModel
         set => SetProperty(ref _selectedCity, value);
     }
 
-    private DateTime _checkInDate = DateTime.Today.AddDays(7);
+    private DateTime _checkInDate = DateTime.Today.AddDays(1);
     public DateTime CheckInDate
     {
         get => _checkInDate;
@@ -29,7 +29,7 @@ public class HomeViewModel : BaseViewModel
         }
     }
 
-    private DateTime _checkOutDate = DateTime.Today.AddDays(9);
+    private DateTime _checkOutDate = DateTime.Today.AddDays(3);
     public DateTime CheckOutDate
     {
         get => _checkOutDate;
@@ -43,7 +43,7 @@ public class HomeViewModel : BaseViewModel
         set { if (SetProperty(ref _adults, value)) OnPropertyChanged(nameof(GuestSummary)); }
     }
 
-    private int _children;
+    private int _children = 0;
     public int Children
     {
         get => _children;
@@ -105,20 +105,37 @@ public class HomeViewModel : BaseViewModel
         DecrementRoomsCommand = new Command(() => { if (Rooms > 1) Rooms--; });
 
         LoadData();
+        // Suscribirse a cambios de país
+        AppSettingsService.Instance.CountryChanged += OnCountryChanged;
     }
 
     private void LoadData()
     {
+        var currentCountryCode = AppSettingsService.Instance.CurrentCountryCode;
+        // Cargar propiedades del país actual
+        var properties = MockDataService.GetFeaturedProperties(currentCountryCode);
+        FeaturedProperties.Clear();
+        foreach (var prop in properties)
+            FeaturedProperties.Add(prop);
+
+        // Cargar ciudades del país actual
+        PopularCities.Clear();
+        var cities = MockDataService.GetPopularCitiesByCountry(currentCountryCode);
+        foreach (var city in cities)
+            PopularCities.Add(city);
+
+        // Cargar imágenes promocionales
+        PromotionalImages.Clear();
         foreach (var img in MockDataService.GetPromotionalImages())
             PromotionalImages.Add(img);
 
-        foreach (var prop in MockDataService.GetFeaturedProperties())
-            FeaturedProperties.Add(prop);
-
-        foreach (var city in MockDataService.GetPopularCities())
-            PopularCities.Add(city);
+        SelectedCity = PopularCities.FirstOrDefault() ?? "";
     }
 
+    private void OnCountryChanged(object? sender, string countryCode)
+    {
+        LoadData();
+    }
     private async void OnSearch()
     {
         var criteria = new SearchCriteria
