@@ -4,12 +4,14 @@
              xmlns:vm="clr-namespace:App.ViewModels"
              xmlns:models="clr-namespace:App.Models"
              xmlns:converters="clr-namespace:App.Converters"
+             xmlns:icons="clr-namespace:App.Resources.Styles"
              x:Class="App.Views.BookingDetailsPage"
              x:DataType="vm:BookingDetailsViewModel"
              Title="Detalle de Reserva">
 
     <ContentPage.Resources>
         <converters:IconKeyToGlyphConverter x:Key="IconKeyToGlyph" />
+        <converters:TruncateTextConverter x:Key="TruncateText" MaxLength="15" Suffix="..." />
     </ContentPage.Resources>
 
     <Grid RowDefinitions="*,Auto" BackgroundColor="{StaticResource Background}">
@@ -96,7 +98,7 @@
                                 <Image Style="{StaticResource IconImageSmall}">
                                     <Image.Source>
                                         <FontImageSource
-                                            Glyph="{StaticResource IconTelefono}"
+                                            Glyph="{x:Static icons:Icons.Telefono}"
                                             FontFamily="MaterialSymbols"
                                             Size="16"
                                             Color="{StaticResource TextSecondary}" />
@@ -224,7 +226,7 @@
                                 HorizontalOptions="Fill">
                             <Button.ImageSource>
                                 <FontImageSource
-                                    Glyph="{StaticResource IconVoucher}"
+                                    Glyph="{x:Static icons:Icons.Voucher}"
                                     FontFamily="MaterialSymbols"
                                     Size="20"
                                     Color="{StaticResource Primary}" />
@@ -237,7 +239,7 @@
                                 HorizontalOptions="Fill">
                             <Button.ImageSource>
                                 <FontImageSource
-                                    Glyph="{StaticResource IconConfirmacion}"
+                                    Glyph="{x:Static icons:Icons.Confirmacion}"
                                     FontFamily="MaterialSymbols"
                                     Size="20"
                                     Color="{StaticResource Primary}" />
@@ -251,7 +253,7 @@
                                 IsVisible="{Binding HasInvoice}">
                             <Button.ImageSource>
                                 <FontImageSource
-                                    Glyph="{StaticResource IconFactura}"
+                                    Glyph="{x:Static icons:Icons.Factura}"
                                     FontFamily="MaterialSymbols"
                                     Size="20"
                                     Color="{StaticResource Primary}" />
@@ -274,7 +276,7 @@
                                 HorizontalOptions="Fill">
                             <Button.ImageSource>
                                 <FontImageSource
-                                    Glyph="{StaticResource IconLlamar}"
+                                    Glyph="{x:Static icons:Icons.Llamar}"
                                     FontFamily="MaterialSymbols"
                                     Size="20"
                                     Color="{StaticResource Primary}" />
@@ -289,13 +291,15 @@
                                 HorizontalOptions="Fill">
                             <Button.ImageSource>
                                 <FontImageSource
-                                    Glyph="{StaticResource IconEmail}"
+                                    Glyph="{x:Static icons:Icons.Email}"
                                     FontFamily="MaterialSymbols"
                                     Size="20"
                                     Color="{StaticResource Primary}" />
                             </Button.ImageSource>
                             <Button.Text>
-                                <Binding Path="Hotel.Email" StringFormat="Email: {0}" />
+                                <MultiBinding StringFormat="Email: {0}">
+                                    <Binding Path="Hotel.Email" Converter="{StaticResource TruncateText}" ConverterParameter="15" />
+                                </MultiBinding>
                             </Button.Text>
                         </Button>
 
@@ -307,7 +311,7 @@
                                 <Image Style="{StaticResource IconImageSmall}">
                                     <Image.Source>
                                         <FontImageSource
-                                            Glyph="{StaticResource IconUbicacion}"
+                                            Glyph="{x:Static icons:Icons.Ubicacion}"
                                             FontFamily="MaterialSymbols"
                                             Size="18"
                                             Color="{StaticResource Primary}" />

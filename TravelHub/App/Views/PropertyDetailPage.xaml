@@ -2,18 +2,20 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:App.ViewModels"
+             xmlns:models="clr-namespace:App.Models"
              xmlns:converters="clr-namespace:App.Converters"
+             xmlns:icons="clr-namespace:App.Resources.Styles"
              x:Class="App.Views.PropertyDetailPage"
              Title="{Binding Title}">
 
     <ContentPage.Resources>
         <converters:RatingToStarsConverter x:Key="RatingToStars" />
+        <converters:IconKeyToGlyphConverter x:Key="IconKeyToGlyph" />
     </ContentPage.Resources>
 
     <ContentPage.BindingContext>
         <vm:PropertyDetailViewModel />
     </ContentPage.BindingContext>
-
     <Grid RowDefinitions="*,Auto" BackgroundColor="{StaticResource Background}">
         <ScrollView Grid.Row="0">
             <VerticalStackLayout Spacing="0">
@@ -75,11 +77,38 @@
                         BackgroundColor="{StaticResource Surface}"
                         StrokeShape="RoundRectangle 12"
                         Stroke="{StaticResource Gray100}">
-                    <VerticalStackLayout Spacing="8">
+                    <VerticalStackLayout Spacing="10">
                         <Label Text="Amenidades" Style="{StaticResource Title}" />
-                        <Label Text="{Binding AmenityList}"
-                               Style="{StaticResource Subtitle}"
-                               LineBreakMode="WordWrap" />
+                        <FlexLayout Wrap="Wrap" 
+                                    JustifyContent="Start"
+                                    AlignItems="Start"
+                                    BindableLayout.ItemsSource="{Binding Property.Amenities}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="models:Amenity">
+                                    <Border Padding="10,6"
+                                            Margin="0,0,8,8"
+                                            BackgroundColor="{StaticResource Background}"
+                                            StrokeShape="RoundRectangle 8"
+                                            Stroke="{StaticResource Gray200}">
+                                        <HorizontalStackLayout Spacing="6">
+                                            <Image Style="{StaticResource IconImageSmall}">
+                                                <Image.Source>
+                                                    <FontImageSource
+                                                        Glyph="{Binding Icon, Converter={StaticResource IconKeyToGlyph}}"
+                                                        FontFamily="MaterialSymbols"
+                                                        Size="18"
+                                                        Color="{StaticResource Primary}" />
+                                                </Image.Source>
+                                            </Image>
+                                            <Label Text="{Binding Name}"
+                                                   FontFamily="OpenSansRegular"
+                                                   FontSize="13"
+                                                   VerticalTextAlignment="Center" />
+                                        </HorizontalStackLayout>
+                                    </Border>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </FlexLayout>
                     </VerticalStackLayout>
                 </Border>
 
@@ -90,9 +119,19 @@
                         Stroke="{StaticResource Gray200}"
                         HeightRequest="180">
                     <Grid>
-                        <Label Text="Aquí va el Mapa - Ubicacion"
+                        <Image Style="{StaticResource IconImageLarge}">
+                            <Image.Source>
+                                <FontImageSource
+                                    Glyph="{x:Static icons:Icons.Mapa}"
+                                    FontFamily="MaterialSymbols"
+                                    Size="48"
+                                    Color="{StaticResource Gray400}" />
+                            </Image.Source>
+                        </Image>
+                        <Label Text="Ubicación del hotel"
                                HorizontalOptions="Center"
-                               VerticalOptions="Center"
+                               VerticalOptions="End"
+                               Margin="0,0,0,16"
                                Style="{StaticResource Subtitle}" />
                     </Grid>
                 </Border>

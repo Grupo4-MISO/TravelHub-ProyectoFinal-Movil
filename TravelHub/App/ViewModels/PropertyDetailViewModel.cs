@@ -14,7 +14,6 @@ public class PropertyDetailViewModel : BaseViewModel, IQueryAttributable
         {
             if (SetProperty(ref _property, value))
             {
-                OnPropertyChanged(nameof(AmenityList));
                 ImageUrls.Clear();
                 foreach (var url in value.ImageUrls)
                     ImageUrls.Add(url);
@@ -27,8 +26,6 @@ public class PropertyDetailViewModel : BaseViewModel, IQueryAttributable
 
     public ObservableCollection<string> ImageUrls { get; } = [];
     public ObservableCollection<Review> Reviews { get; } = [];
-
-    public string AmenityList => string.Join("  |  ", Property.Amenities);
 
     public ICommand ChooseRoomCommand { get; }
 

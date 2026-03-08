@@ -62,7 +62,7 @@
         <Setter Property="TextColor" Value="{StaticResource Primary}" />
         <Setter Property="BackgroundColor" Value="{StaticResource Surface}" />
         <Setter Property="FontFamily" Value="OpenSansSemibold"/>
-        <Setter Property="FontSize" Value="15"/>
+        <Setter Property="FontSize" Value="14"/>
         <Setter Property="BorderWidth" Value="1.5"/>
         <Setter Property="BorderColor" Value="{StaticResource Primary}"/>
         <Setter Property="CornerRadius" Value="12"/>

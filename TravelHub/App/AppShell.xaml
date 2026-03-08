@@ -4,6 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:views="clr-namespace:App.Views"
+    xmlns:icons="clr-namespace:App.Resources.Styles"
     Title="TravelHub">
 
     <TabBar>
@@ -13,7 +14,7 @@
             Route="home">
             <ShellContent.Icon>
                 <FontImageSource
-                    Glyph="{StaticResource IconBuscar}"
+                    Glyph="{x:Static icons:Icons.Buscar}"
                     FontFamily="MaterialSymbols"
                     Size="24" />
             </ShellContent.Icon>
@@ -25,7 +26,7 @@
             Route="bookings">
             <ShellContent.Icon>
                 <FontImageSource
-                    Glyph="{StaticResource IconReservas}"
+                    Glyph="{x:Static icons:Icons.Reservas}"
                     FontFamily="MaterialSymbols"
                     Size="24" />
             </ShellContent.Icon>
@@ -37,7 +38,7 @@
             Route="account">
             <ShellContent.Icon>
                 <FontImageSource
-                    Glyph="{StaticResource IconCuenta}"
+                    Glyph="{x:Static icons:Icons.Cuenta}"
                     FontFamily="MaterialSymbols"
                     Size="24" />
             </ShellContent.Icon>
