@@ -64,7 +64,7 @@
                                 BackgroundColor="{StaticResource Background}"
                                 StrokeShape="RoundRectangle 10"
                                 Stroke="{StaticResource Gray200}">
-                            <Entry Placeholder="Password"
+                            <Entry Placeholder="Mi clave"
                                    Text="{Binding Password}"
                                    IsPassword="True" />
                         </Border>

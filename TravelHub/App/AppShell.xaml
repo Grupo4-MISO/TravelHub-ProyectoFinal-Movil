@@ -9,21 +9,39 @@
     <TabBar>
         <ShellContent
             Title="Buscar"
-            Icon="ic_search.png"
             ContentTemplate="{DataTemplate views:HomePage}"
-            Route="home" />
+            Route="home">
+            <ShellContent.Icon>
+                <FontImageSource
+                    Glyph="{StaticResource IconBuscar}"
+                    FontFamily="MaterialSymbols"
+                    Size="24" />
+            </ShellContent.Icon>
+        </ShellContent>
 
         <ShellContent
             Title="Reservas"
-            Icon="ic_reserve.png"
             ContentTemplate="{DataTemplate views:ActiveBookingsPage}"
-            Route="bookings" />
+            Route="bookings">
+            <ShellContent.Icon>
+                <FontImageSource
+                    Glyph="{StaticResource IconReservas}"
+                    FontFamily="MaterialSymbols"
+                    Size="24" />
+            </ShellContent.Icon>
+        </ShellContent>
 
         <ShellContent
             Title="Mi Cuenta"
-            Icon="ic_account.png"
             ContentTemplate="{DataTemplate views:AccountPage}"
-            Route="account" />
+            Route="account">
+            <ShellContent.Icon>
+                <FontImageSource
+                    Glyph="{StaticResource IconCuenta}"
+                    FontFamily="MaterialSymbols"
+                    Size="24" />
+            </ShellContent.Icon>
+        </ShellContent>
     </TabBar>
 
 </Shell>

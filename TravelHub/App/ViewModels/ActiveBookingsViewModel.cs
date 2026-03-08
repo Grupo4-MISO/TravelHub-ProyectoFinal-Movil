@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.Windows.Input;
 using App.Models;
 using App.Services;
+using App.Views;
 
 namespace App.ViewModels;
 
@@ -54,6 +55,9 @@ public class ActiveBookingsViewModel : BaseViewModel
     private async void OnBookingSelected(Reservation? reservation)
     {
         if (reservation == null) return;
-        await Shell.Current.DisplayAlert("Datos de la reserva", $"Codigo: {reservation.BookingCode}\nHotel: {reservation.Property.Name}\nCheck-in: {reservation.CheckIn:dd/MM/yyyy}\nCheck-out: {reservation.CheckOut:dd/MM/yyyy}", "OK");
+
+        // Navegar a BookingDetailsPage pasando el ID de la reserva
+        var navParams = new Dictionary<string, object> { { "ReservationId", reservation.Id } };
+        await Shell.Current.GoToAsync("BookingDetailsPage", navParams);
     }
 }

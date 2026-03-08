@@ -263,4 +263,58 @@
         <Setter Property="SelectedTabColor" Value="{StaticResource Primary}" />
     </Style>
 
+    <!-- Estilos para Iconos con FontImageSource -->
+    <Style x:Key="IconSmall" TargetType="FontImageSource">
+        <Setter Property="FontFamily" Value="MaterialSymbols" />
+        <Setter Property="Size" Value="18" />
+        <Setter Property="Color" Value="{StaticResource TextPrimary}" />
+    </Style>
+
+    <Style x:Key="IconMedium" TargetType="FontImageSource">
+        <Setter Property="FontFamily" Value="MaterialSymbols" />
+        <Setter Property="Size" Value="24" />
+        <Setter Property="Color" Value="{StaticResource TextPrimary}" />
+    </Style>
+
+    <Style x:Key="IconLarge" TargetType="FontImageSource">
+        <Setter Property="FontFamily" Value="MaterialSymbols" />
+        <Setter Property="Size" Value="32" />
+        <Setter Property="Color" Value="{StaticResource TextPrimary}" />
+    </Style>
+
+    <Style x:Key="IconPrimary" TargetType="FontImageSource">
+        <Setter Property="FontFamily" Value="MaterialSymbols" />
+        <Setter Property="Size" Value="24" />
+        <Setter Property="Color" Value="{StaticResource Primary}" />
+    </Style>
+
+    <Style x:Key="IconAccent" TargetType="FontImageSource">
+        <Setter Property="FontFamily" Value="MaterialSymbols" />
+        <Setter Property="Size" Value="24" />
+        <Setter Property="Color" Value="{StaticResource Accent}" />
+    </Style>
+
+    <Style x:Key="IconWhite" TargetType="FontImageSource">
+        <Setter Property="FontFamily" Value="MaterialSymbols" />
+        <Setter Property="Size" Value="24" />
+        <Setter Property="Color" Value="{StaticResource White}" />
+    </Style>
+
+    <!-- Estilo para Image cuando use FontImageSource -->
+    <Style x:Key="IconImage" TargetType="Image">
+        <Setter Property="Aspect" Value="AspectFit" />
+        <Setter Property="WidthRequest" Value="24" />
+        <Setter Property="HeightRequest" Value="24" />
+    </Style>
+
+    <Style x:Key="IconImageSmall" TargetType="Image" BasedOn="{StaticResource IconImage}">
+        <Setter Property="WidthRequest" Value="18" />
+        <Setter Property="HeightRequest" Value="18" />
+    </Style>
+
+    <Style x:Key="IconImageLarge" TargetType="Image" BasedOn="{StaticResource IconImage}">
+        <Setter Property="WidthRequest" Value="32" />
+        <Setter Property="HeightRequest" Value="32" />
+    </Style>
+
 </ResourceDictionary>

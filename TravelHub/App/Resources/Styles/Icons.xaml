@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <!-- Navegaci�n y Acciones Generales -->
+    <x:String x:Key="IconBuscar">&#xe8b6;</x:String>
+    <x:String x:Key="IconReservas">&#xe7ef;</x:String>
+    <x:String x:Key="IconUsuario">&#xe7fd;</x:String>
+    <x:String x:Key="IconCuenta">&#xe853;</x:String>
+    <x:String x:Key="IconHome">&#xe88a;</x:String>
+    <x:String x:Key="IconAtras">&#xe5c4;</x:String>
+    <x:String x:Key="IconCerrar">&#xe5cd;</x:String>
+    <x:String x:Key="IconMenu">&#xe5d2;</x:String>
+    <x:String x:Key="IconMas">&#xe145;</x:String>
+    <x:String x:Key="IconMenos">&#xe15b;</x:String>
+    
+    <!-- Alertas y Estados -->
+    <x:String x:Key="IconAlerta">&#xe002;</x:String>
+    <x:String x:Key="IconExito">&#xe86c;</x:String>
+    <x:String x:Key="IconError">&#xe000;</x:String>
+    <x:String x:Key="IconInfo">&#xe88e;</x:String>
+    <x:String x:Key="IconAdvertencia">&#xe002;</x:String>
+    
+    <!-- Acciones CRUD -->
+    <x:String x:Key="IconGuardar">&#xe161;</x:String>
+    <x:String x:Key="IconEliminar">&#xe872;</x:String>
+    <x:String x:Key="IconEditar">&#xe3c9;</x:String>
+    <x:String x:Key="IconVer">&#xe417;</x:String>
+    <x:String x:Key="IconDescargar">&#xf090;</x:String>
+    <x:String x:Key="IconCompartir">&#xe80d;</x:String>
+    
+    <!-- Navegaci�n y Ubicaci�n -->
+    <x:String x:Key="IconMapa">&#xe55b;</x:String>
+    <x:String x:Key="IconUbicacion">&#xe0c8;</x:String>
+    <x:String x:Key="IconDirecciones">&#xe1e5;</x:String>
+    
+    <!-- Fechas y Tiempo -->
+    <x:String x:Key="IconCalendario">&#xe935;</x:String>
+    <x:String x:Key="IconReloj">&#xe192;</x:String>
+    <x:String x:Key="IconFecha">&#xe916;</x:String>
+    
+    <!-- Contacto y Comunicaci�n -->
+    <x:String x:Key="IconTelefono">&#xe0cd;</x:String>
+    <x:String x:Key="IconEmail">&#xe0be;</x:String>
+    <x:String x:Key="IconMensaje">&#xe0c9;</x:String>
+    <x:String x:Key="IconLlamar">&#xe0b0;</x:String>
+    
+    <!-- Hospedaje y Hotel -->
+    <x:String x:Key="IconHotel">&#xe549;</x:String>
+    <x:String x:Key="IconHabitacion">&#xe8a4;</x:String>
+    <x:String x:Key="IconCama">&#xef48;</x:String>
+    <x:String x:Key="IconLlave">&#xe73c;</x:String>
+    
+    <!-- Amenidades Generales -->
+    <x:String x:Key="IconWiFi">&#xe63e;</x:String>
+    <x:String x:Key="IconDesayuno">&#xea64;</x:String>
+    <x:String x:Key="IconEstacionamiento">&#xe54f;</x:String>
+    <x:String x:Key="IconPiscina">&#xeb48;</x:String>
+    <x:String x:Key="IconGimnasio">&#xeb43;</x:String>
+    <x:String x:Key="IconRoomService">&#xeb49;</x:String>
+    <x:String x:Key="IconSpa">&#xeb4c;</x:String>
+    <x:String x:Key="IconRestaurante">&#xe56c;</x:String>
+    <x:String x:Key="IconBar">&#xe540;</x:String>
+    <x:String x:Key="IconTerraza">&#xe94d;</x:String>
+    <x:String x:Key="IconChimenea">&#xe1ca;</x:String>
+    <x:String x:Key="IconJardin">&#xea3e;</x:String>
+    
+    <!-- Amenidades Especiales -->
+    <x:String x:Key="IconPlaya">&#xeb3e;</x:String>
+    <x:String x:Key="IconPlayaPrivada">&#xeb3e;</x:String>
+    <x:String x:Key="IconTodoIncluido">&#xe8f9;</x:String>
+    <x:String x:Key="IconKidsClub">&#xf1ae;</x:String>
+    <x:String x:Key="IconSnorkel">&#xe30a;</x:String>
+    <x:String x:Key="IconBusinessCenter">&#xe0af;</x:String>
+    <x:String x:Key="IconTourCafetero">&#xe541;</x:String>
+    <x:String x:Key="IconSenderismo">&#xe52f;</x:String>
+    
+    <!-- Personas y Grupos -->
+    <x:String x:Key="IconPersona">&#xe7fd;</x:String>
+    <x:String x:Key="IconPersonas">&#xe7fb;</x:String>
+    <x:String x:Key="IconFamilia">&#xe53a;</x:String>
+    <x:String x:Key="IconNino">&#xe50b;</x:String>
+    <x:String x:Key="IconAdulto">&#xe7fd;</x:String>
+    
+    <!-- Valoraciones -->
+    <x:String x:Key="IconEstrella">&#xe838;</x:String>
+    <x:String x:Key="IconEstrellaVacia">&#xe83a;</x:String>
+    <x:String x:Key="IconCorazon">&#xe87d;</x:String>
+    <x:String x:Key="IconCorazonVacio">&#xe87e;</x:String>
+    <x:String x:Key="IconFavorito">&#xe87d;</x:String>
+    
+    <!-- Pago y Dinero -->
+    <x:String x:Key="IconPago">&#xe8f7;</x:String>
+    <x:String x:Key="IconTarjeta">&#xe870;</x:String>
+    <x:String x:Key="IconDinero">&#xe263;</x:String>
+    <x:String x:Key="IconPrecio">&#xe227;</x:String>
+    <x:String x:Key="IconFactura">&#xe8b0;</x:String>
+    
+    <!-- Documentos -->
+    <x:String x:Key="IconDocumento">&#xe873;</x:String>
+    <x:String x:Key="IconPDF">&#xe415;</x:String>
+    <x:String x:Key="IconVoucher">&#xe8b0;</x:String>
+    <x:String x:Key="IconConfirmacion">&#xe86c;</x:String>
+    
+    <!-- Configuraci�n -->
+    <x:String x:Key="IconConfiguracion">&#xe8b8;</x:String>
+    <x:String x:Key="IconNotificaciones">&#xe7f4;</x:String>
+    <x:String x:Key="IconIdioma">&#xe8e2;</x:String>
+    <x:String x:Key="IconAyuda">&#xe887;</x:String>
+    
+    <!-- Filtros y Ordenamiento -->
+    <x:String x:Key="IconFiltro">&#xe152;</x:String>
+    <x:String x:Key="IconOrdenar">&#xe164;</x:String>
+    <x:String x:Key="IconLista">&#xe8ef;</x:String>
+    <x:String x:Key="IconCuadricula">&#xe3ec;</x:String>
+    
+    <!-- Check-in/Check-out -->
+    <x:String x:Key="IconCheckIn">&#xe1e5;</x:String>
+    <x:String x:Key="IconCheckOut">&#xe1e6;</x:String>
+    <x:String x:Key="IconQR">&#xef6b;</x:String>
+    <x:String x:Key="IconCamara">&#xe3af;</x:String>
+    
+    <!-- Otros -->
+    <x:String x:Key="IconImagenes">&#xe3f4;</x:String>
+    <x:String x:Key="IconGaleria">&#xe413;</x:String>
+    <x:String x:Key="IconFlecha">&#xe5c8;</x:String>
+    <x:String x:Key="IconCheck">&#xe5ca;</x:String>
+    <x:String x:Key="IconCancelar">&#xe14c;</x:String>
+
+</ResourceDictionary>

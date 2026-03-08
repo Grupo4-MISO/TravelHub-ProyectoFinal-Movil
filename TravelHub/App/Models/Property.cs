@@ -12,7 +12,7 @@ public class Property
     public decimal PricePerNight { get; set; }
     public string ImageUrl { get; set; } = string.Empty;
     public List<string> ImageUrls { get; set; } = [];
-    public List<string> Amenities { get; set; } = [];
+    public List<Amenity> Amenities { get; set; } = [];
     public bool IsAvailable { get; set; } = true;
     public List<Room> Rooms { get; set; } = [];
     public List<Review> Reviews { get; set; } = [];
@@ -27,4 +27,11 @@ public class Review
     public double Rating { get; set; }
     public string Comment { get; set; } = string.Empty;
     public DateTime Date { get; set; }
+}
+
+public class Amenity
+{
+    public int Id { get; set; } 
+    public string Name { get; set; } = string.Empty;
+    public string Icon { get; set; } = string.Empty;
 }

@@ -4,8 +4,12 @@ namespace App.Services;
 
 public class MockDataService
 {
+    private static List<Amenity>? _cachedAmenities;
+
     public static List<Property> GetFeaturedProperties()
     {
+        var amenities = GetAmenities();
+
         return
         [
             new Property
@@ -25,7 +29,7 @@ public class MockDataService
                     "https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800",
                     "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800"
                 ],
-                Amenities = ["WiFi", "Piscina", "Spa", "Restaurante", "Gym", "Playa Privada"],
+                Amenities = GetAmenitiesByNames(amenities, ["WiFi", "Piscina", "Spa", "Restaurante", "Gimnasio", "Playa Privada"]),
                 PropertyType = "Resort",
                 Latitude = 10.4103,
                 Longitude = -75.5185,
@@ -49,7 +53,7 @@ public class MockDataService
                     "https://images.unsplash.com/photo-1590490360182-c33d57733427?w=800",
                     "https://images.unsplash.com/photo-1584132967334-10e028bd69f7?w=800"
                 ],
-                Amenities = ["WiFi", "Desayuno", "Bar", "Room Service", "Terraza"],
+                Amenities = GetAmenitiesByNames(amenities, ["WiFi", "Desayuno", "Bar", "Room Service", "Terraza"]),
                 PropertyType = "Boutique",
                 Latitude = 4.5964,
                 Longitude = -74.0733,
@@ -73,7 +77,7 @@ public class MockDataService
                     "https://images.unsplash.com/photo-1445019980597-93fa8acb246c?w=800",
                     "https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=800"
                 ],
-                Amenities = ["WiFi", "Todo Incluido", "Piscina", "Kids Club", "Spa", "Playa", "Snorkel"],
+                Amenities = GetAmenitiesByNames(amenities, ["WiFi", "Todo Incluido", "Piscina", "Kids Club", "Spa", "Playa", "Snorkel"]),
                 PropertyType = "Resort",
                 Latitude = 12.5567,
                 Longitude = -81.7185,
@@ -97,7 +101,7 @@ public class MockDataService
                     "https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?w=800",
                     "https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=800"
                 ],
-                Amenities = ["WiFi", "Piscina", "Spa", "Restaurante", "Gym", "Business Center"],
+                Amenities = GetAmenitiesByNames(amenities, ["WiFi", "Piscina", "Spa", "Restaurante", "Gimnasio", "Business Center"]),
                 PropertyType = "Hotel",
                 Latitude = 6.2086,
                 Longitude = -75.5709,
@@ -121,7 +125,7 @@ public class MockDataService
                     "https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800",
                     "https://images.unsplash.com/photo-1595576508898-0ad5c879a061?w=800"
                 ],
-                Amenities = ["WiFi", "Desayuno", "Chimenea", "Jardin", "Estacionamiento", "Restaurante"],
+                Amenities = GetAmenitiesByNames(amenities, ["WiFi", "Desayuno", "Chimenea", "Jardin", "Estacionamiento", "Restaurante"]),
                 PropertyType = "Ecohotel",
                 Latitude = 5.6342,
                 Longitude = -73.5243,
@@ -145,7 +149,7 @@ public class MockDataService
                     "https://images.unsplash.com/photo-1590490360182-c33d57733427?w=800",
                     "https://images.unsplash.com/photo-1584132967334-10e028bd69f7?w=800"
                 ],
-                Amenities = ["WiFi", "Piscina", "Gym", "Restaurante", "Business Center", "Estacionamiento"],
+                Amenities = GetAmenitiesByNames(amenities, ["WiFi", "Piscina", "Gimnasio", "Restaurante", "Business Center", "Estacionamiento"]),
                 PropertyType = "Hotel",
                 Latitude = 3.4516,
                 Longitude = -76.5320,
@@ -169,7 +173,7 @@ public class MockDataService
                     "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=800",
                     "https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=800"
                 ],
-                Amenities = ["WiFi", "Piscina", "Spa", "Tour Cafetero", "Restaurante", "Senderismo"],
+                Amenities = GetAmenitiesByNames(amenities, ["WiFi", "Piscina", "Spa", "Tour Cafetero", "Restaurante", "Senderismo"]),
                 PropertyType = "Resort",
                 Latitude = 4.8087,
                 Longitude = -75.7348,
@@ -193,7 +197,7 @@ public class MockDataService
                     "https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?w=800",
                     "https://images.unsplash.com/photo-1595576508898-0ad5c879a061?w=800"
                 ],
-                Amenities = ["WiFi", "Piscina", "Gym", "Restaurante", "Bar", "Estacionamiento"],
+                Amenities = GetAmenitiesByNames(amenities, ["WiFi", "Piscina", "Gimnasio", "Restaurante", "Bar", "Estacionamiento"]),
                 PropertyType = "Hotel",
                 Latitude = 10.9878,
                 Longitude = -74.7889,
@@ -340,5 +344,47 @@ public class MockDataService
             DocumentType = "CC",
             DocumentNumber = "1090388345"
         };
+    }
+
+    public static List<Amenity> GetAmenities()
+    {
+        if (_cachedAmenities != null)
+            return _cachedAmenities;
+
+        _cachedAmenities =
+        [
+            new Amenity { Id = 1, Name = "WiFi", Icon = "IconWiFi" },
+            new Amenity { Id = 2, Name = "Desayuno", Icon = "IconDesayuno" },
+            new Amenity { Id = 3, Name = "Estacionamiento", Icon = "IconEstacionamiento" },
+            new Amenity { Id = 4, Name = "Piscina", Icon = "IconPiscina" },
+            new Amenity { Id = 5, Name = "Gimnasio", Icon = "IconGimnasio" },
+            new Amenity { Id = 6, Name = "Room Service", Icon = "IconRoomService" },
+            new Amenity { Id = 7, Name = "Spa", Icon = "IconSpa" },
+            new Amenity { Id = 8, Name = "Restaurante", Icon = "IconRestaurante" },
+            new Amenity { Id = 9, Name = "Playa Privada", Icon = "IconPlayaPrivada" },
+            new Amenity { Id = 10, Name = "Bar", Icon = "IconBar" },
+            new Amenity { Id = 11, Name = "Terraza", Icon = "IconTerraza" },
+            new Amenity { Id = 12, Name = "Todo Incluido", Icon = "IconTodoIncluido" },
+            new Amenity { Id = 13, Name = "Kids Club", Icon = "IconKidsClub" },
+            new Amenity { Id = 14, Name = "Playa", Icon = "IconPlaya" },
+            new Amenity { Id = 15, Name = "Snorkel", Icon = "IconSnorkel" },
+            new Amenity { Id = 16, Name = "Business Center", Icon = "IconBusinessCenter" },
+            new Amenity { Id = 17, Name = "Chimenea", Icon = "IconChimenea" },
+            new Amenity { Id = 18, Name = "Jardin", Icon = "IconJardin" },
+            new Amenity { Id = 19, Name = "Tour Cafetero", Icon = "IconTourCafetero" },
+            new Amenity { Id = 20, Name = "Senderismo", Icon = "IconSenderismo" }
+        ];
+
+        return _cachedAmenities;
+    }
+
+    /// <summary>
+    /// Método auxiliar para obtener amenidades por nombre
+    /// </summary>
+    private static List<Amenity> GetAmenitiesByNames(List<Amenity> allAmenities, string[] names)
+    {
+        return allAmenities
+            .Where(a => names.Contains(a.Name, StringComparer.OrdinalIgnoreCase))
+            .ToList();
     }
 }

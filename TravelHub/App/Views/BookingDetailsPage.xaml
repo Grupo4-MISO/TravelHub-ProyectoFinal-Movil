@@ -1,0 +1,305 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:App.ViewModels"
+             x:Class="App.Views.BookingDetailsPage"
+             Title="Detalle de Reserva">
+
+    <ContentPage.BindingContext>
+        <vm:BookingDetailsViewModel />
+    </ContentPage.BindingContext>
+
+    <Grid RowDefinitions="*,Auto" BackgroundColor="{StaticResource Background}">
+        <ScrollView Grid.Row="0">
+            <VerticalStackLayout Padding="16" Spacing="12">
+
+                <!-- CA1 & CA2: Información General de la Reserva -->
+                <Border Padding="16"
+                        BackgroundColor="{StaticResource Surface}"
+                        StrokeShape="RoundRectangle 12"
+                        Stroke="{StaticResource Gray100}">
+                    <VerticalStackLayout Spacing="10">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Text="{Binding BookingNumber, StringFormat='Reserva #{0}'}"
+                                   Style="{StaticResource Title}" />
+                            <Border Grid.Column="1"
+                                    Padding="10,4"
+                                    BackgroundColor="{Binding StatusColor}"
+                                    StrokeShape="RoundRectangle 8"
+                                    StrokeThickness="0">
+                                <Label Text="{Binding BookingStatus}"
+                                       TextColor="{StaticResource White}"
+                                       FontFamily="OpenSansSemibold"
+                                       FontSize="12" />
+                            </Border>
+                        </Grid>
+                        <BoxView HeightRequest="1" Color="{StaticResource Gray200}" Margin="0,4" />
+
+                        <!-- Fechas -->
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                            <VerticalStackLayout>
+                                <Label Text="Check-in" Style="{StaticResource Caption}" />
+                                <Label Text="{Binding CheckIn, StringFormat='{0:dd/MM/yyyy}'}"
+                                       FontFamily="OpenSansSemibold" FontSize="16" />
+                                <Label Text="{Binding CheckIn, StringFormat='{0:HH:mm}'}"
+                                       Style="{StaticResource Subtitle}" FontSize="12" />
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Column="1">
+                                <Label Text="Check-out" Style="{StaticResource Caption}" />
+                                <Label Text="{Binding CheckOut, StringFormat='{0:dd/MM/yyyy}'}"
+                                       FontFamily="OpenSansSemibold" FontSize="16" />
+                                <Label Text="{Binding CheckOut, StringFormat='{0:HH:mm}'}"
+                                       Style="{StaticResource Subtitle}" FontSize="12" />
+                            </VerticalStackLayout>
+                        </Grid>
+
+                        <!-- Huéspedes y Habitación -->
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,4,0,0">
+                            <VerticalStackLayout>
+                                <Label Text="Huéspedes" Style="{StaticResource Caption}" />
+                                <Label Text="{Binding GuestsCount, StringFormat='{0} personas'}"
+                                       FontFamily="OpenSansSemibold" FontSize="15" />
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Column="1">
+                                <Label Text="Habitación" Style="{StaticResource Caption}" />
+                                <Label Text="{Binding RoomType}"
+                                       FontFamily="OpenSansSemibold" FontSize="15" />
+                            </VerticalStackLayout>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- CA3: Información del Hotel -->
+                <Border Padding="16"
+                        BackgroundColor="{StaticResource Surface}"
+                        StrokeShape="RoundRectangle 12"
+                        Stroke="{StaticResource Gray100}">
+                    <Grid ColumnDefinitions="80,*" ColumnSpacing="12">
+                        <Image Source="{Binding Hotel.ImageUrl}"
+                               WidthRequest="80" HeightRequest="80"
+                               Aspect="AspectFill">
+                            <Image.Clip>
+                                <RoundRectangleGeometry CornerRadius="8" Rect="0,0,80,80" />
+                            </Image.Clip>
+                        </Image>
+                        <VerticalStackLayout Grid.Column="1" Spacing="4" VerticalOptions="Center">
+                            <Label Text="{Binding Hotel.Name}"
+                                   FontFamily="OpenSansSemibold" FontSize="17" />
+                            <Label Text="{Binding Hotel.Address}" 
+                                   Style="{StaticResource Subtitle}" FontSize="13" />
+                            <Label Text="{Binding Hotel.City}"
+                                   Style="{StaticResource Subtitle}" FontSize="13" />
+                            <HorizontalStackLayout Spacing="4" Margin="0,2,0,0">
+                                <Image  Source="ic_phone.png" 
+                                       WidthRequest="16" HeightRequest="16" />
+                                <Label Text="{Binding Hotel.Phone}"
+                                       Style="{StaticResource Subtitle}" FontSize="12" />
+                            </HorizontalStackLayout>
+                        </VerticalStackLayout>
+                    </Grid>
+                </Border>
+
+                <!-- CA4: Servicios Incluidos -->
+                <Border Padding="16"
+                        BackgroundColor="{StaticResource Surface}"
+                        StrokeShape="RoundRectangle 12"
+                        Stroke="{StaticResource Gray100}">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="Servicios Incluidos" Style="{StaticResource Title}" />
+                        <FlexLayout Wrap="Wrap" 
+                                    JustifyContent="Start"
+                                    AlignItems="Start"
+                                    BindableLayout.ItemsSource="{Binding IncludedServices}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Padding="10,6"
+                                            Margin="0,0,8,8"
+                                            BackgroundColor="{StaticResource Background}"
+                                            StrokeShape="RoundRectangle 8"
+                                            Stroke="{StaticResource Gray200}">
+                                        <HorizontalStackLayout Spacing="6">
+                                            <Image Style="{StaticResource IconImageSmall}">
+                                                <Image.Source>
+                                                    <FontImageSource
+                                                        Glyph="{Binding Icon, Converter={StaticResource IconKeyToGlyph}}"
+                                                        FontFamily="MaterialSymbols"
+                                                        Size="18"
+                                                        Color="{StaticResource Primary}" />
+                                                </Image.Source>
+                                            </Image>
+                                            <Label Text="{Binding Name}"
+                                                   FontFamily="OpenSansRegular"
+                                                   FontSize="13"
+                                                   VerticalTextAlignment="Center" />
+                                        </HorizontalStackLayout>
+                                    </Border>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </FlexLayout>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- CA5: Información Económica -->
+                <Border Padding="16"
+                        BackgroundColor="{StaticResource Surface}"
+                        StrokeShape="RoundRectangle 12"
+                        Stroke="{StaticResource Gray100}">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Información de Pago" Style="{StaticResource Title}" />
+
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Text="Precio por noche"
+                                   Style="{StaticResource Subtitle}" />
+                            <Label Grid.Column="1"
+                                   Text="{Binding PricePerNight, StringFormat='{0:C}'}"
+                                   FontFamily="OpenSansSemibold" />
+                        </Grid>
+
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Text="{Binding Nights, StringFormat='x {0} noche(s)'}"
+                                   Style="{StaticResource Subtitle}" />
+                            <Label Grid.Column="1"
+                                   Text="{Binding SubTotal, StringFormat='{0:C}'}"
+                                   FontFamily="OpenSansSemibold" />
+                        </Grid>
+
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Text="Impuestos y cargos"
+                                   Style="{StaticResource Subtitle}" />
+                            <Label Grid.Column="1"
+                                   Text="{Binding Taxes, StringFormat='{0:C}'}"
+                                   FontFamily="OpenSansSemibold" />
+                        </Grid>
+
+                        <BoxView HeightRequest="1" Color="{StaticResource Gray200}" Margin="0,4" />
+
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Text="Total"
+                                   FontFamily="OpenSansSemibold" FontSize="18" />
+                            <Label Grid.Column="1"
+                                   Text="{Binding TotalPrice, StringFormat='{0:C}'}"
+                                   Style="{StaticResource Price}" />
+                        </Grid>
+
+                        <Label Text="{Binding Currency, StringFormat='Moneda: {0}'}"
+                               Style="{StaticResource Caption}" />
+
+                        <Border Padding="12,8"
+                                BackgroundColor="{StaticResource Background}"
+                                StrokeShape="RoundRectangle 8"
+                                Stroke="{StaticResource Gray200}"
+                                Margin="0,4,0,0">
+                            <VerticalStackLayout Spacing="2">
+                                <Label Text="Estado del pago" 
+                                       Style="{StaticResource Caption}" FontSize="12" />
+                                <Label Text="{Binding PaymentInfo}"
+                                       FontFamily="OpenSansSemibold"
+                                       TextColor="{StaticResource Success}"
+                                       FontSize="14" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- CA6: Descarga de Documentos -->
+                <Border Padding="16"
+                        BackgroundColor="{StaticResource Surface}"
+                        StrokeShape="RoundRectangle 12"
+                        Stroke="{StaticResource Gray100}">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="Documentos de la Reserva" Style="{StaticResource Title}" />
+
+                        <Button Text="Descargar Voucher"
+                                Command="{Binding DownloadVoucherCommand}"
+                                Style="{StaticResource OutlineButton}"
+                                HorizontalOptions="Fill" />
+
+                        <Button Text="Descargar Confirmación"
+                                Command="{Binding DownloadConfirmationCommand}"
+                                Style="{StaticResource OutlineButton}"
+                                HorizontalOptions="Fill" />
+
+                        <Button Text="Descargar Factura"
+                                Command="{Binding DownloadInvoiceCommand}"
+                                Style="{StaticResource OutlineButton}"
+                                HorizontalOptions="Fill"
+                                IsVisible="{Binding HasInvoice}" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- CA8: Contacto con el Hotel -->
+                <Border Padding="16"
+                        BackgroundColor="{StaticResource Surface}"
+                        StrokeShape="RoundRectangle 12"
+                        Stroke="{StaticResource Gray100}">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="Contactar al Hotel" Style="{StaticResource Title}" />
+
+                        <Button Command="{Binding CallHotelCommand}"
+                                Style="{StaticResource OutlineButton}"
+                                HorizontalOptions="Fill">
+                            <Button.ImageSource>
+                                <FontImageSource FontFamily="MaterialIcons"
+                                                 Glyph="Call"
+                                                 Color="{StaticResource Primary}" />
+                            </Button.ImageSource>
+                            <Button.Text>
+                                <Binding Path="Hotel.Phone" StringFormat="Llamar: {0}" />
+                            </Button.Text>
+                        </Button>
+
+                        <Button Command="{Binding EmailHotelCommand}"
+                                Style="{StaticResource OutlineButton}"
+                                HorizontalOptions="Fill">
+                            <Button.ImageSource>
+                                <FontImageSource FontFamily="MaterialIcons"
+                                                 Glyph="✉Email"
+                                                 Color="{StaticResource Primary}" />
+                            </Button.ImageSource>
+                            <Button.Text>
+                                <Binding Path="Hotel.Email" StringFormat="Email: {0}" />
+                            </Button.Text>
+                        </Button>
+
+                        <Border Padding="12"
+                                BackgroundColor="{StaticResource Background}"
+                                StrokeShape="RoundRectangle 8"
+                                Stroke="{StaticResource Gray200}">
+                            <VerticalStackLayout Spacing="4">
+                                <Label Text="Dirección" 
+                                       FontFamily="OpenSansSemibold"
+                                       FontSize="14" />
+                                <Label Text="{Binding Hotel.FullAddress}"
+                                       Style="{StaticResource Subtitle}" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </VerticalStackLayout>
+                </Border>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- CA7: Opciones de Gestión -->
+        <Border Grid.Row="1" 
+                Padding="16,12"
+                BackgroundColor="{StaticResource Surface}"
+                Stroke="{StaticResource Gray100}">
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                <Button Grid.Column="0"
+                        Text="Modificar"
+                        Command="{Binding ModifyBookingCommand}"
+                        Style="{StaticResource OutlineButton}"
+                        IsVisible="{Binding CanModify}"
+                        HorizontalOptions="Fill" />
+                <Button Grid.Column="1"
+                        Text="Cancelar Reserva"
+                        Command="{Binding CancelBookingCommand}"
+                        Style="{StaticResource OutlineButton}"
+                        TextColor="{StaticResource Error}"
+                        BorderColor="{StaticResource Error}"
+                        IsVisible="{Binding CanCancel}"
+                        HorizontalOptions="Fill" />
+            </Grid>
+        </Border>
+    </Grid>
+</ContentPage>
