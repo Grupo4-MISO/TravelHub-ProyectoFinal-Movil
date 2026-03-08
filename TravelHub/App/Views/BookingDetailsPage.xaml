@@ -2,12 +2,15 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:App.ViewModels"
+             xmlns:models="clr-namespace:App.Models"
+             xmlns:converters="clr-namespace:App.Converters"
              x:Class="App.Views.BookingDetailsPage"
+             x:DataType="vm:BookingDetailsViewModel"
              Title="Detalle de Reserva">
 
-    <ContentPage.BindingContext>
-        <vm:BookingDetailsViewModel />
-    </ContentPage.BindingContext>
+    <ContentPage.Resources>
+        <converters:IconKeyToGlyphConverter x:Key="IconKeyToGlyph" />
+    </ContentPage.Resources>
 
     <Grid RowDefinitions="*,Auto" BackgroundColor="{StaticResource Background}">
         <ScrollView Grid.Row="0">
@@ -90,8 +93,15 @@
                             <Label Text="{Binding Hotel.City}"
                                    Style="{StaticResource Subtitle}" FontSize="13" />
                             <HorizontalStackLayout Spacing="4" Margin="0,2,0,0">
-                                <Image  Source="ic_phone.png" 
-                                       WidthRequest="16" HeightRequest="16" />
+                                <Image Style="{StaticResource IconImageSmall}">
+                                    <Image.Source>
+                                        <FontImageSource
+                                            Glyph="{StaticResource IconTelefono}"
+                                            FontFamily="MaterialSymbols"
+                                            Size="16"
+                                            Color="{StaticResource TextSecondary}" />
+                                    </Image.Source>
+                                </Image>
                                 <Label Text="{Binding Hotel.Phone}"
                                        Style="{StaticResource Subtitle}" FontSize="12" />
                             </HorizontalStackLayout>
@@ -111,7 +121,7 @@
                                     AlignItems="Start"
                                     BindableLayout.ItemsSource="{Binding IncludedServices}">
                             <BindableLayout.ItemTemplate>
-                                <DataTemplate>
+                                <DataTemplate x:DataType="models:Amenity">
                                     <Border Padding="10,6"
                                             Margin="0,0,8,8"
                                             BackgroundColor="{StaticResource Background}"
@@ -209,21 +219,45 @@
                     <VerticalStackLayout Spacing="10">
                         <Label Text="Documentos de la Reserva" Style="{StaticResource Title}" />
 
-                        <Button Text="Descargar Voucher"
-                                Command="{Binding DownloadVoucherCommand}"
+                        <!--<Button Command="{Binding DownloadVoucherCommand}"
                                 Style="{StaticResource OutlineButton}"
-                                HorizontalOptions="Fill" />
+                                HorizontalOptions="Fill">
+                            <Button.ImageSource>
+                                <FontImageSource
+                                    Glyph="{StaticResource IconVoucher}"
+                                    FontFamily="MaterialSymbols"
+                                    Size="20"
+                                    Color="{StaticResource Primary}" />
+                            </Button.ImageSource>
+                            <Button.Text>Descargar Voucher</Button.Text>
+                        </Button>-->
 
-                        <Button Text="Descargar Confirmación"
-                                Command="{Binding DownloadConfirmationCommand}"
+                        <Button Command="{Binding DownloadConfirmationCommand}"
                                 Style="{StaticResource OutlineButton}"
-                                HorizontalOptions="Fill" />
+                                HorizontalOptions="Fill">
+                            <Button.ImageSource>
+                                <FontImageSource
+                                    Glyph="{StaticResource IconConfirmacion}"
+                                    FontFamily="MaterialSymbols"
+                                    Size="20"
+                                    Color="{StaticResource Primary}" />
+                            </Button.ImageSource>
+                            <Button.Text>Descargar Confirmación</Button.Text>
+                        </Button>
 
-                        <Button Text="Descargar Factura"
-                                Command="{Binding DownloadInvoiceCommand}"
+                        <Button Command="{Binding DownloadInvoiceCommand}"
                                 Style="{StaticResource OutlineButton}"
                                 HorizontalOptions="Fill"
-                                IsVisible="{Binding HasInvoice}" />
+                                IsVisible="{Binding HasInvoice}">
+                            <Button.ImageSource>
+                                <FontImageSource
+                                    Glyph="{StaticResource IconFactura}"
+                                    FontFamily="MaterialSymbols"
+                                    Size="20"
+                                    Color="{StaticResource Primary}" />
+                            </Button.ImageSource>
+                            <Button.Text>Descargar Factura</Button.Text>
+                        </Button>
                     </VerticalStackLayout>
                 </Border>
 
@@ -239,9 +273,11 @@
                                 Style="{StaticResource OutlineButton}"
                                 HorizontalOptions="Fill">
                             <Button.ImageSource>
-                                <FontImageSource FontFamily="MaterialIcons"
-                                                 Glyph="Call"
-                                                 Color="{StaticResource Primary}" />
+                                <FontImageSource
+                                    Glyph="{StaticResource IconLlamar}"
+                                    FontFamily="MaterialSymbols"
+                                    Size="20"
+                                    Color="{StaticResource Primary}" />
                             </Button.ImageSource>
                             <Button.Text>
                                 <Binding Path="Hotel.Phone" StringFormat="Llamar: {0}" />
@@ -252,9 +288,11 @@
                                 Style="{StaticResource OutlineButton}"
                                 HorizontalOptions="Fill">
                             <Button.ImageSource>
-                                <FontImageSource FontFamily="MaterialIcons"
-                                                 Glyph="✉Email"
-                                                 Color="{StaticResource Primary}" />
+                                <FontImageSource
+                                    Glyph="{StaticResource IconEmail}"
+                                    FontFamily="MaterialSymbols"
+                                    Size="20"
+                                    Color="{StaticResource Primary}" />
                             </Button.ImageSource>
                             <Button.Text>
                                 <Binding Path="Hotel.Email" StringFormat="Email: {0}" />
@@ -265,13 +303,24 @@
                                 BackgroundColor="{StaticResource Background}"
                                 StrokeShape="RoundRectangle 8"
                                 Stroke="{StaticResource Gray200}">
-                            <VerticalStackLayout Spacing="4">
-                                <Label Text="Dirección" 
-                                       FontFamily="OpenSansSemibold"
-                                       FontSize="14" />
-                                <Label Text="{Binding Hotel.FullAddress}"
-                                       Style="{StaticResource Subtitle}" />
-                            </VerticalStackLayout>
+                            <HorizontalStackLayout Spacing="8">
+                                <Image Style="{StaticResource IconImageSmall}">
+                                    <Image.Source>
+                                        <FontImageSource
+                                            Glyph="{StaticResource IconUbicacion}"
+                                            FontFamily="MaterialSymbols"
+                                            Size="18"
+                                            Color="{StaticResource Primary}" />
+                                    </Image.Source>
+                                </Image>
+                                <VerticalStackLayout Spacing="4">
+                                    <Label Text="Dirección" 
+                                           FontFamily="OpenSansSemibold"
+                                           FontSize="14" />
+                                    <Label Text="{Binding Hotel.FullAddress}"
+                                           Style="{StaticResource Subtitle}" />
+                                </VerticalStackLayout>
+                            </HorizontalStackLayout>
                         </Border>
                     </VerticalStackLayout>
                 </Border>
