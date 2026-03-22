@@ -13,8 +13,6 @@
         <ScrollView Grid.Row="0">
             <VerticalStackLayout Padding="16" Spacing="12">
 
-                <Label Text="Resumen de tu Reserva" Style="{StaticResource Headline}" FontSize="22" />
-
                 <!-- Propiedad -->
                 <Border Padding="14"
                         BackgroundColor="{StaticResource Surface}"

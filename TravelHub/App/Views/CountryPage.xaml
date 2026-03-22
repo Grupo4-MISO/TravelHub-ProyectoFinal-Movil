@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:App.ViewModels"
              xmlns:models="clr-namespace:App.ViewModels"
+             xmlns:icons="clr-namespace:App.Resources.Styles"
              x:Class="App.Views.CountryPage"
              Title="Seleccionar Pais">
     
@@ -16,9 +17,9 @@
         <VerticalStackLayout Grid.Row="0" 
                             Padding="16" 
                             BackgroundColor="{StaticResource Surface}">
-            <Label Text="Elige tu país" 
+            <!--<Label Text="Elige tu país" 
                    Style="{StaticResource Headline}" 
-                   FontSize="24" />
+                   FontSize="24" />-->
             <Label Text="Selecciona el país donde deseas buscar hospedajes" 
                    Style="{StaticResource Subtitle}"
                    Margin="0,4,0,0" />
@@ -62,12 +63,19 @@
                             </VerticalStackLayout>
                             
                             <!-- Indicador de selección -->
-                            <Label Grid.Column="2"
-                                   Text="->"
-                                   FontSize="24"
-                                   TextColor="{StaticResource Primary}"
+                            <Image Grid.Column="2"
+                                   WidthRequest="28"
+                                   HeightRequest="28"
                                    IsVisible="{Binding IsSelected}"
-                                   VerticalOptions="Center" />
+                                   VerticalOptions="Center">
+                                <Image.Source>
+                                    <FontImageSource
+                                        Glyph="{x:Static icons:Icons.Check}"
+                                        FontFamily="MaterialSymbols"
+                                        Size="28"
+                                        Color="{StaticResource Primary}" />
+                                </Image.Source>
+                            </Image>
                         </Grid>
                     </Border>
                 </DataTemplate>

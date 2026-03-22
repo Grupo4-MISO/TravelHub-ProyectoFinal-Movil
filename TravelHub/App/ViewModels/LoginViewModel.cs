@@ -1,3 +1,4 @@
+using App.Views;
 using System.Windows.Input;
 
 namespace App.ViewModels;
@@ -36,12 +37,14 @@ public class LoginViewModel : BaseViewModel
             return;
         }
 
+        IsBusy = true;
+
         // Mock login - navigate to account
         await Shell.Current.GoToAsync("//account");
     }
 
     private async void OnRegister()
     {
-        await Shell.Current.DisplayAlert("Registro", "Funcion de registro proximamente.", "OK");
+        await Shell.Current.GoToAsync(nameof(RegisterPage));
     }
 }

@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:App.ViewModels"
+             xmlns:icons="clr-namespace:App.Resources.Styles"
+             xmlns:behaviors="clr-namespace:App.Behaviors"
+             x:Class="App.Views.RegisterPage"
+             Title="{Binding Title}"
+             Shell.NavBarIsVisible="False">
+    
+    <ContentPage.BindingContext>
+        <vm:RegisterViewModel />
+    </ContentPage.BindingContext>
+    
+    <ScrollView BackgroundColor="{StaticResource Background}">
+        <VerticalStackLayout Padding="32" Spacing="20"
+                             VerticalOptions="Center">
+
+            <!-- Logo / Titulo -->
+            <VerticalStackLayout Spacing="8" HorizontalOptions="Center" Margin="0,20,0,20">
+                <Image Source="travelhub.png" 
+                       Aspect="AspectFit"
+                       HeightRequest="40" />
+                <Label Text="Crear Cuenta"
+                       Style="{StaticResource Headline}"
+                       FontSize="28"
+                       HorizontalTextAlignment="Center" />
+                <Label Text="Completa tus datos para registrarte"
+                       Style="{StaticResource Subtitle}"
+                       HorizontalTextAlignment="Center" />
+            </VerticalStackLayout>
+
+            <!-- Formulario -->
+            <Border Padding="20"
+                    BackgroundColor="{StaticResource Surface}"
+                    StrokeShape="RoundRectangle 16"
+                    Stroke="{StaticResource Gray100}">
+                <Border.Shadow>
+                    <Shadow Brush="#15000000" Offset="0,3" Radius="10" />
+                </Border.Shadow>
+                <VerticalStackLayout Spacing="16">
+                    
+                    <!-- Nombre -->
+                    <VerticalStackLayout Spacing="4">
+                        <Label Text="Nombre" Style="{StaticResource Caption}" />
+                        <Border Padding="12,0"
+                                BackgroundColor="{StaticResource Background}"
+                                StrokeShape="RoundRectangle 10"
+                                Stroke="{StaticResource Gray200}">
+                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                                <Image Grid.Column="0" 
+                                       WidthRequest="20" 
+                                       HeightRequest="20"
+                                       VerticalOptions="Center">
+                                    <Image.Source>
+                                        <FontImageSource
+                                            Glyph="{x:Static icons:Icons.Persona}"
+                                            FontFamily="MaterialSymbols"
+                                            Size="20"
+                                            Color="{StaticResource Gray400}" />
+                                    </Image.Source>
+                                </Image>
+                                <Entry Grid.Column="1"
+                                       Placeholder="Tu nombre"
+                                       Text="{Binding FirstName}"
+                                       ClearButtonVisibility="WhileEditing" />
+                            </Grid>
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- Apellido -->
+                    <VerticalStackLayout Spacing="4">
+                        <Label Text="Apellido" Style="{StaticResource Caption}" />
+                        <Border Padding="12,0"
+                                BackgroundColor="{StaticResource Background}"
+                                StrokeShape="RoundRectangle 10"
+                                Stroke="{StaticResource Gray200}">
+                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                                <Image Grid.Column="0" 
+                                       WidthRequest="20" 
+                                       HeightRequest="20"
+                                       VerticalOptions="Center">
+                                    <Image.Source>
+                                        <FontImageSource
+                                            Glyph="{x:Static icons:Icons.Persona}"
+                                            FontFamily="MaterialSymbols"
+                                            Size="20"
+                                            Color="{StaticResource Gray400}" />
+                                    </Image.Source>
+                                </Image>
+                                <Entry Grid.Column="1"
+                                       Placeholder="Tu apellido"
+                                       Text="{Binding LastName}"
+                                       ClearButtonVisibility="WhileEditing" />
+                            </Grid>
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- Email -->
+                    <VerticalStackLayout Spacing="4">
+                        <Label Text="Email" Style="{StaticResource Caption}" />
+                        <Border Padding="12,0"
+                                BackgroundColor="{StaticResource Background}"
+                                StrokeShape="RoundRectangle 10"
+                                Stroke="{StaticResource Gray200}">
+                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                                <Image Grid.Column="0" 
+                                       WidthRequest="20" 
+                                       HeightRequest="20"
+                                       VerticalOptions="Center">
+                                    <Image.Source>
+                                        <FontImageSource
+                                            Glyph="{x:Static icons:Icons.Email}"
+                                            FontFamily="MaterialSymbols"
+                                            Size="20"
+                                            Color="{StaticResource Gray400}" />
+                                    </Image.Source>
+                                </Image>
+                                <Entry Grid.Column="1"
+                                       Placeholder="tucorreo@email.com"
+                                       Text="{Binding Email}"
+                                       Keyboard="Email"
+                                       ClearButtonVisibility="WhileEditing" />
+                            </Grid>
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- Telefono -->
+                    <VerticalStackLayout Spacing="4">
+                        <Label Text="Telefono" Style="{StaticResource Caption}" />
+                        <Border Padding="12,8"
+                                BackgroundColor="{StaticResource Background}"
+                                StrokeShape="RoundRectangle 10"
+                                Stroke="{StaticResource Gray200}">
+                            <Grid ColumnDefinitions="Auto,Auto,*" ColumnSpacing="8">
+                                <Label Grid.Column="0"
+                                       Text="{Binding CountryFlag}"
+                                       FontSize="20"
+                                       VerticalOptions="Center" />
+                                <Label Grid.Column="1"
+                                       Text="{Binding PhoneCode}"
+                                       FontFamily="OpenSansSemibold"
+                                       FontSize="14"
+                                       TextColor="{StaticResource TextPrimary}"
+                                       VerticalOptions="Center" />
+                                <Entry Grid.Column="2"
+                                       Placeholder="321 123 4567"
+                                       Text="{Binding PhoneNumber}"
+                                       Keyboard="Telephone"
+                                       MaxLength="20"
+                                       ClearButtonVisibility="WhileEditing">
+                                    <Entry.Behaviors>
+                                        <behaviors:PhoneNumberFormattingBehavior />
+                                    </Entry.Behaviors>
+                                </Entry>
+                            </Grid>
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- Contrasena -->
+                    <VerticalStackLayout Spacing="4">
+                        <Label Text="Contrasena" Style="{StaticResource Caption}" />
+                        <Border Padding="12,0"
+                                BackgroundColor="{StaticResource Background}"
+                                StrokeShape="RoundRectangle 10"
+                                Stroke="{StaticResource Gray200}">
+                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                                <Image Grid.Column="0" 
+                                       WidthRequest="20" 
+                                       HeightRequest="20"
+                                       VerticalOptions="Center">
+                                    <Image.Source>
+                                        <FontImageSource
+                                            Glyph="{x:Static icons:Icons.Llave}"
+                                            FontFamily="MaterialSymbols"
+                                            Size="20"
+                                            Color="{StaticResource Gray400}" />
+                                    </Image.Source>
+                                </Image>
+                                <Entry Grid.Column="1"
+                                       Placeholder="Minimo 6 caracteres"
+                                       Text="{Binding Password}"
+                                       IsPassword="True" />
+                            </Grid>
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- Confirmar Contrasena -->
+                    <VerticalStackLayout Spacing="4">
+                        <Label Text="Confirmar Contrasena" Style="{StaticResource Caption}" />
+                        <Border Padding="12,0"
+                                BackgroundColor="{StaticResource Background}"
+                                StrokeShape="RoundRectangle 10"
+                                Stroke="{StaticResource Gray200}">
+                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                                <Image Grid.Column="0" 
+                                       WidthRequest="20" 
+                                       HeightRequest="20"
+                                       VerticalOptions="Center">
+                                    <Image.Source>
+                                        <FontImageSource
+                                            Glyph="{x:Static icons:Icons.Llave}"
+                                            FontFamily="MaterialSymbols"
+                                            Size="20"
+                                            Color="{StaticResource Gray400}" />
+                                    </Image.Source>
+                                </Image>
+                                <Entry Grid.Column="1"
+                                       Placeholder="Repite tu contrasena"
+                                       Text="{Binding ConfirmPassword}"
+                                       IsPassword="True" />
+                            </Grid>
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- Terminos y condiciones -->
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8" Margin="0,4,0,0">
+                        <CheckBox Grid.Column="0" 
+                                  IsChecked="{Binding AcceptTerms}"
+                                  VerticalOptions="Start" />
+                        <Label Grid.Column="1" 
+                               VerticalTextAlignment="Center">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="Acepto los " 
+                                          Style="{StaticResource Caption}" />
+                                    <Span Text="terminos y condiciones" 
+                                          TextColor="{StaticResource Primary}"
+                                          FontFamily="OpenSansSemibold"
+                                          FontSize="13"
+                                          TextDecorations="Underline">
+                                        <Span.GestureRecognizers>
+                                            <TapGestureRecognizer 
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:RegisterViewModel}}, Path=GoToTermsCommand}" />
+                                        </Span.GestureRecognizers>
+                                    </Span>
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+                    </Grid>
+
+                    <!-- Boton Registrarse -->
+                    <Button Text="Registrarse"
+                            Command="{Binding RegisterCommand}"
+                            HorizontalOptions="Fill"
+                            Margin="0,8,0,0" />
+
+                    <!-- Link a Login -->
+                    <HorizontalStackLayout Spacing="4" HorizontalOptions="Center">
+                        <Label Text="Ya tienes cuenta?"
+                               Style="{StaticResource Caption}"
+                               VerticalTextAlignment="Center" />
+                        <Label Text="Inicia sesion"
+                               TextColor="{StaticResource Primary}"
+                               FontFamily="OpenSansSemibold"
+                               FontSize="13"
+                               VerticalTextAlignment="Center">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding GoToLoginCommand}" />
+                            </Label.GestureRecognizers>
+                        </Label>
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </Border>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
