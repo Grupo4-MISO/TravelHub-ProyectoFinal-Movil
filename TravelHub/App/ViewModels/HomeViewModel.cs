@@ -2,11 +2,14 @@ using System.Collections.ObjectModel;
 using System.Windows.Input;
 using App.Models;
 using App.Services;
+using App.Services.Interfaces;
 
 namespace App.ViewModels;
 
 public class HomeViewModel : BaseViewModel
 {
+    private readonly ICountryService _countryService;
+
     public ObservableCollection<string> PromotionalImages { get; } = [];
     public ObservableCollection<Property> FeaturedProperties { get; } = [];
     public ObservableCollection<string> PopularCities { get; } = [];
@@ -25,7 +28,9 @@ public class HomeViewModel : BaseViewModel
         set
         {
             if (SetProperty(ref _checkInDate, value) && value >= _checkOutDate)
+            {
                 CheckOutDate = value.AddDays(1);
+            }
         }
     }
 
@@ -40,21 +45,39 @@ public class HomeViewModel : BaseViewModel
     public int Adults
     {
         get => _adults;
-        set { if (SetProperty(ref _adults, value)) OnPropertyChanged(nameof(GuestSummary)); }
+        set
+        {
+            if (SetProperty(ref _adults, value))
+            {
+                OnPropertyChanged(nameof(GuestSummary));
+            }
+        }
     }
 
-    private int _children = 0;
+    private int _children;
     public int Children
     {
         get => _children;
-        set { if (SetProperty(ref _children, value)) OnPropertyChanged(nameof(GuestSummary)); }
+        set
+        {
+            if (SetProperty(ref _children, value))
+            {
+                OnPropertyChanged(nameof(GuestSummary));
+            }
+        }
     }
 
     private int _rooms = 1;
     public int Rooms
     {
         get => _rooms;
-        set { if (SetProperty(ref _rooms, value)) OnPropertyChanged(nameof(GuestSummary)); }
+        set
+        {
+            if (SetProperty(ref _rooms, value))
+            {
+                OnPropertyChanged(nameof(GuestSummary));
+            }
+        }
     }
 
     private bool _isGuestConfigVisible;
@@ -62,6 +85,13 @@ public class HomeViewModel : BaseViewModel
     {
         get => _isGuestConfigVisible;
         set => SetProperty(ref _isGuestConfigVisible, value);
+    }
+
+    private string _popularCitiesErrorMessage = string.Empty;
+    public string PopularCitiesErrorMessage
+    {
+        get => _popularCitiesErrorMessage;
+        set => SetProperty(ref _popularCitiesErrorMessage, value);
     }
 
     public string GuestSummary
@@ -90,52 +120,69 @@ public class HomeViewModel : BaseViewModel
     public ICommand IncrementRoomsCommand { get; }
     public ICommand DecrementRoomsCommand { get; }
 
-    public HomeViewModel()
+    public HomeViewModel(ICountryService countryService)
     {
+        _countryService = countryService ?? throw new ArgumentNullException(nameof(countryService));
         Title = "TravelHub";
 
         SearchCommand = new Command(OnSearch);
         PropertySelectedCommand = new Command<Property>(OnPropertySelected);
         ToggleGuestConfigCommand = new Command(() => IsGuestConfigVisible = !IsGuestConfigVisible);
         IncrementAdultsCommand = new Command(() => Adults++);
-        DecrementAdultsCommand = new Command(() => { if (Adults > 1) Adults--; });
+        DecrementAdultsCommand = new Command(() => { if (Adults > 1) { Adults--; } });
         IncrementChildrenCommand = new Command(() => Children++);
-        DecrementChildrenCommand = new Command(() => { if (Children > 0) Children--; });
+        DecrementChildrenCommand = new Command(() => { if (Children > 0) { Children--; } });
         IncrementRoomsCommand = new Command(() => Rooms++);
-        DecrementRoomsCommand = new Command(() => { if (Rooms > 1) Rooms--; });
+        DecrementRoomsCommand = new Command(() => { if (Rooms > 1) { Rooms--; } });
 
-        LoadData();
-        // Suscribirse a cambios de país
+        _ = LoadDataAsync();
         AppSettingsService.Instance.CountryChanged += OnCountryChanged;
     }
 
-    private void LoadData()
+    private async Task LoadDataAsync()
     {
         var currentCountryCode = AppSettingsService.Instance.CurrentCountryCode;
-        // Cargar propiedades del país actual
+
         var properties = MockDataService.GetFeaturedProperties(currentCountryCode);
         FeaturedProperties.Clear();
         foreach (var prop in properties)
+        {
             FeaturedProperties.Add(prop);
+        }
 
-        // Cargar ciudades del país actual
-        PopularCities.Clear();
-        var cities = MockDataService.GetPopularCitiesByCountry(currentCountryCode);
-        foreach (var city in cities)
-            PopularCities.Add(city);
-
-        // Cargar imágenes promocionales
         PromotionalImages.Clear();
         foreach (var img in MockDataService.GetPromotionalImages())
+        {
             PromotionalImages.Add(img);
+        }
 
-        SelectedCity = PopularCities.FirstOrDefault() ?? "";
+        await LoadPopularCitiesAsync(currentCountryCode);
+        SelectedCity = PopularCities.FirstOrDefault() ?? string.Empty;
+    }
+
+    private async Task LoadPopularCitiesAsync(string countryCode)
+    {
+        PopularCitiesErrorMessage = string.Empty;
+        PopularCities.Clear();
+
+        var citiesResponse = await _countryService.GetPopularCitiesByCountryAsync(countryCode);
+        if (citiesResponse.Error || citiesResponse.Response == null || citiesResponse.Response.Count == 0)
+        {
+            PopularCitiesErrorMessage = "No se pudieron cargar ciudades populares para el pais seleccionado.";
+            return;
+        }
+
+        foreach (var city in citiesResponse.Response)
+        {
+            PopularCities.Add(city);
+        }
     }
 
     private void OnCountryChanged(object? sender, string countryCode)
     {
-        LoadData();
+        _ = LoadDataAsync();
     }
+
     private async void OnSearch()
     {
         var criteria = new SearchCriteria
@@ -154,7 +201,11 @@ public class HomeViewModel : BaseViewModel
 
     private async void OnPropertySelected(Property? property)
     {
-        if (property == null) return;
+        if (property == null)
+        {
+            return;
+        }
+
         var navParams = new Dictionary<string, object> { { "property", property } };
         await Shell.Current.GoToAsync("PropertyDetailPage", navParams);
     }

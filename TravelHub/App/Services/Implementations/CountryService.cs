@@ -8,8 +8,10 @@ namespace App.Services.Implementations
     {
         private readonly IBackEndService _backEndService;
         private List<Country>? _cachedCountries;
+        private readonly Dictionary<string, List<string>> _popularCitiesByCountryCache = new(StringComparer.OrdinalIgnoreCase);
 
         private const string CountriesEndpoint = "https://light-eggs-lie.loca.lt/api/v1/inventarios/countries";
+        private const string PopularCitiesEndpointTemplate = "https://light-eggs-lie.loca.lt/api/v1/inventarios/countries/{0}/popular-cities";
 
         public CountryService(IBackEndService backEndService)
         {
@@ -69,18 +71,35 @@ namespace App.Services.Implementations
             return _cachedCountries.FirstOrDefault(c => c.Id == id);
         }
 
-        public List<string> GetPopularCitiesByCountry(string countryCode)
+        public async Task<HttpResponseWrapper<List<string>>> GetPopularCitiesByCountryAsync(string countryCode)
         {
-            return countryCode.ToUpper() switch
+            if (string.IsNullOrWhiteSpace(countryCode))
             {
-                "CO" => ["Cartagena", "Bogotá", "Medellín", "Cali", "Santa Marta", "San Andrés", "Eje Cafetero", "Villa de Leyva"],
-                "PE" => ["Lima", "Cusco", "Arequipa", "Puno", "Trujillo", "Máncora", "Paracas", "Iquitos"],
-                "EC" => ["Quito", "Guayaquil", "Cuenca", "Otavalo", "Baños", "Salinas", "Puerto López", "Mindo"],
-                "MX" => ["Ciudad de México", "Cancún", "Playa del Carmen", "Tulum", "Oaxaca", "Guadalajara", "Puerto Vallarta", "Mérida"],
-                "CL" => ["Santiago", "Atacama", "San Pedro de Atacama", "Valparaíso", "Viña del Mar", "Pucón", "Puerto Varas", "Chiloé"],
-                "AR" => ["Buenos Aires", "Mendoza", "Córdoba", "Salta", "Jujuy", "Bariloche", "La Plata", "Rosario"],
-                _ => []
-            };
+                return new HttpResponseWrapper<List<string>>(
+                    default,
+                    true,
+                    new HttpResponseMessage(System.Net.HttpStatusCode.BadRequest));
+            }
+
+            var normalizedCountryCode = countryCode.Trim().ToUpperInvariant();
+
+            if (_popularCitiesByCountryCache.TryGetValue(normalizedCountryCode, out var cachedCities) && cachedCities.Count > 0)
+            {
+                return new HttpResponseWrapper<List<string>>(
+                    cachedCities,
+                    false,
+                    new HttpResponseMessage(System.Net.HttpStatusCode.OK));
+            }
+
+            var endpoint = string.Format(PopularCitiesEndpointTemplate, normalizedCountryCode);
+            var response = await _backEndService.GetAsync<List<string>>(endpoint);
+
+            if (!response.Error && response.Response != null)
+            {
+                _popularCitiesByCountryCache[normalizedCountryCode] = response.Response;
+            }
+
+            return response;
         }
     }
 }

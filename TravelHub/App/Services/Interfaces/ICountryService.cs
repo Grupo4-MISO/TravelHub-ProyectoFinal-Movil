@@ -8,6 +8,6 @@ namespace App.Services.Interfaces
         Task<HttpResponseWrapper<List<Country>>> GetCountriesAsync();
         Country? GetCountryByCode(string code);
         Country? GetCountryById(string id);
-        List<string> GetPopularCitiesByCountry(string countryCode);
+        Task<HttpResponseWrapper<List<string>>> GetPopularCitiesByCountryAsync(string countryCode);
     }
 }

@@ -12,10 +12,6 @@
         <converters:RatingToStarsConverter x:Key="RatingToStars" />
     </ContentPage.Resources>
 
-    <ContentPage.BindingContext>
-        <vm:HomeViewModel />
-    </ContentPage.BindingContext>
-
     <Grid RowDefinitions="Auto,*">
         <!-- TopBar -->
         <controls:TopBar Grid.Row="0" />
