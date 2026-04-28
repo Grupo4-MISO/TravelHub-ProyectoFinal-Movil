@@ -2,7 +2,7 @@ using App.Services;
 
 namespace App.ViewModels;
 
-public partial class RegisterViewModel : BaseViewModel
+public partial class AccountRegisterViewModel : BaseViewModel
 {
     private string _firstName = string.Empty;
     public string FirstName
@@ -62,7 +62,7 @@ public partial class RegisterViewModel : BaseViewModel
     public Command RegisterCommand { get; }
     public Command GoToLoginCommand { get; }
 
-    public RegisterViewModel()
+    public AccountRegisterViewModel()
     {
         Title = "Registro";
         LoadPhoneCode();

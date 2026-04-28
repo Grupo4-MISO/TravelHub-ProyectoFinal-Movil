@@ -1,16 +1,11 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:vm="clr-namespace:App.ViewModels"
              xmlns:icons="clr-namespace:App.Resources.Styles"
              xmlns:behaviors="clr-namespace:App.Behaviors"
-             x:Class="App.Views.RegisterPage"
+             x:Class="App.Views.AccountRegisterPage"
              Title="{Binding Title}"
              Shell.NavBarIsVisible="False">
-    
-    <ContentPage.BindingContext>
-        <vm:RegisterViewModel />
-    </ContentPage.BindingContext>
     
     <ScrollView BackgroundColor="{StaticResource Background}">
         <VerticalStackLayout Padding="32" Spacing="20"
@@ -224,19 +219,14 @@
                                 <FormattedString>
                                     <Span Text="Acepto los " 
                                           Style="{StaticResource Caption}" />
-                                    <Span Text="terminos y condiciones" 
-                                          TextColor="{StaticResource Primary}"
-                                          FontFamily="OpenSansSemibold"
-                                          FontSize="13"
-                                          TextDecorations="Underline">
-                                        <Span.GestureRecognizers>
-                                            <TapGestureRecognizer 
-                                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:RegisterViewModel}}, Path=GoToTermsCommand}" />
-                                        </Span.GestureRecognizers>
-                                    </Span>
-                                </FormattedString>
-                            </Label.FormattedText>
-                        </Label>
+                                     <Span Text="terminos y condiciones" 
+                                           TextColor="{StaticResource Primary}"
+                                           FontFamily="OpenSansSemibold"
+                                           FontSize="13"
+                                           TextDecorations="Underline" />
+                                 </FormattedString>
+                             </Label.FormattedText>
+                         </Label>
                     </Grid>
 
                     <!-- Boton Registrarse -->

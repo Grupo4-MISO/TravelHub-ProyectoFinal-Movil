@@ -4,6 +4,8 @@ namespace App.Services.Interfaces
 {
     public interface IBackEndService
     {
+        void SetAuthorization(string? token);
+
         Task<HttpResponseWrapper<object>> GetAsync(string url);
 
         Task<HttpResponseWrapper<T>> GetAsync<T>(string url);

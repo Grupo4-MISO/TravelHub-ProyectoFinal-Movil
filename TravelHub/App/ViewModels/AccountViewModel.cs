@@ -1,11 +1,15 @@
 using System.Windows.Input;
 using App.Models;
-using App.Services;
+using App.Services.Interfaces;
+using App.Views;
 
 namespace App.ViewModels;
 
 public class AccountViewModel : BaseViewModel
 {
+    private readonly IAuthService _authService;
+    private readonly IUserSessionService _userSessionService;
+
     private Traveler _user = new();
     public Traveler User
     {
@@ -13,7 +17,7 @@ public class AccountViewModel : BaseViewModel
         set => SetProperty(ref _user, value);
     }
 
-    private bool _isLoggedIn = true;
+    private bool _isLoggedIn;
     public bool IsLoggedIn
     {
         get => _isLoggedIn;
@@ -47,10 +51,12 @@ public class AccountViewModel : BaseViewModel
     public ICommand LoginCommand { get; }
     public ICommand RegisterCommand { get; }
 
-    public AccountViewModel()
+    public AccountViewModel(IAuthService authService, IUserSessionService userSessionService)
     {
+        _authService = authService ?? throw new ArgumentNullException(nameof(authService));
+        _userSessionService = userSessionService ?? throw new ArgumentNullException(nameof(userSessionService));
         Title = "Mi Cuenta";
-        User = MockDataService.GetSampleTraveler();
+        LoadCurrentSession();
 
         EditProfileCommand = new Command(OnEditProfile);
         ViewHistoryCommand = new Command(OnViewHistory);
@@ -74,9 +80,11 @@ public class AccountViewModel : BaseViewModel
         bool confirm = await Shell.Current.DisplayAlert("Cerrar Sesion", "Deseas cerrar tu sesion?", "Si", "No");
         if (confirm)
         {
+            _userSessionService.ClearSession();
             IsLoggedIn = false;
             Email = string.Empty;
             Password = string.Empty;
+            User = new Traveler();
         }
     }
 
@@ -88,12 +96,58 @@ public class AccountViewModel : BaseViewModel
             return;
         }
 
-        User = MockDataService.GetSampleTraveler();
-        IsLoggedIn = true;
+        IsBusy = true;
+        try
+        {
+            var response = await _authService.LoginAsync(new AuthLoginRequest
+            {
+                Email = Email.Trim(),
+                Password = Password
+            });
+
+            if (response.Error || response.Response == null || string.IsNullOrWhiteSpace(response.Response.Token))
+            {
+                var errorMessage = await response.GetErrorMessageAsync();
+                await Shell.Current.DisplayAlert(
+                    "Error",
+                    string.IsNullOrWhiteSpace(errorMessage) ? "No fue posible iniciar sesión." : errorMessage,
+                    "OK");
+                return;
+            }
+
+            _userSessionService.SetSession(response.Response);
+            Password = string.Empty;
+            LoadCurrentSession();
+        }
+        finally
+        {
+            IsBusy = false;
+        }
     }
 
     private async void OnRegister()
     {
-        await Shell.Current.DisplayAlert("Registro", "Funcion de registro proximamente.", "OK");
+        await Shell.Current.GoToAsync(nameof(AccountRegisterPage));
+    }
+
+    private void LoadCurrentSession()
+    {
+        IsLoggedIn = _userSessionService.IsAuthenticated;
+        if (!IsLoggedIn)
+        {
+            User = new Traveler();
+            return;
+        }
+
+        var sessionUser = _userSessionService.User;
+        User = new Traveler
+        {
+            FirstName = sessionUser.Username,
+            LastName = string.Empty,
+            Email = Email,
+            Phone = string.Empty,
+            DocumentType = sessionUser.Role,
+            DocumentNumber = sessionUser.Id
+        };
     }
 }

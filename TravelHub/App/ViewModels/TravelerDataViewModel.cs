@@ -1,11 +1,24 @@
+using System.Windows.Input;
 using App.Models;
 using App.Services;
-using System.Windows.Input;
+using App.Services.Interfaces;
+using App.Views;
 
 namespace App.ViewModels;
 
 public class TravelerDataViewModel : BaseViewModel, IQueryAttributable
 {
+    private readonly IUserSessionService _userSessionService;
+    private readonly ITravelerProfileService _travelerProfileService;
+    private bool _travelerLoaded;
+    private bool _loginNavigationInProgress;
+    private bool _suppressDirtyTracking;
+
+    private string _originalFirstName = string.Empty;
+    private string _originalLastName = string.Empty;
+    private string _originalDocumentNumber = string.Empty;
+    private string _originalPhone = string.Empty;
+
     private Property _property = new();
     public Property Property
     {
@@ -24,14 +37,26 @@ public class TravelerDataViewModel : BaseViewModel, IQueryAttributable
     public string FirstName
     {
         get => _firstName;
-        set => SetProperty(ref _firstName, value);
+        set
+        {
+            if (SetProperty(ref _firstName, value))
+            {
+                RefreshProfileChangeState();
+            }
+        }
     }
 
     private string _lastName = string.Empty;
     public string LastName
     {
         get => _lastName;
-        set => SetProperty(ref _lastName, value);
+        set
+        {
+            if (SetProperty(ref _lastName, value))
+            {
+                RefreshProfileChangeState();
+            }
+        }
     }
 
     private string _email = string.Empty;
@@ -41,47 +66,97 @@ public class TravelerDataViewModel : BaseViewModel, IQueryAttributable
         set => SetProperty(ref _email, value);
     }
 
-    private string _phone = string.Empty;
-    public string Phone
-    {
-        get => _phone;
-        set => SetProperty(ref _phone, value);
-    }
-    private string _phoneNumber = string.Empty; // Número de teléfono sin código de país
+    private string _phoneNumber = string.Empty;
     public string PhoneNumber
     {
         get => _phoneNumber;
-        set => SetProperty(ref _phoneNumber, value);
+        set
+        {
+            if (SetProperty(ref _phoneNumber, value))
+            {
+                OnPropertyChanged(nameof(FullPhoneNumber));
+                RefreshProfileChangeState();
+            }
+        }
     }
-    private string _phoneCode = string.Empty; // Código del país actual
+
+    private string _phoneCode = string.Empty;
     public string PhoneCode
     {
         get => _phoneCode;
-        set => SetProperty(ref _phoneCode, value);
+        set
+        {
+            if (SetProperty(ref _phoneCode, value))
+            {
+                OnPropertyChanged(nameof(FullPhoneNumber));
+                RefreshProfileChangeState();
+            }
+        }
     }
 
-    private string countryFlag = string.Empty; // Bandera del país
+    private string _countryFlag = string.Empty;
     public string CountryFlag
     {
-        get => countryFlag;
-        set => SetProperty(ref countryFlag, value);
+        get => _countryFlag;
+        set => SetProperty(ref _countryFlag, value);
     }
 
     private string _documentNumber = string.Empty;
     public string DocumentNumber
     {
         get => _documentNumber;
-        set => SetProperty(ref _documentNumber, value);
+        set
+        {
+            if (SetProperty(ref _documentNumber, value))
+            {
+                RefreshProfileChangeState();
+            }
+        }
     }
-    public string FullPhoneNumber => $"{PhoneCode} {PhoneNumber}".Trim();
-    public ICommand ContinueCommand { get; }
 
-    public TravelerDataViewModel()
+    public string FullPhoneNumber
     {
+        get
+        {
+            var phone = (PhoneNumber ?? string.Empty).Trim();
+            if (string.IsNullOrWhiteSpace(phone))
+            {
+                return string.Empty;
+            }
+
+            if (phone.StartsWith("+", StringComparison.Ordinal))
+            {
+                return phone;
+            }
+
+            return $"{PhoneCode} {phone}".Trim();
+        }
+    }
+
+    public bool HasPendingTravelerChanges =>
+        _travelerLoaded &&
+        !string.Equals(Normalize(FirstName), Normalize(_originalFirstName), StringComparison.Ordinal) ||
+        _travelerLoaded &&
+        !string.Equals(Normalize(LastName), Normalize(_originalLastName), StringComparison.Ordinal) ||
+        _travelerLoaded &&
+        !string.Equals(Normalize(DocumentNumber), Normalize(_originalDocumentNumber), StringComparison.Ordinal) ||
+        _travelerLoaded &&
+        !string.Equals(Normalize(FullPhoneNumber), Normalize(_originalPhone), StringComparison.Ordinal);
+
+    public bool ShowContinueButton => !HasPendingTravelerChanges;
+    public bool ShowUpdateButton => HasPendingTravelerChanges;
+
+    public ICommand ContinueCommand { get; }
+    public ICommand UpdateTravelerCommand { get; }
+
+    public TravelerDataViewModel(IUserSessionService userSessionService, ITravelerProfileService travelerProfileService)
+    {
+        _userSessionService = userSessionService ?? throw new ArgumentNullException(nameof(userSessionService));
+        _travelerProfileService = travelerProfileService ?? throw new ArgumentNullException(nameof(travelerProfileService));
         Title = "Datos del Viajero";
         LoadPhoneCodeFromCurrentCountry();
         ContinueCommand = new Command(OnContinue);
-        // Suscribirse a cambios de país
+        UpdateTravelerCommand = new Command(OnUpdateTravelerData);
         AppSettingsService.Instance.CountryChanged += OnCountryChanged;
     }
 
@@ -92,7 +167,7 @@ public class TravelerDataViewModel : BaseViewModel, IQueryAttributable
         CountryFlag = country.FlagEmoji;
     }
 
-    private void OnCountryChanged(object? sender, string e)
+    private void OnCountryChanged(object? sender, string _)
     {
         LoadPhoneCodeFromCurrentCountry();
     }
@@ -105,8 +180,142 @@ public class TravelerDataViewModel : BaseViewModel, IQueryAttributable
             Room = room;
     }
 
+    public async Task EnsureAuthenticatedAndLoadTravelerAsync()
+    {
+        if (!_userSessionService.IsAuthenticated)
+        {
+            if (_loginNavigationInProgress)
+            {
+                return;
+            }
+
+            _loginNavigationInProgress = true;
+            await Shell.Current.GoToAsync(nameof(AccountLoginPage), new Dictionary<string, object>
+            {
+                { "returnTo", nameof(TravelerDataPage) }
+            });
+            return;
+        }
+
+        _loginNavigationInProgress = false;
+        await LoadTravelerDataAsync();
+    }
+
+    private async Task LoadTravelerDataAsync()
+    {
+        if (_travelerLoaded || IsBusy)
+        {
+            return;
+        }
+
+        var travelerId = _userSessionService.User.Id;
+        if (string.IsNullOrWhiteSpace(travelerId))
+        {
+            await Shell.Current.DisplayAlert("Error", "No se encontrÃ³ un usuario autenticado.", "OK");
+            return;
+        }
+
+        IsBusy = true;
+        try
+        {
+            var response = await _travelerProfileService.GetTravelerByIdAsync(travelerId);
+            if (response.Error || response.Response == null)
+            {
+                var message = await response.GetErrorMessageAsync();
+                await Shell.Current.DisplayAlert(
+                    "Error",
+                    string.IsNullOrWhiteSpace(message) ? "No fue posible cargar los datos del viajero." : message,
+                    "OK");
+                return;
+            }
+
+            var traveler = response.Response;
+            _suppressDirtyTracking = true;
+            FirstName = traveler.FirstName ?? string.Empty;
+            LastName = traveler.LastName ?? string.Empty;
+            Email = traveler.Email ?? string.Empty;
+            DocumentNumber = traveler.DocumentNumber ?? string.Empty;
+            PhoneNumber = NormalizePhoneForInput(traveler.Phone);
+            _suppressDirtyTracking = false;
+
+            _originalFirstName = FirstName;
+            _originalLastName = LastName;
+            _originalDocumentNumber = DocumentNumber;
+            _originalPhone = FullPhoneNumber;
+            _travelerLoaded = true;
+            RefreshProfileChangeState();
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    private async void OnUpdateTravelerData()
+    {
+        if (!HasPendingTravelerChanges)
+        {
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(FirstName) ||
+            string.IsNullOrWhiteSpace(LastName) ||
+            string.IsNullOrWhiteSpace(PhoneNumber) ||
+            string.IsNullOrWhiteSpace(DocumentNumber))
+        {
+            await Shell.Current.DisplayAlert("Error", "Completa los datos requeridos para actualizar.", "OK");
+            return;
+        }
+
+        var travelerId = _userSessionService.User.Id;
+        if (string.IsNullOrWhiteSpace(travelerId))
+        {
+            await Shell.Current.DisplayAlert("Error", "No se encontrÃ³ el usuario autenticado.", "OK");
+            return;
+        }
+
+        IsBusy = true;
+        try
+        {
+            var payload = new TravelerUpdateRequest
+            {
+                DocumentNumber = DocumentNumber.Trim(),
+                FirstName = FirstName.Trim(),
+                Gender = "Female",
+                LastName = LastName.Trim(),
+                Phone = FullPhoneNumber
+            };
+
+            var response = await _travelerProfileService.UpdateTravelerAsync(travelerId, payload);
+            if (response.Error)
+            {
+                var message = await response.GetErrorMessageAsync();
+                await Shell.Current.DisplayAlert(
+                    "Error",
+                    string.IsNullOrWhiteSpace(message) ? "No fue posible actualizar los datos." : message,
+                    "OK");
+                return;
+            }
+
+            _originalFirstName = FirstName;
+            _originalLastName = LastName;
+            _originalDocumentNumber = DocumentNumber;
+            _originalPhone = FullPhoneNumber;
+            RefreshProfileChangeState();
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
     private async void OnContinue()
     {
+        if (HasPendingTravelerChanges)
+        {
+            return;
+        }
+
         if (string.IsNullOrWhiteSpace(FirstName) ||
             string.IsNullOrWhiteSpace(LastName) ||
             string.IsNullOrWhiteSpace(Email) ||
@@ -119,10 +328,9 @@ public class TravelerDataViewModel : BaseViewModel, IQueryAttributable
 
         if (!IsValidEmail(Email))
         {
-            await Shell.Current.DisplayAlert("Error", "Por favor ingresa un email válido", "OK");
+            await Shell.Current.DisplayAlert("Error", "Por favor ingresa un email vÃ¡lido", "OK");
             return;
         }
-
 
         var traveler = new Traveler
         {
@@ -143,6 +351,33 @@ public class TravelerDataViewModel : BaseViewModel, IQueryAttributable
         await Shell.Current.GoToAsync("BookingSummaryPage", navParams);
     }
 
+    private void RefreshProfileChangeState()
+    {
+        if (_suppressDirtyTracking)
+        {
+            return;
+        }
+
+        OnPropertyChanged(nameof(HasPendingTravelerChanges));
+        OnPropertyChanged(nameof(ShowContinueButton));
+        OnPropertyChanged(nameof(ShowUpdateButton));
+    }
+
+    private string NormalizePhoneForInput(string? rawPhone)
+    {
+        var phone = (rawPhone ?? string.Empty).Trim();
+        var code = (PhoneCode ?? string.Empty).Trim();
+        if (!string.IsNullOrWhiteSpace(code) &&
+            phone.StartsWith(code, StringComparison.OrdinalIgnoreCase))
+        {
+            return phone[code.Length..].TrimStart();
+        }
+
+        return phone;
+    }
+
+    private static string Normalize(string? value) => (value ?? string.Empty).Trim();
+
     private bool IsValidEmail(string email)
     {
         try
@@ -155,5 +390,4 @@ public class TravelerDataViewModel : BaseViewModel, IQueryAttributable
             return false;
         }
     }
-
 }
