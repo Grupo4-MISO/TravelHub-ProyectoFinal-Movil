@@ -5,9 +5,8 @@ namespace App.Services.Implementations;
 
 public class BackendUrlProvider : IBackendUrlProvider
 {
-    private const string BackendUrlEnvironmentVariable = "TRAVELHUB_BACKEND_URL";
     private const string BackendUrlPreferenceKey = "BackendUrl";
-    private const string DefaultBackendUrl = "https://light-eggs-lie.loca.lt";
+    private const string DefaultBackendUrl = "https://dpyrs6tuvj15e.cloudfront.net";
     private readonly object _sync = new();
     private string _baseUrl;
 
@@ -24,12 +23,9 @@ public class BackendUrlProvider : IBackendUrlProvider
 
     public BackendUrlProvider()
     {
-        var configuredDefaultUrl = NormalizeBaseUrl(Environment.GetEnvironmentVariable(BackendUrlEnvironmentVariable));
-        var storedUrl = Preferences.Default.Get(BackendUrlPreferenceKey, configuredDefaultUrl);
+        var storedUrl = Preferences.Default.Get(BackendUrlPreferenceKey, DefaultBackendUrl);
         var normalizedStoredUrl = NormalizeBaseUrl(storedUrl);
-
         _baseUrl = normalizedStoredUrl;
-        Preferences.Default.Set(BackendUrlPreferenceKey, normalizedStoredUrl);
     }
 
     public string Build(string relativePath)
