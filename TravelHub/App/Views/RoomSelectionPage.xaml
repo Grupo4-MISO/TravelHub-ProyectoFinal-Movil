@@ -5,10 +5,6 @@
              x:Class="App.Views.RoomSelectionPage"
              Title="{Binding Title}">
 
-    <ContentPage.BindingContext>
-        <vm:RoomSelectionViewModel />
-    </ContentPage.BindingContext>
-
     <Grid RowDefinitions="*,Auto" BackgroundColor="{StaticResource Background}">
 
         <CollectionView Grid.Row="0"

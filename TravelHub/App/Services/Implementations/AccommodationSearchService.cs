@@ -74,6 +74,7 @@ public class AccommodationSearchService : IAccommodationSearchService
         return new Property
         {
             Id = computedId,
+            ProviderId = dto.PropertyId ?? string.Empty,
             Name = dto.Name ?? string.Empty,
             City = dto.City ?? string.Empty,
             Address = dto.Address ?? string.Empty,
@@ -95,6 +96,7 @@ public class AccommodationSearchService : IAccommodationSearchService
                 new Room
                 {
                     Id = ComputeStablePositiveId(dto.RoomId ?? hotelOrRoomId),
+                    ProviderId = dto.RoomId ?? string.Empty,
                     Name = string.IsNullOrWhiteSpace(dto.RoomCode) ? "Habitación" : $"Habitación {dto.RoomCode}",
                     Description = dto.Description ?? string.Empty,
                     MaxGuests = Math.Max(1, dto.Capacity),

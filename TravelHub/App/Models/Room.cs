@@ -3,6 +3,7 @@ namespace App.Models;
 public class Room
 {
     public int Id { get; set; }
+    public string ProviderId { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public int MaxGuests { get; set; }

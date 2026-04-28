@@ -15,6 +15,7 @@ public static class MauiProgram
         builder
             .UseMauiApp<App>()
             .UseMauiCommunityToolkit()
+            .UseMauiMaps()
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -58,6 +59,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<IAppConfigurationService, AppConfigurationService>();
         builder.Services.AddSingleton<ICountryService, CountryService>();
         builder.Services.AddSingleton<IAccommodationSearchService, AccommodationSearchService>();
+        builder.Services.AddSingleton<IPropertyDetailService, PropertyDetailService>();
 
 #if DEBUG
         builder.Logging.AddDebug();

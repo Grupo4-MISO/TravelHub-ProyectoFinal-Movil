@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:vm="clr-namespace:App.ViewModels"
              xmlns:models="clr-namespace:App.Models"
              xmlns:converters="clr-namespace:App.Converters"
-             xmlns:icons="clr-namespace:App.Resources.Styles"
+             xmlns:maps="clr-namespace:Microsoft.Maui.Controls.Maps;assembly=Microsoft.Maui.Controls.Maps"
              x:Class="App.Views.PropertyDetailPage"
              Title="{Binding Title}">
 
@@ -13,12 +12,13 @@
         <converters:IconKeyToGlyphConverter x:Key="IconKeyToGlyph" />
     </ContentPage.Resources>
 
-    <ContentPage.BindingContext>
-        <vm:PropertyDetailViewModel />
-    </ContentPage.BindingContext>
     <Grid RowDefinitions="*,Auto" BackgroundColor="{StaticResource Background}">
         <ScrollView Grid.Row="0">
             <VerticalStackLayout Spacing="0">
+                <VerticalStackLayout Padding="16,8,16,0" Spacing="6">
+                    <ActivityIndicator IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}" Color="{StaticResource Primary}" />
+                    <Label Text="{Binding ErrorMessage}" IsVisible="{Binding HasError}" TextColor="{StaticResource Danger}" />
+                </VerticalStackLayout>
 
                 <!-- Galeria de Fotos -->
                 <CarouselView ItemsSource="{Binding ImageUrls}"
@@ -112,28 +112,14 @@
                     </VerticalStackLayout>
                 </Border>
 
-                <!-- Mapa Placeholder -->
+                <!-- Mapa -->
                 <Border Margin="16,4" Padding="0"
-                        BackgroundColor="{StaticResource Gray100}"
-                        StrokeShape="RoundRectangle 12"
-                        Stroke="{StaticResource Gray200}"
-                        HeightRequest="180">
-                    <Grid>
-                        <Image Style="{StaticResource IconImageLarge}">
-                            <Image.Source>
-                                <FontImageSource
-                                    Glyph="{x:Static icons:Icons.Mapa}"
-                                    FontFamily="MaterialSymbols"
-                                    Size="48"
-                                    Color="{StaticResource Gray400}" />
-                            </Image.Source>
-                        </Image>
-                        <Label Text="Ubicación del hotel"
-                               HorizontalOptions="Center"
-                               VerticalOptions="End"
-                               Margin="0,0,0,16"
-                               Style="{StaticResource Subtitle}" />
-                    </Grid>
+                         BackgroundColor="{StaticResource Gray100}"
+                         StrokeShape="RoundRectangle 12"
+                         Stroke="{StaticResource Gray200}"
+                         HeightRequest="220">
+                    <maps:Map x:Name="PropertyMap"
+                              IsShowingUser="False" />
                 </Border>
 
                 <!-- Comentarios -->
@@ -143,6 +129,9 @@
                         Stroke="{StaticResource Gray100}">
                     <VerticalStackLayout Spacing="12">
                         <Label Text="Comentarios" Style="{StaticResource Title}" />
+                        <Label Text="{Binding ReviewsErrorMessage}"
+                               IsVisible="{Binding HasReviewsError}"
+                               TextColor="{StaticResource Danger}" />
                         <CollectionView ItemsSource="{Binding Reviews}">
                             <CollectionView.ItemsLayout>
                                 <LinearItemsLayout Orientation="Vertical" ItemSpacing="10" />
@@ -167,6 +156,10 @@
                                     </VerticalStackLayout>
                                 </DataTemplate>
                             </CollectionView.ItemTemplate>
+                            <CollectionView.EmptyView>
+                                <Label Text="Este alojamiento aún no tiene comentarios."
+                                       Style="{StaticResource Subtitle}" />
+                            </CollectionView.EmptyView>
                         </CollectionView>
                     </VerticalStackLayout>
                 </Border>
