@@ -53,8 +53,11 @@ public static class MauiProgram
         builder.Services.AddTransient<CountryViewModel>();
 
         // Register Services
+        builder.Services.AddSingleton<IBackendUrlProvider, BackendUrlProvider>();
         builder.Services.AddSingleton<IBackEndService, BackEndService>();
+        builder.Services.AddSingleton<IAppConfigurationService, AppConfigurationService>();
         builder.Services.AddSingleton<ICountryService, CountryService>();
+        builder.Services.AddSingleton<IAccommodationSearchService, AccommodationSearchService>();
 
 #if DEBUG
         builder.Logging.AddDebug();

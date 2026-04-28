@@ -8,6 +8,8 @@ public class SearchCriteria
     public int Adults { get; set; } = 2;
     public int Children { get; set; }
     public int Rooms { get; set; } = 1;
+    public string CountryCode { get; set; } = "CO";
+    public string CurrencyCode { get; set; } = "COP";
 
     public int Nights => (CheckOut - CheckIn).Days;
 }

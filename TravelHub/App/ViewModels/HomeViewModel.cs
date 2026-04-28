@@ -8,6 +8,16 @@ namespace App.ViewModels;
 
 public class HomeViewModel : BaseViewModel
 {
+    private static readonly Dictionary<string, string> CurrencyCodeByCountry = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["CO"] = "COP",
+        ["PE"] = "PEN",
+        ["EC"] = "USD",
+        ["MX"] = "MXN",
+        ["CL"] = "CLP",
+        ["AR"] = "ARS"
+    };
+
     private readonly ICountryService _countryService;
 
     public ObservableCollection<string> PromotionalImages { get; } = [];
@@ -185,6 +195,8 @@ public class HomeViewModel : BaseViewModel
 
     private async void OnSearch()
     {
+        var countryCode = AppSettingsService.Instance.CurrentCountryCode;
+
         var criteria = new SearchCriteria
         {
             City = SelectedCity,
@@ -192,11 +204,23 @@ public class HomeViewModel : BaseViewModel
             CheckOut = CheckOutDate,
             Adults = Adults,
             Children = Children,
-            Rooms = Rooms
+            Rooms = Rooms,
+            CountryCode = string.IsNullOrWhiteSpace(countryCode) ? "CO" : countryCode.Trim().ToUpperInvariant(),
+            CurrencyCode = ResolveCurrencyCode(countryCode)
         };
 
         var navParams = new Dictionary<string, object> { { "criteria", criteria } };
         await Shell.Current.GoToAsync("SearchResultsPage", navParams);
+    }
+
+    private static string ResolveCurrencyCode(string countryCode)
+    {
+        if (CurrencyCodeByCountry.TryGetValue(countryCode ?? string.Empty, out var currencyCode))
+        {
+            return currencyCode;
+        }
+
+        return "COP";
     }
 
     private async void OnPropertySelected(Property? property)

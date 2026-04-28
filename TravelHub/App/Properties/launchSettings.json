@@ -2,7 +2,10 @@
   "profiles": {
     "Windows Machine": {
       "commandName": "Project",
-      "nativeDebugging": false
+      "nativeDebugging": false,
+      "environmentVariables": {
+        "TRAVELHUB_BACKEND_URL": "https://light-eggs-lie.loca.lt"
+      }
     }
   }
 }

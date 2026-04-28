@@ -7,15 +7,17 @@ namespace App.Services.Implementations
     public class CountryService : ICountryService
     {
         private readonly IBackEndService _backEndService;
+        private readonly IBackendUrlProvider _backendUrlProvider;
         private List<Country>? _cachedCountries;
         private readonly Dictionary<string, List<string>> _popularCitiesByCountryCache = new(StringComparer.OrdinalIgnoreCase);
 
-        private const string CountriesEndpoint = "https://light-eggs-lie.loca.lt/api/v1/inventarios/countries";
-        private const string PopularCitiesEndpointTemplate = "https://light-eggs-lie.loca.lt/api/v1/inventarios/countries/{0}/popular-cities";
+        private const string CountriesEndpoint = "/api/v1/inventarios/countries";
+        private const string PopularCitiesEndpointTemplate = "/api/v1/inventarios/countries/{0}/popular-cities";
 
-        public CountryService(IBackEndService backEndService)
+        public CountryService(IBackEndService backEndService, IBackendUrlProvider backendUrlProvider)
         {
             _backEndService = backEndService ?? throw new ArgumentNullException(nameof(backEndService));
+            _backendUrlProvider = backendUrlProvider ?? throw new ArgumentNullException(nameof(backendUrlProvider));
         }
 
         public async Task<HttpResponseWrapper<List<Country>>> GetCountriesAsync()
@@ -33,7 +35,7 @@ namespace App.Services.Implementations
                 }
 
                 // Obtener países desde el backend
-                var response = await _backEndService.GetAsync<List<Country>>(CountriesEndpoint);
+                var response = await _backEndService.GetAsync<List<Country>>(_backendUrlProvider.Build(CountriesEndpoint));
 
                 // Si la respuesta es exitosa, guardar en caché
                 if (!response.Error && response.Response != null)
@@ -91,7 +93,7 @@ namespace App.Services.Implementations
                     new HttpResponseMessage(System.Net.HttpStatusCode.OK));
             }
 
-            var endpoint = string.Format(PopularCitiesEndpointTemplate, normalizedCountryCode);
+            var endpoint = _backendUrlProvider.Build(string.Format(PopularCitiesEndpointTemplate, normalizedCountryCode));
             var response = await _backEndService.GetAsync<List<string>>(endpoint);
 
             if (!response.Error && response.Response != null)
