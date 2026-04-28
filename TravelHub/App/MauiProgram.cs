@@ -1,7 +1,9 @@
+using App.Services.Implementations;
+using App.Services.Interfaces;
 using App.ViewModels;
 using App.Views;
-using Microsoft.Extensions.Logging;
 using CommunityToolkit.Maui;
+using Microsoft.Extensions.Logging;
 
 namespace App;
 
@@ -28,7 +30,9 @@ public static class MauiProgram
         builder.Services.AddTransient<TravelerDataPage>();
         builder.Services.AddTransient<BookingSummaryPage>();
         builder.Services.AddTransient<BookingConfirmedPage>();
+        builder.Services.AddTransient<BookingDetailsPage>();
         builder.Services.AddTransient<LoginPage>();
+        builder.Services.AddTransient<RegisterPage>();
         builder.Services.AddTransient<ActiveBookingsPage>();
         builder.Services.AddTransient<AccountPage>();
         builder.Services.AddTransient<CountryPage>();
@@ -41,10 +45,16 @@ public static class MauiProgram
         builder.Services.AddTransient<TravelerDataViewModel>();
         builder.Services.AddTransient<BookingSummaryViewModel>();
         builder.Services.AddTransient<BookingConfirmedViewModel>();
+        builder.Services.AddTransient<BookingDetailsViewModel>();
         builder.Services.AddTransient<LoginViewModel>();
+        builder.Services.AddTransient<RegisterViewModel>();
         builder.Services.AddTransient<ActiveBookingsViewModel>();
         builder.Services.AddTransient<AccountViewModel>();
         builder.Services.AddTransient<CountryViewModel>();
+
+        // Register Services
+        builder.Services.AddSingleton<IBackEndService, BackEndService>();
+        builder.Services.AddSingleton<ICountryService, CountryService>();
 
 #if DEBUG
         builder.Logging.AddDebug();

@@ -31,7 +31,7 @@ public class AppSettingsService
         }
     }
 
-    public Country CurrentCountry => MockDataService.GetCountryByCode(CurrentCountryCode);
+    public Country? CurrentCountry => MockDataService.GetCountryByCode(CurrentCountryCode);
 
     public void SetCountry(string countryCode)
     {

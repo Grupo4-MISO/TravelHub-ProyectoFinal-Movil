@@ -17,7 +17,7 @@ public class MockDataService
         [
             new Country 
             { 
-                Id = 1, 
+                Id = "a3d59338-df76-4b27-92b9-d8d188a1a34a", 
                 Name = "Colombia", 
                 Code = "CO", 
                 CurrencyCode = "COP", 
@@ -27,7 +27,7 @@ public class MockDataService
             },
             new Country 
             { 
-                Id = 2, 
+                Id = "83cfaba7-7c63-4943-a984-34e2613f5300", 
                 Name = "Perú", 
                 Code = "PE", 
                 CurrencyCode = "PEN", 
@@ -37,7 +37,7 @@ public class MockDataService
             },
             new Country 
             { 
-                Id = 3, 
+                Id = "82ee7241-0e45-4e74-ab37-d590e3e3ba96", 
                 Name = "Ecuador", 
                 Code = "EC", 
                 CurrencyCode = "USD", 
@@ -47,7 +47,7 @@ public class MockDataService
             },
             new Country 
             { 
-                Id = 4, 
+                Id = "cecf374a-c329-4bca-b113-2fa2ad0ccf53", 
                 Name = "México", 
                 Code = "MX", 
                 CurrencyCode = "MXN", 
@@ -57,7 +57,7 @@ public class MockDataService
             },
             new Country 
             { 
-                Id = 5, 
+                Id = "79bde85e-343c-4d8f-8688-9518fcb15504", 
                 Name = "Chile", 
                 Code = "CL", 
                 CurrencyCode = "CLP", 
@@ -67,7 +67,7 @@ public class MockDataService
             },
             new Country 
             { 
-                Id = 6, 
+                Id = "2a1572bf-1ad7-4bf0-b8ae-000c067cbd45", 
                 Name = "Argentina", 
                 Code = "AR", 
                 CurrencyCode = "ARS", 
@@ -80,16 +80,14 @@ public class MockDataService
         return _cachedCountries;
     }
 
-    public static Country GetCountryByCode(string code)
+    public static Country? GetCountryByCode(string code)
     {
-        return GetCountries().FirstOrDefault(c => c.Code.Equals(code, StringComparison.OrdinalIgnoreCase)) 
-               ?? GetCountries().First();
+        return GetCountries().FirstOrDefault(c => c.Code.Equals(code, StringComparison.OrdinalIgnoreCase));
     }
 
-    public static Country GetCountryById(int id)
+    public static Country? GetCountryById(string id)
     {
-        return GetCountries().FirstOrDefault(c => c.Id == id) 
-               ?? GetCountries().First();
+        return GetCountries().FirstOrDefault(c => c.Id == id);
     }
 
     public static List<string> GetPopularCitiesByCountry(string countryCode)

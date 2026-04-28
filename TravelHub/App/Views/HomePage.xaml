@@ -31,9 +31,15 @@
                     <CarouselView.ItemTemplate>
                         <DataTemplate>
                             <Grid>
-                                <Image Source="{Binding .}"
+                                <Image
                                        Aspect="AspectFill"
-                                       HeightRequest="200" />
+                                       HeightRequest="200" >
+                                    <Image.Source>
+                                        <UriImageSource Uri="{Binding .}" 
+                                                CachingEnabled="True" 
+                                                CacheValidity="1:00:00:00" />
+                                    </Image.Source>
+                                </Image>
                                 <BoxView Color="#40000000" />
                             </Grid>
                         </DataTemplate>

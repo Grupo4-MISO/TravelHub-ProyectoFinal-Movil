@@ -7,22 +7,43 @@
              x:Class="App.Views.CountryPage"
              Title="Seleccionar Pais">
     
-    <ContentPage.BindingContext>
-        <vm:CountryViewModel />
-    </ContentPage.BindingContext>
-    
     <Grid RowDefinitions="Auto,*" BackgroundColor="{StaticResource Background}">
         
         <!-- Header -->
         <VerticalStackLayout Grid.Row="0" 
                             Padding="16" 
                             BackgroundColor="{StaticResource Surface}">
-            <!--<Label Text="Elige tu país" 
-                   Style="{StaticResource Headline}" 
-                   FontSize="24" />-->
             <Label Text="Selecciona el país donde deseas buscar hospedajes" 
                    Style="{StaticResource Subtitle}"
                    Margin="0,4,0,0" />
+        </VerticalStackLayout>
+
+        <!-- Loading Indicator -->
+        <Grid Grid.Row="1" 
+              IsVisible="{Binding IsLoading}"
+              RowDefinitions="*,Auto,*"
+              Padding="16"
+              BackgroundColor="{StaticResource Background}">
+            <ActivityIndicator Grid.Row="1"
+                              IsRunning="{Binding IsLoading}"
+                              IsVisible="{Binding IsLoading}"
+                              Color="{StaticResource Primary}" />
+        </Grid>
+
+        <!-- Error Message -->
+        <VerticalStackLayout Grid.Row="1"
+                            x:Name="ErrorLayout"
+                            Padding="16"
+                            Spacing="12"
+                            VerticalOptions="CenterAndExpand"
+                            IsVisible="False">
+            <Label Text="{Binding ErrorMessage}"
+                   TextColor="{StaticResource Danger}"
+                   HorizontalTextAlignment="Center"
+                   FontSize="14" />
+            <Button Text="Reintentar"
+                    Command="{Binding RetryLoadCommand}"
+                    BackgroundColor="{StaticResource Primary}" />
         </VerticalStackLayout>
 
         <!-- Lista de países -->

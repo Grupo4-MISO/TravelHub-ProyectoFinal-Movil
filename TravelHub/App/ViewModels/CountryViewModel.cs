@@ -2,12 +2,16 @@ using System.Collections.ObjectModel;
 using System.Windows.Input;
 using App.Models;
 using App.Services;
+using App.Services.Interfaces;
 
 namespace App.ViewModels;
 
 public partial class CountryViewModel : BaseViewModel
 {
     private ObservableCollection<CountryItem> _countries = [];
+    private readonly ICountryService _countryService;
+    private bool _isLoading;
+    private string _errorMessage = string.Empty;
 
     public ObservableCollection<CountryItem> Countries
     {
@@ -15,23 +19,68 @@ public partial class CountryViewModel : BaseViewModel
         set => SetProperty(ref _countries, value);
     }
 
-    public ICommand SelectCountryCommand { get; }
-
-    public CountryViewModel()
+    public bool IsLoading
     {
-        LoadCountries();
-        SelectCountryCommand = new Command<CountryItem?>(async (country) => await SelectCountry(country));
+        get => _isLoading;
+        set => SetProperty(ref _isLoading, value);
     }
 
-    private void LoadCountries()
+    public string ErrorMessage
     {
-        var currentCode = AppSettingsService.Instance.CurrentCountryCode;
-        var allCountries = MockDataService.GetCountries();
+        get => _errorMessage;
+        set => SetProperty(ref _errorMessage, value);
+    }
 
-        Countries.Clear();
-        foreach (var country in allCountries)
+    public ICommand SelectCountryCommand { get; }
+    public ICommand RetryLoadCommand { get; }
+
+    public CountryViewModel(ICountryService countryService)
+    {
+        _countryService = countryService ?? throw new ArgumentNullException(nameof(countryService));
+        SelectCountryCommand = new Command<CountryItem?>(async (country) => await SelectCountry(country));
+        RetryLoadCommand = new Command(async () => await LoadCountries());
+        
+        // Cargar países al inicializar
+        MainThread.BeginInvokeOnMainThread(async () => await LoadCountries());
+    }
+
+    private async Task LoadCountries()
+    {
+        IsLoading = true;
+        ErrorMessage = string.Empty;
+
+        try
         {
-            Countries.Add(new CountryItem(country, country.Code == currentCode));
+            var response = await _countryService.GetCountriesAsync();
+
+            if (response.Error)
+            {
+                ErrorMessage = "No se pudieron cargar los países. Intenta más tarde.";
+                return;
+            }
+
+            if (response.Response == null || response.Response.Count == 0)
+            {
+                ErrorMessage = "No hay países disponibles.";
+                return;
+            }
+
+            var currentCode = AppSettingsService.Instance.CurrentCountryCode;
+            Countries.Clear();
+
+            foreach (var country in response.Response)
+            {
+                Countries.Add(new CountryItem(country, country.Code == currentCode));
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error en LoadCountries: {ex.Message}");
+            ErrorMessage = "Error inesperado al cargar los países.";
+        }
+        finally
+        {
+            IsLoading = false;
         }
     }
 
@@ -61,42 +110,48 @@ public partial class CountryViewModel : BaseViewModel
 
 public class CountryItem : BaseViewModel
 {
-    private int _id;
-    public int Id
+    private string _id;
+    public string Id
     {
         get => _id;
         init => SetProperty(ref _id, value);
     }
+
     private string _name;
     public string Name
     {
         get => _name;
         init => SetProperty(ref _name, value);
     }
+
     private string _code;
     public string Code
     {
         get => _code;
         init => SetProperty(ref _code, value);
     }
+
     private string _currencyCode;
     public string CurrencyCode
     {
         get => _currencyCode;
         init => SetProperty(ref _currencyCode, value);
     }
+
     private string _currencySymbol;
     public string CurrencySymbol
     {
         get => _currencySymbol;
         init => SetProperty(ref _currencySymbol, value);
     }
+
     private string _flagEmoji;
     public string FlagEmoji
     {
         get => _flagEmoji;
         init => SetProperty(ref _flagEmoji, value);
     }
+
     private string _phoneCode;
     public string PhoneCode
     {
