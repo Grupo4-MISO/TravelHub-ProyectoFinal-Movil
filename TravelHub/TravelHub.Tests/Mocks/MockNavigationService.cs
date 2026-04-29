@@ -1,4 +1,4 @@
-using App.Services.Interfaces;
+﻿using App.Services.Interfaces;
 
 namespace TravelHub.Tests.Mocks;
 
