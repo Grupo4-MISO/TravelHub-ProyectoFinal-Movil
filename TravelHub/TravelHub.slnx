@@ -2,4 +2,5 @@
   <Project Path="App/App.csproj">
     <Deploy Solution="Debug|*" />
   </Project>
+  <Project Path="TravelHub.Tests/TravelHub.Tests.csproj" />
 </Solution>
