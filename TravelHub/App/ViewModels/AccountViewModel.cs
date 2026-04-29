@@ -80,7 +80,7 @@ public class AccountViewModel : BaseViewModel
         bool confirm = await Shell.Current.DisplayAlert("Cerrar Sesion", "Deseas cerrar tu sesion?", "Si", "No");
         if (confirm)
         {
-            _userSessionService.ClearSession();
+            await _userSessionService.ClearSession();
             IsLoggedIn = false;
             Email = string.Empty;
             Password = string.Empty;
@@ -99,12 +99,13 @@ public class AccountViewModel : BaseViewModel
         IsBusy = true;
         try
         {
-            var response = await _authService.LoginAsync(new AuthLoginRequest
+            var request = new AuthLoginRequest
             {
                 Email = Email.Trim(),
                 Password = Password
-            });
+            };
 
+            var response = await _authService.LoginAsync(request);
             if (response.Error || response.Response == null || string.IsNullOrWhiteSpace(response.Response.Token))
             {
                 var errorMessage = await response.GetErrorMessageAsync();
@@ -115,9 +116,11 @@ public class AccountViewModel : BaseViewModel
                 return;
             }
 
-            _userSessionService.SetSession(response.Response);
+            await _userSessionService.SetSession(response.Response);
             Password = string.Empty;
+
             LoadCurrentSession();
+
         }
         finally
         {
@@ -144,10 +147,11 @@ public class AccountViewModel : BaseViewModel
         {
             FirstName = sessionUser.Username,
             LastName = string.Empty,
-            Email = Email,
+            Email = string.Empty,
             Phone = string.Empty,
-            DocumentType = sessionUser.Role,
-            DocumentNumber = sessionUser.Id
+            DocumentType = string.Empty,
+            DocumentNumber = string.Empty,
+            Photo  = "https://cdn-icons-png.flaticon.com/512/3237/3237447.png"
         };
     }
 }

@@ -9,6 +9,7 @@ public class BackendUrlProvider : IBackendUrlProvider
     private const string DefaultBackendUrl = "https://dpyrs6tuvj15e.cloudfront.net";
     private readonly object _sync = new();
     private string _baseUrl;
+    public event EventHandler<string>? BaseUrlChanged;
 
     public string BaseUrl
     {
@@ -49,6 +50,7 @@ public class BackendUrlProvider : IBackendUrlProvider
     public bool TryUpdateBaseUrl(string newBaseUrl)
     {
         var normalizedBaseUrl = NormalizeBaseUrl(newBaseUrl);
+        var hasChanged = false;
         lock (_sync)
         {
             if (string.Equals(_baseUrl, normalizedBaseUrl, StringComparison.OrdinalIgnoreCase))
@@ -57,9 +59,14 @@ public class BackendUrlProvider : IBackendUrlProvider
             }
 
             _baseUrl = normalizedBaseUrl;
+            hasChanged = true;
         }
 
         Preferences.Default.Set(BackendUrlPreferenceKey, normalizedBaseUrl);
+        if (hasChanged)
+        {
+            BaseUrlChanged?.Invoke(this, normalizedBaseUrl);
+        }
         return true;
     }
 

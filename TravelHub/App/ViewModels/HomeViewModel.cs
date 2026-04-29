@@ -19,6 +19,7 @@ public class HomeViewModel : BaseViewModel
     };
 
     private readonly ICountryService _countryService;
+    private readonly IBackendUrlProvider _backendUrlProvider;
 
     public ObservableCollection<string> PromotionalImages { get; } = [];
     public ObservableCollection<Property> FeaturedProperties { get; } = [];
@@ -130,9 +131,10 @@ public class HomeViewModel : BaseViewModel
     public ICommand IncrementRoomsCommand { get; }
     public ICommand DecrementRoomsCommand { get; }
 
-    public HomeViewModel(ICountryService countryService)
+    public HomeViewModel(ICountryService countryService, IBackendUrlProvider backendUrlProvider)
     {
         _countryService = countryService ?? throw new ArgumentNullException(nameof(countryService));
+        _backendUrlProvider = backendUrlProvider ?? throw new ArgumentNullException(nameof(backendUrlProvider));
         Title = "TravelHub";
 
         SearchCommand = new Command(OnSearch);
@@ -147,6 +149,7 @@ public class HomeViewModel : BaseViewModel
 
         _ = LoadDataAsync();
         AppSettingsService.Instance.CountryChanged += OnCountryChanged;
+        _backendUrlProvider.BaseUrlChanged += OnBackendUrlChanged;
     }
 
     private async Task LoadDataAsync()
@@ -189,6 +192,11 @@ public class HomeViewModel : BaseViewModel
     }
 
     private void OnCountryChanged(object? sender, string countryCode)
+    {
+        _ = LoadDataAsync();
+    }
+
+    private void OnBackendUrlChanged(object? sender, string newBaseUrl)
     {
         _ = LoadDataAsync();
     }

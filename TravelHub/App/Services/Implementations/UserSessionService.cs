@@ -24,7 +24,7 @@ public class UserSessionService : IUserSessionService
         LoadFromPreferences();
     }
 
-    public void SetSession(AuthLoginResponse authResponse)
+    public async Task SetSession(AuthLoginResponse authResponse)
     {
         if (authResponse == null || string.IsNullOrWhiteSpace(authResponse.Token) || authResponse.User == null)
         {
@@ -43,10 +43,10 @@ public class UserSessionService : IUserSessionService
         Preferences.Default.Set(UserIdKey, User.Id);
         Preferences.Default.Set(UserNameKey, User.Username);
         Preferences.Default.Set(UserRoleKey, User.Role);
-        _backEndService.SetAuthorization(Token);
+        await _backEndService.SetAuthorization(Token);
     }
 
-    public void ClearSession()
+    public async Task ClearSession()
     {
         Token = string.Empty;
         User = new AuthUserDto();

@@ -65,7 +65,7 @@ public class AccountLoginViewModel : BaseViewModel, IQueryAttributable
                 return;
             }
 
-            _userSessionService.SetSession(response.Response);
+            await _userSessionService.SetSession(response.Response);
             Password = string.Empty;
             if (string.Equals(_returnTo, nameof(TravelerDataPage), StringComparison.Ordinal))
             {
