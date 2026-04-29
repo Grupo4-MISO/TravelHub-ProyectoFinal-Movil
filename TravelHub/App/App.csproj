@@ -66,6 +66,9 @@
 		<PackageReference Include="Microsoft.Maui.Controls.Maps" Version="10.0.51" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.7" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+		<PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
+		<!-- Fuerza la versión del bundle nativo de SQLite con soporte de páginas de 16 kB (requerido por Google Play desde Android 15) -->
+		<PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.1.11" />
 	</ItemGroup>
 
 	<ItemGroup>

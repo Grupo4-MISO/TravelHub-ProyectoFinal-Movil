@@ -1,5 +1,6 @@
 ﻿using App.Services.Implementations;
 using App.Services.Interfaces;
+using App.Services;
 using App.ViewModels;
 using App.Views;
 using CommunityToolkit.Maui;
@@ -39,8 +40,8 @@ public static class MauiProgram
         builder.Services.AddTransient<CountryPage>();
 
         // Register ViewModels
-        builder.Services.AddTransient<HomeViewModel>();
-        builder.Services.AddTransient<SearchResultsViewModel>();
+        builder.Services.AddScoped<HomeViewModel>();
+        builder.Services.AddScoped<SearchResultsViewModel>();
         builder.Services.AddTransient<PropertyDetailViewModel>();
         builder.Services.AddTransient<RoomSelectionViewModel>();
         builder.Services.AddTransient<TravelerDataViewModel>();
@@ -49,13 +50,19 @@ public static class MauiProgram
         builder.Services.AddTransient<BookingDetailsViewModel>();
         builder.Services.AddTransient<AccountLoginViewModel>();
         builder.Services.AddTransient<AccountRegisterViewModel>();
-        builder.Services.AddTransient<ActiveBookingsViewModel>();
-        builder.Services.AddTransient<AccountViewModel>();
-        builder.Services.AddTransient<CountryViewModel>();
+        builder.Services.AddScoped<ActiveBookingsViewModel>();
+        builder.Services.AddScoped<AccountViewModel>();
+        builder.Services.AddScoped<CountryViewModel>();
 
         // Register Services
         builder.Services.AddSingleton<IBackendUrlProvider, BackendUrlProvider>();
         builder.Services.AddSingleton<IBackEndService, BackEndService>();
+        var appSettingsService = AppSettingsService.Instance;
+        builder.Services.AddSingleton(appSettingsService);
+        builder.Services.AddSingleton<IAppSettingsService>(appSettingsService);
+        builder.Services.AddSingleton<IDatabaseService, DatabaseService>();
+        builder.Services.AddSingleton<ICountryRepository, CountryRepository>();
+        builder.Services.AddSingleton<IAppInitializationService, AppInitializationService>();
         builder.Services.AddSingleton<IAppConfigurationService, AppConfigurationService>();
         builder.Services.AddSingleton<ICountryService, CountryService>();
         builder.Services.AddSingleton<IAccommodationSearchService, AccommodationSearchService>();
@@ -64,7 +71,6 @@ public static class MauiProgram
         builder.Services.AddSingleton<IUserSessionService, UserSessionService>();
         builder.Services.AddSingleton<ITravelerProfileService, TravelerProfileService>();
         builder.Services.AddSingleton<INavigationService, ShellNavigationService>();
-        builder.Services.AddSingleton<IAppSettingsService>(sp => global::App.Services.AppSettingsService.Instance);
 
 #if DEBUG
         builder.Logging.AddDebug();

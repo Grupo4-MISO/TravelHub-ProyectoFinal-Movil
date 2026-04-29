@@ -8,16 +8,18 @@ namespace App.Services.Implementations
     {
         private readonly IBackEndService _backEndService;
         private readonly IBackendUrlProvider _backendUrlProvider;
+        private readonly ICountryRepository _countryRepository;
         private List<Country>? _cachedCountries;
         private readonly Dictionary<string, List<string>> _popularCitiesByCountryCache = new(StringComparer.OrdinalIgnoreCase);
 
         private const string CountriesEndpoint = "/api/v1/inventarios/countries";
         private const string PopularCitiesEndpointTemplate = "/api/v1/inventarios/countries/{0}/popular-cities";
 
-        public CountryService(IBackEndService backEndService, IBackendUrlProvider backendUrlProvider)
+        public CountryService(IBackEndService backEndService, IBackendUrlProvider backendUrlProvider, ICountryRepository countryRepository)
         {
             _backEndService = backEndService ?? throw new ArgumentNullException(nameof(backEndService));
             _backendUrlProvider = backendUrlProvider ?? throw new ArgumentNullException(nameof(backendUrlProvider));
+            _countryRepository = countryRepository ?? throw new ArgumentNullException(nameof(countryRepository));
             _backendUrlProvider.BaseUrlChanged += OnBackendUrlChanged;
         }
 
@@ -35,13 +37,23 @@ namespace App.Services.Implementations
                     );
                 }
 
-                // Obtener países desde el backend
+                var countriesFromRepository = await _countryRepository.GetCountriesAsync();
+                if (countriesFromRepository.Count > 0)
+                {
+                    _cachedCountries = countriesFromRepository.ToList();
+                    return new HttpResponseWrapper<List<Country>>(
+                        _cachedCountries,
+                        false,
+                        new HttpResponseMessage(System.Net.HttpStatusCode.OK)
+                    );
+                }
+
                 var response = await _backEndService.GetAsync<List<Country>>(_backendUrlProvider.Build(CountriesEndpoint));
 
-                // Si la respuesta es exitosa, guardar en caché
-                if (!response.Error && response.Response != null)
+                if (!response.Error && response.Response != null && response.Response.Count > 0)
                 {
                     _cachedCountries = response.Response;
+                    await _countryRepository.SaveCountriesAsync(_cachedCountries);
                 }
 
                 return response;
@@ -50,7 +62,7 @@ namespace App.Services.Implementations
             {
                 System.Diagnostics.Debug.WriteLine($"Error obteniendo países: {ex.Message}");
                 return new HttpResponseWrapper<List<Country>>(
-                    default,
+                    [],
                     true,
                     new HttpResponseMessage(System.Net.HttpStatusCode.InternalServerError)
                 );
@@ -79,7 +91,7 @@ namespace App.Services.Implementations
             if (string.IsNullOrWhiteSpace(countryCode))
             {
                 return new HttpResponseWrapper<List<string>>(
-                    default,
+                    [],
                     true,
                     new HttpResponseMessage(System.Net.HttpStatusCode.BadRequest));
             }

@@ -5,6 +5,7 @@ namespace App.Services;
 
 public class AppSettingsService : IAppSettingsService
 {
+    private const string CurrentVersionKey = "CurrentVersion";
     private const string CountryCodeKey = "SelectedCountryCode";
     private static AppSettingsService? _instance;
     private string _currentCountryCode;
@@ -37,5 +38,15 @@ public class AppSettingsService : IAppSettingsService
     public void SetCountry(string countryCode)
     {
         CurrentCountryCode = countryCode;
+    }
+
+    public string CurrentVersion
+    {
+        get => Preferences.Default.Get(CurrentVersionKey, VersionTracking.CurrentVersion);
+        set => Preferences.Default.Set(CurrentVersionKey, value);
+    }
+    public void SetCurrentVersion(string version)
+    {
+        CurrentVersion = version;
     }
 }
