@@ -1,8 +1,9 @@
 using App.Models;
+using App.Services.Interfaces;
 
 namespace App.Services;
 
-public class AppSettingsService
+public class AppSettingsService : IAppSettingsService
 {
     private const string CountryCodeKey = "SelectedCountryCode";
     private static AppSettingsService? _instance;

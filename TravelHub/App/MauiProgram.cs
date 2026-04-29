@@ -1,4 +1,4 @@
-using App.Services.Implementations;
+﻿using App.Services.Implementations;
 using App.Services.Interfaces;
 using App.ViewModels;
 using App.Views;
@@ -63,6 +63,8 @@ public static class MauiProgram
         builder.Services.AddSingleton<IAuthService, AuthService>();
         builder.Services.AddSingleton<IUserSessionService, UserSessionService>();
         builder.Services.AddSingleton<ITravelerProfileService, TravelerProfileService>();
+        builder.Services.AddSingleton<INavigationService, ShellNavigationService>();
+        builder.Services.AddSingleton<IAppSettingsService>(sp => global::App.Services.AppSettingsService.Instance);
 
 #if DEBUG
         builder.Logging.AddDebug();

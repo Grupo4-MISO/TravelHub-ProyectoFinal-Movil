@@ -9,6 +9,7 @@ public class AccountLoginViewModel : BaseViewModel, IQueryAttributable
 {
     private readonly IAuthService _authService;
     private readonly IUserSessionService _userSessionService;
+    private readonly INavigationService _navigationService;
     private string _returnTo = string.Empty;
 
     private string _email = string.Empty;
@@ -28,10 +29,11 @@ public class AccountLoginViewModel : BaseViewModel, IQueryAttributable
     public ICommand LoginCommand { get; }
     public ICommand RegisterCommand { get; }
 
-    public AccountLoginViewModel(IAuthService authService, IUserSessionService userSessionService)
+    public AccountLoginViewModel(IAuthService authService, IUserSessionService userSessionService, INavigationService navigationService)
     {
         _authService = authService ?? throw new ArgumentNullException(nameof(authService));
         _userSessionService = userSessionService ?? throw new ArgumentNullException(nameof(userSessionService));
+        _navigationService = navigationService ?? throw new ArgumentNullException(nameof(navigationService));
         Title = "Iniciar Sesion";
         LoginCommand = new Command(OnLogin);
         RegisterCommand = new Command(OnRegister);
@@ -41,7 +43,7 @@ public class AccountLoginViewModel : BaseViewModel, IQueryAttributable
     {
         if (string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(Password))
         {
-            await Shell.Current.DisplayAlert("Error", "Ingresa tu email y contrasena.", "OK");
+            await _navigationService.DisplayAlert("Error", "Ingresa tu email y contrasena.", "OK");
             return;
         }
 
@@ -58,9 +60,9 @@ public class AccountLoginViewModel : BaseViewModel, IQueryAttributable
             if (response.Error || response.Response == null || string.IsNullOrWhiteSpace(response.Response.Token))
             {
                 var errorMessage = await response.GetErrorMessageAsync();
-                await Shell.Current.DisplayAlert(
+                await _navigationService.DisplayAlert(
                     "Error",
-                    string.IsNullOrWhiteSpace(errorMessage) ? "No fue posible iniciar sesión." : errorMessage,
+                    string.IsNullOrWhiteSpace(errorMessage) ? "No fue posible iniciar sesion." : errorMessage,
                     "OK");
                 return;
             }
@@ -70,11 +72,11 @@ public class AccountLoginViewModel : BaseViewModel, IQueryAttributable
             if (string.Equals(_returnTo, nameof(TravelerDataPage), StringComparison.Ordinal))
             {
                 _returnTo = string.Empty;
-                await Shell.Current.GoToAsync("..");
+                await _navigationService.GoToAsync("..");
                 return;
             }
 
-            await Shell.Current.GoToAsync("//account");
+            await _navigationService.GoToAsync("//account");
         }
         finally
         {
@@ -84,7 +86,7 @@ public class AccountLoginViewModel : BaseViewModel, IQueryAttributable
 
     private async void OnRegister()
     {
-        await Shell.Current.GoToAsync(nameof(AccountRegisterPage));
+        await _navigationService.GoToAsync(nameof(AccountRegisterPage));
     }
 
     public void ApplyQueryAttributes(IDictionary<string, object> query)

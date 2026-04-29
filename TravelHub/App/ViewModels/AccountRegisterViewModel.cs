@@ -1,57 +1,68 @@
-using App.Services;
+using App.Services.Interfaces;
 
 namespace App.ViewModels;
 
-public partial class AccountRegisterViewModel : BaseViewModel
+public class AccountRegisterViewModel : BaseViewModel
 {
+    private readonly INavigationService _navigationService;
+    private readonly IAppSettingsService _appSettingsService;
+
     private string _firstName = string.Empty;
     public string FirstName
     {
         get => _firstName;
         set => SetProperty(ref _firstName, value);
     }
+
     private string _lastName = string.Empty;
     public string LastName
     {
         get => _lastName;
         set => SetProperty(ref _lastName, value);
     }
+
     private string _email = string.Empty;
     public string Email
     {
         get => _email;
         set => SetProperty(ref _email, value);
     }
+
     private string _phoneNumber = string.Empty;
     public string PhoneNumber
     {
         get => _phoneNumber;
         set => SetProperty(ref _phoneNumber, value);
     }
+
     private string _password = string.Empty;
     public string Password
     {
         get => _password;
         set => SetProperty(ref _password, value);
     }
+
     private string _confirmPassword = string.Empty;
     public string ConfirmPassword
     {
         get => _confirmPassword;
         set => SetProperty(ref _confirmPassword, value);
     }
+
     private bool _acceptTerms = false;
     public bool AcceptTerms
     {
         get => _acceptTerms;
         set => SetProperty(ref _acceptTerms, value);
     }
+
     private string _phoneCode = string.Empty;
     public string PhoneCode
     {
         get => _phoneCode;
         set => SetProperty(ref _phoneCode, value);
     }
+
     private string _countryFlag = string.Empty;
     public string CountryFlag
     {
@@ -62,8 +73,10 @@ public partial class AccountRegisterViewModel : BaseViewModel
     public Command RegisterCommand { get; }
     public Command GoToLoginCommand { get; }
 
-    public AccountRegisterViewModel()
+    public AccountRegisterViewModel(INavigationService navigationService, IAppSettingsService appSettingsService)
     {
+        _navigationService = navigationService ?? throw new ArgumentNullException(nameof(navigationService));
+        _appSettingsService = appSettingsService ?? throw new ArgumentNullException(nameof(appSettingsService));
         Title = "Registro";
         LoadPhoneCode();
         RegisterCommand = new Command(async () => await Register());
@@ -72,35 +85,36 @@ public partial class AccountRegisterViewModel : BaseViewModel
 
     private void LoadPhoneCode()
     {
-        var country = AppSettingsService.Instance.CurrentCountry;
-        PhoneCode = country.PhoneCode;
-        CountryFlag = country.FlagEmoji;
+        var country = _appSettingsService.CurrentCountry;
+        PhoneCode = country?.PhoneCode ?? string.Empty;
+        CountryFlag = country?.FlagEmoji ?? string.Empty;
     }
 
     public string FullPhoneNumber => $"{PhoneCode} {PhoneNumber}".Trim();
+
     private async Task Register()
     {
-        if (!ValidateForm())
+        if (!await ValidateForm())
             return;
 
         IsBusy = true;
 
         try
         {
-            // SimulaciÛn de registro (aquÌ irÌa la lÛgica real con API)
+            // Simulaci√≥n de registro (aqu√≠ ir√≠a la l√≥gica real con API)
             await Task.Delay(1500);
 
-            await Shell.Current.DisplayAlert(
+            await _navigationService.DisplayAlert(
                 "Registro exitoso",
-                "Tu cuenta ha sido creada. Ahora puedes iniciar sesiÛn.",
+                "Tu cuenta ha sido creada. Ahora puedes iniciar sesi√≥n.",
                 "OK");
 
             // Navegar de vuelta al login
-            await Shell.Current.GoToAsync("..");
+            await _navigationService.GoToAsync("..");
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlert("Error", ex.Message, "OK");
+            await _navigationService.DisplayAlert("Error", ex.Message, "OK");
         }
         finally
         {
@@ -110,62 +124,62 @@ public partial class AccountRegisterViewModel : BaseViewModel
 
     private async Task GoToLogin()
     {
-        await Shell.Current.GoToAsync("..");
+        await _navigationService.GoToAsync("..");
     }
 
-    private bool ValidateForm()
+    private async Task<bool> ValidateForm()
     {
         if (string.IsNullOrWhiteSpace(FirstName))
         {
-            Shell.Current.DisplayAlert("Error", "Por favor ingresa tu nombre", "OK");
+            await _navigationService.DisplayAlert("Error", "Por favor ingresa tu nombre", "OK");
             return false;
         }
 
         if (string.IsNullOrWhiteSpace(LastName))
         {
-            Shell.Current.DisplayAlert("Error", "Por favor ingresa tu apellido", "OK");
+            await _navigationService.DisplayAlert("Error", "Por favor ingresa tu apellido", "OK");
             return false;
         }
 
         if (string.IsNullOrWhiteSpace(Email))
         {
-            Shell.Current.DisplayAlert("Error", "Por favor ingresa tu email", "OK");
+            await _navigationService.DisplayAlert("Error", "Por favor ingresa tu email", "OK");
             return false;
         }
 
         if (!IsValidEmail(Email))
         {
-            Shell.Current.DisplayAlert("Error", "Por favor ingresa un email v·lido", "OK");
+            await _navigationService.DisplayAlert("Error", "Por favor ingresa un email v√°lido", "OK");
             return false;
         }
 
         if (string.IsNullOrWhiteSpace(PhoneNumber))
         {
-            Shell.Current.DisplayAlert("Error", "Por favor ingresa tu telÈfono", "OK");
+            await _navigationService.DisplayAlert("Error", "Por favor ingresa tu tel√©fono", "OK");
             return false;
         }
 
         if (string.IsNullOrWhiteSpace(Password))
         {
-            Shell.Current.DisplayAlert("Error", "Por favor ingresa una contraseÒa", "OK");
+            await _navigationService.DisplayAlert("Error", "Por favor ingresa una contrase√±a", "OK");
             return false;
         }
 
         if (Password.Length < 6)
         {
-            Shell.Current.DisplayAlert("Error", "La contraseÒa debe tener al menos 6 caracteres", "OK");
+            await _navigationService.DisplayAlert("Error", "La contrase√±a debe tener al menos 6 caracteres", "OK");
             return false;
         }
 
         if (Password != ConfirmPassword)
         {
-            Shell.Current.DisplayAlert("Error", "Las contraseÒas no coinciden", "OK");
+            await _navigationService.DisplayAlert("Error", "Las contrase√±as no coinciden", "OK");
             return false;
         }
 
         if (!AcceptTerms)
         {
-            Shell.Current.DisplayAlert("Error", "Debes aceptar los tÈrminos y condiciones", "OK");
+            await _navigationService.DisplayAlert("Error", "Debes aceptar los t√©rminos y condiciones", "OK");
             return false;
         }
 
