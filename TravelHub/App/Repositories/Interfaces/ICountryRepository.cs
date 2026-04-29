@@ -1,6 +1,6 @@
 using App.Models;
 
-namespace App.Services.Interfaces;
+namespace App.Repositories.Interfaces;
 
 public interface ICountryRepository
 {

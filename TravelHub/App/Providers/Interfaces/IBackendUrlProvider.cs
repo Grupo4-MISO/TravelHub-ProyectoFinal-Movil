@@ -1,4 +1,4 @@
-namespace App.Services.Interfaces;
+namespace App.Providers.Interfaces;
 
 public interface IBackendUrlProvider
 {

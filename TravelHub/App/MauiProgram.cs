@@ -1,10 +1,13 @@
 ﻿using App.Services.Implementations;
 using App.Services.Interfaces;
-using App.Services;
 using App.ViewModels;
 using App.Views;
 using CommunityToolkit.Maui;
 using Microsoft.Extensions.Logging;
+using App.Repositories.Interfaces;
+using App.Repositories.Implementations;
+using App.Providers.Interfaces;
+using App.Providers.Implementations;
 
 namespace App;
 

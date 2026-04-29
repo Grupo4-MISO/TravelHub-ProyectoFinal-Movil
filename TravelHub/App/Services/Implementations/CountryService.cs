@@ -1,4 +1,6 @@
 using App.Models;
+using App.Providers.Interfaces;
+using App.Repositories.Interfaces;
 using App.Responses;
 using App.Services.Interfaces;
 

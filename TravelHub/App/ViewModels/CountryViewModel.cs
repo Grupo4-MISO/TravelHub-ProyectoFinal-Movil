@@ -1,7 +1,8 @@
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using App.Models;
-using App.Services;
+using App.Providers.Interfaces;
+using App.Services.Implementations;
 using App.Services.Interfaces;
 
 namespace App.ViewModels;

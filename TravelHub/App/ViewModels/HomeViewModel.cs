@@ -1,7 +1,9 @@
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using App.Models;
+using App.Providers.Interfaces;
 using App.Services;
+using App.Services.Implementations;
 using App.Services.Interfaces;
 
 namespace App.ViewModels;
@@ -104,7 +106,6 @@ public class HomeViewModel : BaseViewModel
         get => _popularCitiesErrorMessage;
         set => SetProperty(ref _popularCitiesErrorMessage, value);
     }
-
     public string GuestSummary
     {
         get
@@ -120,7 +121,6 @@ public class HomeViewModel : BaseViewModel
     }
 
     public DateTime MinDate => DateTime.Today;
-
     public ICommand SearchCommand { get; }
     public ICommand PropertySelectedCommand { get; }
     public ICommand ToggleGuestConfigCommand { get; }

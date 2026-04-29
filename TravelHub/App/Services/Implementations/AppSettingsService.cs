@@ -1,7 +1,7 @@
 using App.Models;
 using App.Services.Interfaces;
 
-namespace App.Services;
+namespace App.Services.Implementations;
 
 public class AppSettingsService : IAppSettingsService
 {

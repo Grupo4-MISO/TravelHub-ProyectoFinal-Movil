@@ -1,7 +1,8 @@
 using App.Models;
+using App.Repositories.Interfaces;
 using App.Services.Interfaces;
 
-namespace App.Services.Implementations;
+namespace App.Repositories.Implementations;
 
 public class CountryRepository : ICountryRepository
 {

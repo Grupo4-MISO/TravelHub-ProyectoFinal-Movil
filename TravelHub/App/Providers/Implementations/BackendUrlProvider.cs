@@ -1,7 +1,7 @@
-using App.Services.Interfaces;
+using App.Providers.Interfaces;
 using Microsoft.Maui.Storage;
 
-namespace App.Services.Implementations;
+namespace App.Providers.Implementations;
 
 public class BackendUrlProvider : IBackendUrlProvider
 {

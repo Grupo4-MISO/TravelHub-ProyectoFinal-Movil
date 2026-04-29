@@ -1,5 +1,6 @@
 using System.Net;
 using App.Models;
+using App.Providers.Interfaces;
 using App.Responses;
 using App.Services.Interfaces;
 
