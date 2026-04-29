@@ -5,11 +5,11 @@ namespace App.Services.Implementations;
 
 public class BackendUrlProvider : IBackendUrlProvider
 {
-    private const string BackendUrlEnvironmentVariable = "TRAVELHUB_BACKEND_URL";
     private const string BackendUrlPreferenceKey = "BackendUrl";
-    private const string DefaultBackendUrl = "https://light-eggs-lie.loca.lt";
+    private const string DefaultBackendUrl = "https://dpyrs6tuvj15e.cloudfront.net";
     private readonly object _sync = new();
     private string _baseUrl;
+    public event EventHandler<string>? BaseUrlChanged;
 
     public string BaseUrl
     {
@@ -24,12 +24,9 @@ public class BackendUrlProvider : IBackendUrlProvider
 
     public BackendUrlProvider()
     {
-        var configuredDefaultUrl = NormalizeBaseUrl(Environment.GetEnvironmentVariable(BackendUrlEnvironmentVariable));
-        var storedUrl = Preferences.Default.Get(BackendUrlPreferenceKey, configuredDefaultUrl);
+        var storedUrl = Preferences.Default.Get(BackendUrlPreferenceKey, DefaultBackendUrl);
         var normalizedStoredUrl = NormalizeBaseUrl(storedUrl);
-
         _baseUrl = normalizedStoredUrl;
-        Preferences.Default.Set(BackendUrlPreferenceKey, normalizedStoredUrl);
     }
 
     public string Build(string relativePath)
@@ -53,6 +50,7 @@ public class BackendUrlProvider : IBackendUrlProvider
     public bool TryUpdateBaseUrl(string newBaseUrl)
     {
         var normalizedBaseUrl = NormalizeBaseUrl(newBaseUrl);
+        var hasChanged = false;
         lock (_sync)
         {
             if (string.Equals(_baseUrl, normalizedBaseUrl, StringComparison.OrdinalIgnoreCase))
@@ -61,9 +59,14 @@ public class BackendUrlProvider : IBackendUrlProvider
             }
 
             _baseUrl = normalizedBaseUrl;
+            hasChanged = true;
         }
 
         Preferences.Default.Set(BackendUrlPreferenceKey, normalizedBaseUrl);
+        if (hasChanged)
+        {
+            BaseUrlChanged?.Invoke(this, normalizedBaseUrl);
+        }
         return true;
     }
 

@@ -1,15 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:vm="clr-namespace:App.ViewModels"
              xmlns:icons="clr-namespace:App.Resources.Styles"
              xmlns:behaviors="clr-namespace:App.Behaviors"
              x:Class="App.Views.TravelerDataPage"
              Title="{Binding Title}">
-
-    <ContentPage.BindingContext>
-        <vm:TravelerDataViewModel />
-    </ContentPage.BindingContext>
 
     <Grid RowDefinitions="*,Auto" BackgroundColor="{StaticResource Background}">
         <ScrollView Grid.Row="0">
@@ -95,7 +90,6 @@
                                 </Grid>
                             </Border>
                         </VerticalStackLayout>
-
 
                         <VerticalStackLayout Spacing="4">
                             <Label Text="Teléfono" Style="{StaticResource Caption}" />
@@ -198,10 +192,18 @@
         <Border Grid.Row="1" Padding="16,12"
                 BackgroundColor="{StaticResource Surface}"
                 Stroke="{StaticResource Gray100}">
-            <Button Text="Continuar"
-                    Command="{Binding ContinueCommand}"
-                    Style="{StaticResource AccentButton}"
-                    HorizontalOptions="Fill" />
+            <Grid>
+                <Button Text="Continuar"
+                        IsVisible="{Binding ShowContinueButton}"
+                        Command="{Binding ContinueCommand}"
+                        Style="{StaticResource AccentButton}"
+                        HorizontalOptions="Fill" />
+                <Button Text="Actualizar datos"
+                        IsVisible="{Binding ShowUpdateButton}"
+                        Command="{Binding UpdateTravelerCommand}"
+                        Style="{StaticResource AccentButton}"
+                        HorizontalOptions="Fill" />
+            </Grid>
         </Border>
     </Grid>
 </ContentPage>

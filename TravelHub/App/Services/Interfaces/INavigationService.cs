@@ -1,0 +1,7 @@
+﻿namespace App.Services.Interfaces;
+
+public interface INavigationService
+{
+    Task DisplayAlert(string title, string message, string cancel);
+    Task GoToAsync(string uri);
+}

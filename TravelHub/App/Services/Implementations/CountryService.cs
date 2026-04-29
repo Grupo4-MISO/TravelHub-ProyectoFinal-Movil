@@ -18,6 +18,7 @@ namespace App.Services.Implementations
         {
             _backEndService = backEndService ?? throw new ArgumentNullException(nameof(backEndService));
             _backendUrlProvider = backendUrlProvider ?? throw new ArgumentNullException(nameof(backendUrlProvider));
+            _backendUrlProvider.BaseUrlChanged += OnBackendUrlChanged;
         }
 
         public async Task<HttpResponseWrapper<List<Country>>> GetCountriesAsync()
@@ -102,6 +103,12 @@ namespace App.Services.Implementations
             }
 
             return response;
+        }
+
+        private void OnBackendUrlChanged(object? sender, string newBaseUrl)
+        {
+            _cachedCountries = null;
+            _popularCitiesByCountryCache.Clear();
         }
     }
 }

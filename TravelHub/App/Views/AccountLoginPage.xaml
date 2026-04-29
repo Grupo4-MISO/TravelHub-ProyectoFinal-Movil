@@ -1,14 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:vm="clr-namespace:App.ViewModels"
-             x:Class="App.Views.LoginPage"
+             x:Class="App.Views.AccountLoginPage"
              Title="{Binding Title}"
              Shell.NavBarIsVisible="False">
-
-    <ContentPage.BindingContext>
-        <vm:LoginViewModel />
-    </ContentPage.BindingContext>
 
     <ScrollView BackgroundColor="{StaticResource Background}">
         <VerticalStackLayout Padding="32" Spacing="20"
@@ -16,18 +11,6 @@
 
             <!-- Logo / Titulo -->
             <VerticalStackLayout Spacing="8" HorizontalOptions="Center" Margin="0,40,0,20">
-                <!--<Border WidthRequest="70" HeightRequest="70"
-                        BackgroundColor="{StaticResource Primary}"
-                        StrokeShape="RoundRectangle 16"
-                        Stroke="Transparent"
-                        HorizontalOptions="Center">
-                    <Label Text="TH"
-                           TextColor="{StaticResource White}"
-                           FontFamily="OpenSansSemibold"
-                           FontSize="28"
-                           HorizontalTextAlignment="Center"
-                           VerticalTextAlignment="Center" />
-                </Border>-->
                 <Image Source="travelhub.png" Aspect="AspectFill" />
                 <Label Text="TravelHub"
                        Style="{StaticResource Headline}"

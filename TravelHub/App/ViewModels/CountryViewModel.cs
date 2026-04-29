@@ -10,6 +10,7 @@ public partial class CountryViewModel : BaseViewModel
 {
     private ObservableCollection<CountryItem> _countries = [];
     private readonly ICountryService _countryService;
+    private readonly IBackendUrlProvider _backendUrlProvider;
     private bool _isLoading;
     private string _errorMessage = string.Empty;
 
@@ -34,13 +35,15 @@ public partial class CountryViewModel : BaseViewModel
     public ICommand SelectCountryCommand { get; }
     public ICommand RetryLoadCommand { get; }
 
-    public CountryViewModel(ICountryService countryService)
+    public CountryViewModel(ICountryService countryService, IBackendUrlProvider backendUrlProvider)
     {
         _countryService = countryService ?? throw new ArgumentNullException(nameof(countryService));
+        _backendUrlProvider = backendUrlProvider ?? throw new ArgumentNullException(nameof(backendUrlProvider));
         SelectCountryCommand = new Command<CountryItem?>(async (country) => await SelectCountry(country));
         RetryLoadCommand = new Command(async () => await LoadCountries());
+        _backendUrlProvider.BaseUrlChanged += OnBackendUrlChanged;
         
-        // Cargar países al inicializar
+        // Cargar paï¿½ses al inicializar
         MainThread.BeginInvokeOnMainThread(async () => await LoadCountries());
     }
 
@@ -55,13 +58,13 @@ public partial class CountryViewModel : BaseViewModel
 
             if (response.Error)
             {
-                ErrorMessage = "No se pudieron cargar los países. Intenta más tarde.";
+                ErrorMessage = "No se pudieron cargar los paï¿½ses. Intenta mï¿½s tarde.";
                 return;
             }
 
             if (response.Response == null || response.Response.Count == 0)
             {
-                ErrorMessage = "No hay países disponibles.";
+                ErrorMessage = "No hay paï¿½ses disponibles.";
                 return;
             }
 
@@ -76,7 +79,7 @@ public partial class CountryViewModel : BaseViewModel
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"Error en LoadCountries: {ex.Message}");
-            ErrorMessage = "Error inesperado al cargar los países.";
+            ErrorMessage = "Error inesperado al cargar los paï¿½ses.";
         }
         finally
         {
@@ -88,23 +91,28 @@ public partial class CountryViewModel : BaseViewModel
     {
         if (selectedCountry == null) return;
 
-        // Actualizar selección
+        // Actualizar selecciï¿½n
         foreach (var country in Countries)
         {
             country.IsSelected = country.Code == selectedCountry.Code;
         }
 
-        // Guardar configuración
+        // Guardar configuraciï¿½n
         AppSettingsService.Instance.SetCountry(selectedCountry.Code);
 
-        // Mostrar confirmación
+        // Mostrar confirmaciï¿½n
         await Shell.Current.DisplayAlert(
-            "País seleccionado",
-            $"Ahora estás navegando en {selectedCountry.Name}",
+            "Paï¿½s seleccionado",
+            $"Ahora estï¿½s navegando en {selectedCountry.Name}",
             "OK");
 
-        // Volver atrás
+        // Volver atrï¿½s
         await Shell.Current.GoToAsync("..");
+    }
+
+    private void OnBackendUrlChanged(object? sender, string newBaseUrl)
+    {
+        MainThread.BeginInvokeOnMainThread(async () => await LoadCountries());
     }
 }
 

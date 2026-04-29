@@ -1,4 +1,4 @@
-using App.Services.Implementations;
+﻿using App.Services.Implementations;
 using App.Services.Interfaces;
 using App.ViewModels;
 using App.Views;
@@ -32,8 +32,8 @@ public static class MauiProgram
         builder.Services.AddTransient<BookingSummaryPage>();
         builder.Services.AddTransient<BookingConfirmedPage>();
         builder.Services.AddTransient<BookingDetailsPage>();
-        builder.Services.AddTransient<LoginPage>();
-        builder.Services.AddTransient<RegisterPage>();
+        builder.Services.AddTransient<AccountLoginPage>();
+        builder.Services.AddTransient<AccountRegisterPage>();
         builder.Services.AddTransient<ActiveBookingsPage>();
         builder.Services.AddTransient<AccountPage>();
         builder.Services.AddTransient<CountryPage>();
@@ -47,8 +47,8 @@ public static class MauiProgram
         builder.Services.AddTransient<BookingSummaryViewModel>();
         builder.Services.AddTransient<BookingConfirmedViewModel>();
         builder.Services.AddTransient<BookingDetailsViewModel>();
-        builder.Services.AddTransient<LoginViewModel>();
-        builder.Services.AddTransient<RegisterViewModel>();
+        builder.Services.AddTransient<AccountLoginViewModel>();
+        builder.Services.AddTransient<AccountRegisterViewModel>();
         builder.Services.AddTransient<ActiveBookingsViewModel>();
         builder.Services.AddTransient<AccountViewModel>();
         builder.Services.AddTransient<CountryViewModel>();
@@ -60,6 +60,11 @@ public static class MauiProgram
         builder.Services.AddSingleton<ICountryService, CountryService>();
         builder.Services.AddSingleton<IAccommodationSearchService, AccommodationSearchService>();
         builder.Services.AddSingleton<IPropertyDetailService, PropertyDetailService>();
+        builder.Services.AddSingleton<IAuthService, AuthService>();
+        builder.Services.AddSingleton<IUserSessionService, UserSessionService>();
+        builder.Services.AddSingleton<ITravelerProfileService, TravelerProfileService>();
+        builder.Services.AddSingleton<INavigationService, ShellNavigationService>();
+        builder.Services.AddSingleton<IAppSettingsService>(sp => global::App.Services.AppSettingsService.Instance);
 
 #if DEBUG
         builder.Logging.AddDebug();

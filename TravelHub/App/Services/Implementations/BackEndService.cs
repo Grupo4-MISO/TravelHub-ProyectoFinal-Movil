@@ -36,17 +36,17 @@ namespace App.Services.Implementations
             _httpClient.DefaultRequestHeaders.Authorization = null!;
         }
 
-        public void SetBaseAddress(string url)
+        public async Task SetBaseAddress(string url)
         {
             _httpClient.BaseAddress = new Uri(url);
         }
 
-        public void SetAuthorization(string? token)
+        public async Task SetAuthorization(string? token)
         {
             if (string.IsNullOrEmpty(token))
                 _httpClient.DefaultRequestHeaders.Authorization = null!;
             else
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         }
 
         public Response CheckConnection()
