@@ -1,19 +1,27 @@
-using System.Windows.Input;
+using App.DTOs;
 using App.Models;
+using System.Windows.Input;
 
 namespace App.ViewModels;
 
 public class BookingSummaryViewModel : BaseViewModel, IQueryAttributable
 {
-    private Property _property = new();
-    public Property Property
+    private string _imageUrl = string.Empty;
+    private string ImageUrl
+    {
+        get => _imageUrl;
+        set => SetProperty(ref _imageUrl, value);
+    }
+
+    private AccommodationDetailDto _property = new();
+    public AccommodationDetailDto Property
     {
         get => _property;
         set => SetProperty(ref _property, value);
     }
 
-    private Room _room = new();
-    public Room Room
+    private AccommodationDetailRoomDto _room = new();
+    public AccommodationDetailRoomDto Room
     {
         get => _room;
         set => SetProperty(ref _room, value);
@@ -62,7 +70,7 @@ public class BookingSummaryViewModel : BaseViewModel, IQueryAttributable
     }
 
     public int Nights => (CheckOut - CheckIn).Days;
-    public decimal TotalPrice => Room.PricePerNight * Nights;
+    public decimal TotalPrice => Room.Price * Nights;
 
     public ICommand ConfirmBookingCommand { get; }
 
@@ -74,9 +82,12 @@ public class BookingSummaryViewModel : BaseViewModel, IQueryAttributable
 
     public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
-        if (query.TryGetValue("property", out var pObj) && pObj is Property property)
+        if (query.TryGetValue("property", out var pObj) && pObj is AccommodationDetailDto property)
+        {
             Property = property;
-        if (query.TryGetValue("room", out var rObj) && rObj is Room room)
+            ImageUrl = property.Images?.FirstOrDefault()?.Url ?? string.Empty;
+        }
+        if (query.TryGetValue("room", out var rObj) && rObj is AccommodationDetailRoomDto room)
             Room = room;
         if (query.TryGetValue("traveler", out var tObj) && tObj is Traveler traveler)
             Traveler = traveler;
@@ -93,21 +104,21 @@ public class BookingSummaryViewModel : BaseViewModel, IQueryAttributable
             return;
         }
 
-        var reservation = new Reservation
-        {
-            Id = new Random().Next(1000, 9999),
-            BookingCode = $"TH-{DateTime.Now:yyyy}-{new Random().Next(1000, 9999):D4}",
-            Property = Property,
-            Room = Room,
-            Traveler = Traveler,
-            CheckIn = CheckIn,
-            CheckOut = CheckOut,
-            Adults = 2,
-            TotalPrice = TotalPrice,
-            Status = "Confirmada"
-        };
+        //var reservation = new Reservation
+        //{
+        //    Id = new Random().Next(1000, 9999),
+        //    BookingCode = $"TH-{DateTime.Now:yyyy}-{new Random().Next(1000, 9999):D4}",
+        //    Property = Property,
+        //    Room = Room,
+        //    Traveler = Traveler,
+        //    CheckIn = CheckIn,
+        //    CheckOut = CheckOut,
+        //    Adults = 2,
+        //    TotalPrice = TotalPrice,
+        //    Status = "Confirmada"
+        //};
 
-        var navParams = new Dictionary<string, object> { { "reservation", reservation } };
-        await Shell.Current.GoToAsync("BookingConfirmedPage", navParams);
+        //var navParams = new Dictionary<string, object> { { "reservation", reservation } };
+        //await Shell.Current.GoToAsync("BookingConfirmedPage", navParams);
     }
 }

@@ -19,11 +19,11 @@ public class AccommodationSearchService : IAccommodationSearchService
         _backendUrlProvider = backendUrlProvider ?? throw new ArgumentNullException(nameof(backendUrlProvider));
     }
 
-    public async Task<HttpResponseWrapper<List<Property>>> SearchAccommodationsAsync(SearchCriteria criteria)
+    public async Task<HttpResponseWrapper<List<SearchAccommodationDto>>> SearchAccommodationsAsync(SearchCriteria criteria)
     {
         if (criteria == null)
         {
-            return new HttpResponseWrapper<List<Property>>(
+            return new HttpResponseWrapper<List<SearchAccommodationDto>>(
                 default!,
                 true,
                 new HttpResponseMessage(HttpStatusCode.BadRequest));
@@ -33,11 +33,10 @@ public class AccommodationSearchService : IAccommodationSearchService
         var response = await _backEndService.GetAsync<List<SearchAccommodationDto>>(url);
         if (response.Error || response.Response == null)
         {
-            return new HttpResponseWrapper<List<Property>>(default!, true, response.HttpResponseMessage);
+            return new HttpResponseWrapper<List<SearchAccommodationDto>>(default!, true, response.HttpResponseMessage);
         }
 
-        var properties = response.Response.Select(item => MapToProperty(item, criteria)).ToList();
-        return new HttpResponseWrapper<List<Property>>(properties, false, response.HttpResponseMessage);
+        return new HttpResponseWrapper<List<SearchAccommodationDto>>(response.Response, false, response.HttpResponseMessage);
     }
 
     private string BuildSearchUrl(SearchCriteria criteria)
@@ -66,51 +65,4 @@ public class AccommodationSearchService : IAccommodationSearchService
         return $"{_backendUrlProvider.Build(SearchEndpoint)}?{queryString}";
     }
 
-    private static Property MapToProperty(SearchAccommodationDto dto, SearchCriteria criteria)
-    {
-        var hotelOrRoomId = string.IsNullOrWhiteSpace(dto.PropertyId) ? dto.RoomId : dto.PropertyId;
-        var computedId = ComputeStablePositiveId(hotelOrRoomId);
-        var imageUrl = dto.ImageUrl ?? string.Empty;
-
-        return new Property
-        {
-            Id = computedId,
-            ProviderId = dto.PropertyId ?? string.Empty,
-            Name = dto.Name ?? string.Empty,
-            City = dto.City ?? string.Empty,
-            Address = dto.Address ?? string.Empty,
-            Description = dto.Description ?? string.Empty,
-            Rating = dto.Rating,
-            ReviewCount = dto.Reviews,
-            PricePerNight = dto.Price,
-            ImageUrl = imageUrl,
-            ImageUrls = string.IsNullOrWhiteSpace(imageUrl) ? [] : [imageUrl],
-            IsAvailable = true,
-            Country = new Country
-            {
-                Name = dto.Country ?? string.Empty,
-                Code = string.IsNullOrWhiteSpace(criteria.CountryCode) ? "CO" : criteria.CountryCode.Trim().ToUpperInvariant(),
-                CurrencyCode = string.IsNullOrWhiteSpace(dto.CurrencyCode) ? criteria.CurrencyCode : dto.CurrencyCode
-            },
-            Rooms =
-            [
-                new Room
-                {
-                    Id = ComputeStablePositiveId(dto.RoomId ?? hotelOrRoomId),
-                    ProviderId = dto.RoomId ?? string.Empty,
-                    Name = string.IsNullOrWhiteSpace(dto.RoomCode) ? "Habitación" : $"Habitación {dto.RoomCode}",
-                    Description = dto.Description ?? string.Empty,
-                    MaxGuests = Math.Max(1, dto.Capacity),
-                    PricePerNight = dto.Price,
-                    ImageUrl = imageUrl,
-                    IsAvailable = true
-                }
-            ]
-        };
-    }
-
-    private static int ComputeStablePositiveId(string source)
-    {
-        return source.GetHashCode() & int.MaxValue;
-    }
 }

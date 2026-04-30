@@ -1,8 +1,9 @@
-using System.Windows.Input;
+using App.DTOs;
 using App.Models;
 using App.Services.Implementations;
 using App.Services.Interfaces;
 using App.Views;
+using System.Windows.Input;
 
 namespace App.ViewModels;
 
@@ -14,26 +15,32 @@ public class TravelerDataViewModel : BaseViewModel, IQueryAttributable
     private bool _loginNavigationInProgress;
     private bool _suppressDirtyTracking;
 
+    private string _imageUrl = string.Empty;
     private string _travelerId = string.Empty;
     private string _originalFirstName = string.Empty;
     private string _originalLastName = string.Empty;
     private string _originalDocumentNumber = string.Empty;
     private string _originalPhone = string.Empty;
 
-    private Property _property = new();
-    public Property Property
+    private AccommodationDetailDto _property = new();
+    public AccommodationDetailDto Property
     {
         get => _property;
         set => SetProperty(ref _property, value);
     }
 
-    private Room _room = new();
-    public Room Room
+    private AccommodationDetailRoomDto _room = new();
+    public AccommodationDetailRoomDto Room
     {
         get => _room;
         set => SetProperty(ref _room, value);
     }
 
+    private string ImageUrl
+    {
+        get => _imageUrl;
+        set => SetProperty(ref _imageUrl, value);
+    }
     public string TravelerId
     {
         get => _travelerId;
@@ -181,10 +188,15 @@ public class TravelerDataViewModel : BaseViewModel, IQueryAttributable
 
     public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
-        if (query.TryGetValue("property", out var pObj) && pObj is Property property)
+        if (query.TryGetValue("property", out var pObj) && pObj is AccommodationDetailDto property)
+        {
             Property = property;
-        if (query.TryGetValue("room", out var rObj) && rObj is Room room)
+            ImageUrl = property.Images?.FirstOrDefault()?.Url ?? string.Empty;
+        }
+        if (query.TryGetValue("room", out var rObj) && rObj is AccommodationDetailRoomDto room)
+        {
             Room = room;
+        }
     }
 
     public async Task EnsureAuthenticatedAndLoadTravelerAsync()
@@ -221,7 +233,7 @@ public class TravelerDataViewModel : BaseViewModel, IQueryAttributable
             await Shell.Current.DisplayAlert("Error", "No se encontró un usuario autenticado.", "OK");
             return;
         }
-            
+
         IsBusy = true;
         try
         {

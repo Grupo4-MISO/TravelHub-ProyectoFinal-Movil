@@ -5,5 +5,5 @@ namespace App.Services.Interfaces;
 
 public interface IAccommodationSearchService
 {
-    Task<HttpResponseWrapper<List<Property>>> SearchAccommodationsAsync(SearchCriteria criteria);
+    Task<HttpResponseWrapper<List<SearchAccommodationDto>>> SearchAccommodationsAsync(SearchCriteria criteria);
 }

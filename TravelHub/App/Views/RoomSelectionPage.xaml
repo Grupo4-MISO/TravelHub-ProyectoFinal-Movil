@@ -32,21 +32,21 @@
                                    Aspect="AspectFill"
                                    HeightRequest="160" />
                             <VerticalStackLayout Grid.Row="1" Padding="14" Spacing="6">
-                                <Label Text="{Binding Name}"
-                                       FontFamily="OpenSansSemibold" FontSize="17" />
                                 <Label Text="{Binding Description}"
+                                       FontFamily="OpenSansSemibold" FontSize="17" />
+                                <!--<Label Text="{Binding Description}"
                                        Style="{StaticResource Subtitle}"
                                        LineBreakMode="WordWrap"
-                                       MaxLines="2" />
+                                       MaxLines="2" />-->
                                 <VerticalStackLayout Spacing="5">
                                     <HorizontalStackLayout>
-                                        <Label Text="{Binding BedType}" Style="{StaticResource Caption}" />
+                                        <Label Text="{Binding Code}" Style="{StaticResource Caption}" />
                                         <Label Text="|" Style="{StaticResource Caption}" />
-                                        <Label Text="{Binding MaxGuests, StringFormat='Max {0} huespedes'}"
+                                        <Label Text="{Binding Capacity, StringFormat='Max {0} huespedes'}"
                                                Style="{StaticResource Caption}" />
                                     </HorizontalStackLayout>
                                     <Label
-                                           Text="{Binding PricePerNight, StringFormat='${0:F0}/noche'}"
+                                           Text="{Binding Price, StringFormat='${0:F0}/noche'}"
                                            Style="{StaticResource Price}" FontSize="17" />
                                 </VerticalStackLayout>
                                 <Button Text="Seleccionar"
@@ -69,7 +69,7 @@
                 Stroke="{StaticResource Gray100}"
                 IsVisible="{Binding IsRoomSelected}">
             <VerticalStackLayout Spacing="8">
-                <Label Text="{Binding SelectedRoom.Name, StringFormat='Seleccionada: {0}'}"
+                <Label Text="{Binding SelectedRoom.Description, StringFormat='Seleccionada: {0}'}"
                        FontFamily="OpenSansSemibold" FontSize="14"
                        HorizontalTextAlignment="Center" />
                 <Button Text="Reservar"

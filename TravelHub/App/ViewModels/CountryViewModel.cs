@@ -59,13 +59,13 @@ public partial class CountryViewModel : BaseViewModel
 
             if (response.Error)
             {
-                ErrorMessage = "No se pudieron cargar los pa�ses. Intenta m�s tarde.";
+                ErrorMessage = "No se pudieron cargar los países. Intenta más tarde.";
                 return;
             }
 
             if (response.Response == null || response.Response.Count == 0)
             {
-                ErrorMessage = "No hay pa�ses disponibles.";
+                ErrorMessage = "No hay países disponibles.";
                 return;
             }
 
@@ -80,7 +80,7 @@ public partial class CountryViewModel : BaseViewModel
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"Error en LoadCountries: {ex.Message}");
-            ErrorMessage = "Error inesperado al cargar los pa�ses.";
+            ErrorMessage = "Error inesperado al cargar los países.";
         }
         finally
         {
@@ -102,10 +102,10 @@ public partial class CountryViewModel : BaseViewModel
         AppSettingsService.Instance.SetCountry(selectedCountry.Code);
 
         // Mostrar confirmaci�n
-        await Shell.Current.DisplayAlert(
-            "Pa�s seleccionado",
-            $"Ahora est�s navegando en {selectedCountry.Name}",
-            "OK");
+        //await Shell.Current.DisplayAlert(
+        //    "Pa�s seleccionado",
+        //    $"Ahora est�s navegando en {selectedCountry.Name}",
+        //    "OK");
 
         // Volver atr�s
         await Shell.Current.GoToAsync("..");

@@ -1,7 +1,8 @@
-using System.Collections.ObjectModel;
-using System.Windows.Input;
+using App.DTOs;
 using App.Models;
 using App.Services;
+using System.Collections.ObjectModel;
+using System.Windows.Input;
 
 namespace App.ViewModels;
 
@@ -90,8 +91,8 @@ public partial class BookingDetailsViewModel : BaseViewModel, IQueryAttributable
 
     // CA4: Servicios Incluidos
 
-    private ObservableCollection<Amenity> _includedServices = new();
-    public ObservableCollection<Amenity> IncludedServices
+    private ObservableCollection<AccommodationDetailAmenityDto> _includedServices = new();
+    public ObservableCollection<AccommodationDetailAmenityDto> IncludedServices
     {
         get => _includedServices;
         set => SetProperty(ref _includedServices, value);
@@ -201,56 +202,56 @@ public partial class BookingDetailsViewModel : BaseViewModel, IQueryAttributable
 
     private void LoadReservationDetails(int reservationId)
     {
-        // Cargar datos de la reserva desde el servicio
-        var reservation = MockDataService.GetActiveReservations()
-            .FirstOrDefault(r => r.Id == reservationId);
+        //// Cargar datos de la reserva desde el servicio
+        //var reservation = MockDataService.GetActiveReservations()
+        //    .FirstOrDefault(r => r.Id == reservationId);
 
-        if (reservation == null) return;
+        //if (reservation == null) return;
 
-        // Mapear datos de la reserva al ViewModel
-        BookingNumber = reservation.BookingCode;
-        BookingStatus = reservation.Status;
-        StatusColor = reservation.Status.ToLower() switch
-        {
-            "confirmada" => Color.FromArgb("#4CAF50"),
-            "pendiente" => Color.FromArgb("#FFC107"),
-            "cancelada" => Color.FromArgb("#F44336"),
-            _ => Color.FromArgb("#757575")
-        };
+        //// Mapear datos de la reserva al ViewModel
+        //BookingNumber = reservation.BookingCode;
+        //BookingStatus = reservation.Status;
+        //StatusColor = reservation.Status.ToLower() switch
+        //{
+        //    "confirmada" => Color.FromArgb("#4CAF50"),
+        //    "pendiente" => Color.FromArgb("#FFC107"),
+        //    "cancelada" => Color.FromArgb("#F44336"),
+        //    _ => Color.FromArgb("#757575")
+        //};
 
-        CheckIn = reservation.CheckIn;
-        CheckOut = reservation.CheckOut;
-        GuestsCount = reservation.Adults + reservation.Children;
-        RoomType = reservation.Room.Name;
-        Nights = reservation.Nights;
+        //CheckIn = reservation.CheckIn;
+        //CheckOut = reservation.CheckOut;
+        //GuestsCount = reservation.Adults + reservation.Children;
+        //RoomType = reservation.Room.Name;
+        //Nights = reservation.Nights;
 
-        // Información del hotel
-        Hotel = new HotelInfo
-        {
-            Name = reservation.Property.Name,
-            Address = reservation.Property.Address,
-            City = reservation.Property.City,
-            Phone = "+57 300 123 4567", // Mock - debería venir del modelo
-            Email = "reservas@" + reservation.Property.Name.ToLower().Replace(" ", "") + ".com",
-            FullAddress = $"{reservation.Property.Address}, {reservation.Property.City}",
-            ImageUrl = reservation.Property.ImageUrl
-        };
+        //// Información del hotel
+        //Hotel = new HotelInfo
+        //{
+        //    Name = reservation.Property.Name,
+        //    Address = reservation.Property.Address,
+        //    City = reservation.Property.City,
+        //    Phone = "+57 300 123 4567", // Mock - debería venir del modelo
+        //    Email = "reservas@" + reservation.Property.Name.ToLower().Replace(" ", "") + ".com",
+        //    FullAddress = $"{reservation.Property.Address}, {reservation.Property.City}",
+        //    ImageUrl = reservation.Property.ImageUrl
+        //};
 
-        // Servicios incluidos
-        IncludedServices = new ObservableCollection<Amenity>(reservation.Property.Amenities);
+        //// Servicios incluidos
+        //IncludedServices = new ObservableCollection<Amenity>(reservation.Property.Amenities);
 
-        // Información económica
-        PricePerNight = reservation.Room.PricePerNight;
-        SubTotal = reservation.Room.PricePerNight * reservation.Nights;
-        Taxes = SubTotal * 0.19m; // IVA 19%
-        TotalPrice = reservation.TotalPrice;
-        PaymentInfo = "Pagado - Tarjeta •••• 4567";
+        //// Información económica
+        //PricePerNight = reservation.Room.PricePerNight;
+        //SubTotal = reservation.Room.PricePerNight * reservation.Nights;
+        //Taxes = SubTotal * 0.19m; // IVA 19%
+        //TotalPrice = reservation.TotalPrice;
+        //PaymentInfo = "Pagado - Tarjeta •••• 4567";
 
-        // Gestión de reserva
-        CanModify = reservation.Status.ToLower() == "confirmada" && 
-                    reservation.CheckIn > DateTime.Now.AddDays(2);
-        CanCancel = reservation.Status.ToLower() == "confirmada" && 
-                    reservation.CheckIn > DateTime.Now.AddDays(1);
+        //// Gestión de reserva
+        //CanModify = reservation.Status.ToLower() == "confirmada" && 
+        //            reservation.CheckIn > DateTime.Now.AddDays(2);
+        //CanCancel = reservation.Status.ToLower() == "confirmada" && 
+        //            reservation.CheckIn > DateTime.Now.AddDays(1);
     }
 
     // CA6: Descarga de Documentos

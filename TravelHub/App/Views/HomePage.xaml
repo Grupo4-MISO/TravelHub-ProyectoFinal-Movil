@@ -207,7 +207,7 @@
                 </Border>
 
                 <!-- Propiedades Recomendadas -->
-                <Label Text="Recomendados"
+                <!--<Label Text="Recomendados"
                        Style="{StaticResource SubHeadline}"
                        Margin="16,20,16,8" />
 
@@ -265,7 +265,7 @@
                             </Border>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
-                </CollectionView>
+                </CollectionView>-->
 
             </VerticalStackLayout>
         </ScrollView>

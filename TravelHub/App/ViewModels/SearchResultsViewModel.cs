@@ -8,9 +8,9 @@ namespace App.ViewModels;
 public class SearchResultsViewModel : BaseViewModel, IQueryAttributable
 {
     private readonly IAccommodationSearchService _accommodationSearchService;
-    private readonly List<Property> _allProperties = [];
+    private readonly List<SearchAccommodationDto> _allProperties = [];
 
-    public ObservableCollection<Property> Properties { get; } = [];
+    public ObservableCollection<SearchAccommodationDto> Properties { get; } = [];
 
     private SearchCriteria _criteria = new();
     public SearchCriteria Criteria
@@ -89,7 +89,7 @@ public class SearchResultsViewModel : BaseViewModel, IQueryAttributable
     {
         _accommodationSearchService = accommodationSearchService ?? throw new ArgumentNullException(nameof(accommodationSearchService));
         Title = "Resultados";
-        PropertySelectedCommand = new Command<Property>(OnPropertySelected);
+        PropertySelectedCommand = new Command<SearchAccommodationDto>(OnPropertySelected);
         ToggleFilterCommand = new Command(() => IsFilterVisible = !IsFilterVisible);
         ApplyFilterCommand = new Command(OnApplyFilter);
         ClearFilterCommand = new Command(OnClearFilter);
@@ -133,7 +133,7 @@ public class SearchResultsViewModel : BaseViewModel, IQueryAttributable
                 return;
             }
 
-            MaxAvailablePrice = Math.Ceiling((double)_allProperties.Max(property => property.PricePerNight));
+            MaxAvailablePrice = Math.Ceiling((double)_allProperties.Max(property => property.Price));
             MaxPrice = MaxAvailablePrice;
             ApplySortAndFilters();
         }
@@ -146,13 +146,13 @@ public class SearchResultsViewModel : BaseViewModel, IQueryAttributable
     private void ApplySortAndFilters()
     {
         var filtered = _allProperties
-            .Where(p => (double)p.PricePerNight >= MinPrice && (double)p.PricePerNight <= MaxPrice)
+            .Where(p => (double)p.Price >= MinPrice && (double)p.Price <= MaxPrice)
             .Where(p => p.Rating >= MinRating);
 
         var sorted = SortBy switch
         {
-            "Precio menor" => filtered.OrderBy(p => p.PricePerNight),
-            "Precio mayor" => filtered.OrderByDescending(p => p.PricePerNight),
+            "Precio menor" => filtered.OrderBy(p => p.Price),
+            "Precio mayor" => filtered.OrderByDescending(p => p.Price),
             "Mejor calificado" => filtered.OrderByDescending(p => p.Rating),
             _ => filtered
         };
@@ -184,10 +184,12 @@ public class SearchResultsViewModel : BaseViewModel, IQueryAttributable
         IsFilterVisible = false;
     }
 
-    private async void OnPropertySelected(Property? property)
+    private async void OnPropertySelected(SearchAccommodationDto? property)
     {
         if (property == null) return;
+        IsBusy = true;
         var navParams = new Dictionary<string, object> { { "property", property } };
         await Shell.Current.GoToAsync("PropertyDetailPage", navParams);
+        IsBusy = false;
     }
 }

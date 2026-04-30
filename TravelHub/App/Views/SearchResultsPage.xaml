@@ -10,7 +10,7 @@
         <converters:RatingToStarsConverter x:Key="RatingToStars" />
     </ContentPage.Resources>
 
-    <Grid RowDefinitions="Auto,Auto,Auto,*" BackgroundColor="{StaticResource Background}">
+    <Grid RowDefinitions="Auto,Auto,*" BackgroundColor="{StaticResource Background}">
 
         <!-- Filtro Bar -->
         <Grid Grid.Row="0" Padding="16,8" ColumnDefinitions="*,Auto" BackgroundColor="{StaticResource Surface}">
@@ -64,13 +64,10 @@
             </VerticalStackLayout>
         </Border>
 
-        <VerticalStackLayout Grid.Row="2" Padding="16,8,16,0" Spacing="6">
-            <ActivityIndicator IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}" Color="{StaticResource Primary}" />
-            <Label Text="{Binding ErrorMessage}" IsVisible="{Binding HasError}" TextColor="{StaticResource Danger}" />
-        </VerticalStackLayout>
+
 
         <!-- Lista de Resultados -->
-        <CollectionView Grid.Row="3"
+        <CollectionView Grid.Row="2"
                         ItemsSource="{Binding Properties}"
                         Margin="16,8">
             <CollectionView.ItemsLayout>
@@ -110,7 +107,7 @@
                                     <Label Text="{Binding ReviewCount, StringFormat='({0} reseñas)'}"
                                            Style="{StaticResource Caption}" />
                                 </HorizontalStackLayout>
-                                <Label Text="{Binding PricePerNight, StringFormat='${0:F0} / noche'}"
+                                <Label Text="{Binding Price, StringFormat='${0:F0} / noche'}"
                                        Style="{StaticResource Price}" FontSize="16" />
                                 <Border BackgroundColor="{StaticResource Success}"
                                         StrokeShape="RoundRectangle 4"
@@ -136,5 +133,20 @@
                 </VerticalStackLayout>
             </CollectionView.EmptyView>
         </CollectionView>
+
+        <!-- ================= LOADER ================= -->
+        <Border
+                Grid.Row="2"
+                 IsVisible="{Binding IsBusy}"
+                 BackgroundColor="#FFFFFF"
+                 StrokeThickness="0"
+                 InputTransparent="False">
+            <VerticalStackLayout Spacing="5"
+                     HorizontalOptions="Center"
+                     VerticalOptions="Center">
+                <ActivityIndicator IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}" Color="{StaticResource Primary}" />
+                <Label Text="{Binding ErrorMessage}" IsVisible="{Binding HasError}" TextColor="{StaticResource Primary}" />
+            </VerticalStackLayout>
+        </Border>
     </Grid>
 </ContentPage>

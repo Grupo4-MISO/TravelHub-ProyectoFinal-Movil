@@ -25,7 +25,7 @@ public class HomeViewModel : BaseViewModel
     private readonly IBackendUrlProvider _backendUrlProvider;
 
     public ObservableCollection<string> PromotionalImages { get; } = [];
-    public ObservableCollection<Property> FeaturedProperties { get; } = [];
+    public ObservableCollection<SearchAccommodationDto> FeaturedProperties { get; } = [];
     public ObservableCollection<string> PopularCities { get; } = [];
 
     private string _selectedCity = string.Empty;
@@ -140,7 +140,7 @@ public class HomeViewModel : BaseViewModel
         Title = "TravelHub";
 
         SearchCommand = new Command(OnSearch);
-        PropertySelectedCommand = new Command<Property>(OnPropertySelected);
+        //PropertySelectedCommand = new Command<Property>(OnPropertySelected);
         ToggleGuestConfigCommand = new Command(() => IsGuestConfigVisible = !IsGuestConfigVisible);
         IncrementAdultsCommand = new Command(() => Adults++);
         DecrementAdultsCommand = new Command(() => { if (Adults > 1) { Adults--; } });
@@ -158,12 +158,12 @@ public class HomeViewModel : BaseViewModel
     {
         var currentCountryCode = AppSettingsService.Instance.CurrentCountryCode;
 
-        var properties = MockDataService.GetFeaturedProperties(currentCountryCode);
-        FeaturedProperties.Clear();
-        foreach (var prop in properties)
-        {
-            FeaturedProperties.Add(prop);
-        }
+        //var properties = MockDataService.GetFeaturedProperties(currentCountryCode);
+        //FeaturedProperties.Clear();
+        //foreach (var prop in properties)
+        //{
+        //    FeaturedProperties.Add(prop);
+        //}
 
         PromotionalImages.Clear();
         foreach (var img in MockDataService.GetPromotionalImages())
@@ -233,7 +233,7 @@ public class HomeViewModel : BaseViewModel
         return "COP";
     }
 
-    private async void OnPropertySelected(Property? property)
+    private async void OnPropertySelected(SearchAccommodationDto? property)
     {
         if (property == null)
         {

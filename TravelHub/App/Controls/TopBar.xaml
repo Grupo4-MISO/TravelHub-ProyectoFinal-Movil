@@ -16,6 +16,8 @@
                Aspect="AspectFit"
                VerticalOptions="Center" />
         
+        
+        
         <!-- Bandera del país -->
         <Label Grid.Column="1"
                x:Name="CountryFlag"
@@ -36,14 +38,28 @@
                 BackgroundColor="{StaticResource Background}"
                 TextColor="{StaticResource Primary}"
                 Clicked="OnCountryButtonClicked" />
-        
+
+        <!-- Botón de Moneda -->
+        <Button x:Name="CurrencyCodeButton"
+            Grid.Column="3" 
+            CornerRadius="20"
+            WidthRequest="45"
+            MaximumWidthRequest="45"
+            MaximumHeightRequest="30"
+            Padding="0"
+            FontSize="12"
+            FontFamily="OpenSansSemibold"
+            BackgroundColor="{StaticResource Background}"
+            TextColor="{StaticResource Primary}"
+            Clicked="OnCurrencyButtonClicked" />
+
         <!-- Notificaciones -->
-        <Button Grid.Column="3" 
+        <!--<Button Grid.Column="3" 
                 CornerRadius="25"
                 WidthRequest="30"
                 HeightRequest="30"
                 Padding="0"
                 ImageSource="ic_notifications.png"
-                BackgroundColor="{StaticResource Background}" />
+                BackgroundColor="{StaticResource Background}" />-->
     </Grid>
 </ContentView>

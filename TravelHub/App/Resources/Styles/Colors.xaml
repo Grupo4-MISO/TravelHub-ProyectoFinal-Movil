@@ -17,6 +17,7 @@
     <Color x:Key="Success">#4CAF50</Color>
     <Color x:Key="Star">#FFC107</Color>
     <Color x:Key="Error">#F44336</Color>
+    <Color x:Key="Danger">#F44336</Color>
 
     <!-- Base Colors -->
     <Color x:Key="White">White</Color>

@@ -1,8 +1,9 @@
+using App.Models;
 using Newtonsoft.Json;
 
-namespace App.Models;
+namespace App.DTOs;
 
-public class TravelerCreateRequest
+public class TravelerCreateRequestDTO
 {
 
     [JsonProperty("traveler")]

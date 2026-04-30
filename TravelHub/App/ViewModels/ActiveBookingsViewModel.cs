@@ -35,8 +35,8 @@ public class ActiveBookingsViewModel : BaseViewModel
     private void LoadReservations()
     {
         Reservations.Clear();
-        foreach (var r in MockDataService.GetActiveReservations())
-            Reservations.Add(r);
+        //foreach (var r in MockDataService.GetActiveReservations())
+        //    Reservations.Add(r);
         OnPropertyChanged(nameof(HasReservations));
     }
 
