@@ -63,17 +63,21 @@ public static class MauiProgram
         var appSettingsService = AppSettingsService.Instance;
         builder.Services.AddSingleton(appSettingsService);
         builder.Services.AddSingleton<IAppSettingsService>(appSettingsService);
-        builder.Services.AddSingleton<IDatabaseService, DatabaseService>();
-        builder.Services.AddSingleton<ICountryRepository, CountryRepository>();
         builder.Services.AddSingleton<IAppInitializationService, AppInitializationService>();
         builder.Services.AddSingleton<IAppConfigurationService, AppConfigurationService>();
         builder.Services.AddSingleton<ICountryService, CountryService>();
+        builder.Services.AddSingleton<ICityService, CityService>();
         builder.Services.AddSingleton<IAccommodationSearchService, AccommodationSearchService>();
         builder.Services.AddSingleton<IPropertyDetailService, PropertyDetailService>();
         builder.Services.AddSingleton<IAuthService, AuthService>();
         builder.Services.AddSingleton<IUserSessionService, UserSessionService>();
         builder.Services.AddSingleton<ITravelerProfileService, TravelerProfileService>();
         builder.Services.AddSingleton<INavigationService, ShellNavigationService>();
+
+        // Register Repositories
+        builder.Services.AddSingleton<IDatabaseService, DatabaseService>();
+        builder.Services.AddSingleton<ICountryRepository, CountryRepository>();
+        builder.Services.AddSingleton<ICityRepository, CityRepository>();
 
 #if DEBUG
         builder.Logging.AddDebug();

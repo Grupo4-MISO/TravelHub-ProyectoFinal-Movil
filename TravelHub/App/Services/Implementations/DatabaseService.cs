@@ -33,6 +33,7 @@ public class DatabaseService : IDatabaseService
 
             _dbSQL = new SQLiteAsyncConnection(dbPath);
             await _dbSQL.CreateTableAsync<Country>();
+            await _dbSQL.CreateTableAsync<City>();
 
             return _dbSQL;
         }

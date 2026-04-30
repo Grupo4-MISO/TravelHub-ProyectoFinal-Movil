@@ -12,10 +12,8 @@ namespace App.Services.Implementations
         private readonly IBackendUrlProvider _backendUrlProvider;
         private readonly ICountryRepository _countryRepository;
         private List<Country>? _cachedCountries;
-        private readonly Dictionary<string, List<string>> _popularCitiesByCountryCache = new(StringComparer.OrdinalIgnoreCase);
 
         private const string CountriesEndpoint = "/api/v1/inventarios/countries";
-        private const string PopularCitiesEndpointTemplate = "/api/v1/inventarios/countries/{0}/popular-cities";
 
         public CountryService(IBackEndService backEndService, IBackendUrlProvider backendUrlProvider, ICountryRepository countryRepository)
         {
@@ -88,41 +86,9 @@ namespace App.Services.Implementations
             return _cachedCountries.FirstOrDefault(c => c.Id == id);
         }
 
-        public async Task<HttpResponseWrapper<List<string>>> GetPopularCitiesByCountryAsync(string countryCode)
-        {
-            if (string.IsNullOrWhiteSpace(countryCode))
-            {
-                return new HttpResponseWrapper<List<string>>(
-                    [],
-                    true,
-                    new HttpResponseMessage(System.Net.HttpStatusCode.BadRequest));
-            }
-
-            var normalizedCountryCode = countryCode.Trim().ToUpperInvariant();
-
-            if (_popularCitiesByCountryCache.TryGetValue(normalizedCountryCode, out var cachedCities) && cachedCities.Count > 0)
-            {
-                return new HttpResponseWrapper<List<string>>(
-                    cachedCities,
-                    false,
-                    new HttpResponseMessage(System.Net.HttpStatusCode.OK));
-            }
-
-            var endpoint = _backendUrlProvider.Build(string.Format(PopularCitiesEndpointTemplate, normalizedCountryCode));
-            var response = await _backEndService.GetAsync<List<string>>(endpoint);
-
-            if (!response.Error && response.Response != null)
-            {
-                _popularCitiesByCountryCache[normalizedCountryCode] = response.Response;
-            }
-
-            return response;
-        }
-
         private void OnBackendUrlChanged(object? sender, string newBaseUrl)
         {
             _cachedCountries = null;
-            _popularCitiesByCountryCache.Clear();
         }
     }
 }

@@ -21,6 +21,7 @@ public class HomeViewModel : BaseViewModel
     };
 
     private readonly ICountryService _countryService;
+    private readonly ICityService _cityService;
     private readonly IBackendUrlProvider _backendUrlProvider;
 
     public ObservableCollection<string> PromotionalImages { get; } = [];
@@ -131,9 +132,10 @@ public class HomeViewModel : BaseViewModel
     public ICommand IncrementRoomsCommand { get; }
     public ICommand DecrementRoomsCommand { get; }
 
-    public HomeViewModel(ICountryService countryService, IBackendUrlProvider backendUrlProvider)
+    public HomeViewModel(ICountryService countryService, ICityService cityService, IBackendUrlProvider backendUrlProvider)
     {
         _countryService = countryService ?? throw new ArgumentNullException(nameof(countryService));
+        _cityService = cityService ?? throw new ArgumentNullException(nameof(cityService));
         _backendUrlProvider = backendUrlProvider ?? throw new ArgumentNullException(nameof(backendUrlProvider));
         Title = "TravelHub";
 
@@ -178,7 +180,7 @@ public class HomeViewModel : BaseViewModel
         PopularCitiesErrorMessage = string.Empty;
         PopularCities.Clear();
 
-        var citiesResponse = await _countryService.GetPopularCitiesByCountryAsync(countryCode);
+        var citiesResponse = await _cityService.GetPopularCitiesByCountryAsync(countryCode);
         if (citiesResponse.Error || citiesResponse.Response == null || citiesResponse.Response.Count == 0)
         {
             PopularCitiesErrorMessage = "No se pudieron cargar ciudades populares para el pais seleccionado.";
