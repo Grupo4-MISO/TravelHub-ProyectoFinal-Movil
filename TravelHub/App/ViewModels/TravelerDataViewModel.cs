@@ -1,6 +1,5 @@
 using App.DTOs;
 using App.Models;
-using App.Services.Implementations;
 using App.Services.Interfaces;
 using App.Views;
 using System.Windows.Input;
@@ -11,6 +10,7 @@ public class TravelerDataViewModel : BaseViewModel, IQueryAttributable
 {
     private readonly IUserSessionService _userSessionService;
     private readonly ITravelerProfileService _travelerProfileService;
+    private readonly IAppSettingsService _appSettingsService;
     private bool _travelerLoaded;
     private bool _loginNavigationInProgress;
     private bool _suppressDirtyTracking;
@@ -163,22 +163,23 @@ public class TravelerDataViewModel : BaseViewModel, IQueryAttributable
     public ICommand ContinueCommand { get; }
     public ICommand UpdateTravelerCommand { get; }
 
-    public TravelerDataViewModel(IUserSessionService userSessionService, ITravelerProfileService travelerProfileService)
+    public TravelerDataViewModel(IUserSessionService userSessionService, ITravelerProfileService travelerProfileService, IAppSettingsService appSettingsService)
     {
         _userSessionService = userSessionService ?? throw new ArgumentNullException(nameof(userSessionService));
         _travelerProfileService = travelerProfileService ?? throw new ArgumentNullException(nameof(travelerProfileService));
+        _appSettingsService = appSettingsService ?? throw new ArgumentNullException(nameof(appSettingsService));
         Title = "Datos del Viajero";
         LoadPhoneCodeFromCurrentCountry();
         ContinueCommand = new Command(OnContinue);
         UpdateTravelerCommand = new Command(OnUpdateTravelerData);
-        AppSettingsService.Instance.CountryChanged += OnCountryChanged;
+        _appSettingsService.CountryChanged += OnCountryChanged;
     }
 
     private void LoadPhoneCodeFromCurrentCountry()
     {
-        var country = AppSettingsService.Instance.CurrentCountry;
-        PhoneCode = country.PhoneCode;
-        CountryFlag = country.FlagEmoji;
+        var country = _appSettingsService.CurrentCountry;
+        PhoneCode = country?.PhoneCode ?? string.Empty;
+        CountryFlag = country?.FlagEmoji ?? string.Empty;
     }
 
     private void OnCountryChanged(object? sender, string _)

@@ -7,17 +7,16 @@ public class AppSettingsService : IAppSettingsService
 {
     private const string CurrentVersionKey = "CurrentVersion";
     private const string CountryCodeKey = "SelectedCountryCode";
-    private static AppSettingsService? _instance;
+    private readonly IPreferencesService _preferences;
     private string _currentCountryCode;
 
-    public static AppSettingsService Instance => _instance ??= new AppSettingsService();
+    public AppSettingsService(IPreferencesService preferences)
+    {
+        _preferences = preferences ?? throw new ArgumentNullException(nameof(preferences));
+        _currentCountryCode = _preferences.Get(CountryCodeKey, "CO"); // Colombia por defecto
+    }
 
     public event EventHandler<string>? CountryChanged;
-
-    private AppSettingsService()
-    {
-        _currentCountryCode = Preferences.Default.Get(CountryCodeKey, "CO"); // Colombia por defecto
-    }
 
     public string CurrentCountryCode
     {
@@ -27,7 +26,7 @@ public class AppSettingsService : IAppSettingsService
             if (_currentCountryCode != value)
             {
                 _currentCountryCode = value;
-                Preferences.Default.Set(CountryCodeKey, value);
+                _preferences.Set(CountryCodeKey, value);
                 CountryChanged?.Invoke(this, value);
             }
         }
@@ -42,8 +41,8 @@ public class AppSettingsService : IAppSettingsService
 
     public string CurrentVersion
     {
-        get => Preferences.Default.Get(CurrentVersionKey, VersionTracking.CurrentVersion);
-        set => Preferences.Default.Set(CurrentVersionKey, value);
+        get => _preferences.Get(CurrentVersionKey, "1.0");
+        set => _preferences.Set(CurrentVersionKey, value);
     }
     public void SetCurrentVersion(string version)
     {

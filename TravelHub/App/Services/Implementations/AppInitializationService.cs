@@ -7,6 +7,7 @@ public class AppInitializationService : IAppInitializationService
 {
     private readonly IDatabaseService _databaseService;
     private readonly AppSettingsService _appSettingsService;
+    private readonly SettingHelper _settingHelper;
     private readonly SemaphoreSlim _sync = new(1, 1);
     private bool _isInitialized;
 
@@ -14,6 +15,7 @@ public class AppInitializationService : IAppInitializationService
     {
         _databaseService = databaseService ?? throw new ArgumentNullException(nameof(databaseService));
         _appSettingsService = appSettingsService ?? throw new ArgumentNullException(nameof(appSettingsService));
+        _settingHelper = new SettingHelper(appSettingsService);
     }
 
     public async Task InitializeAsync()
@@ -55,6 +57,6 @@ public class AppInitializationService : IAppInitializationService
 
         CacheHelper.ClearAllPreferences();
         await _databaseService.DeleteAllDatabaseFiles();
-        SettingHelper.Version = currentVersion;
+        _settingHelper.Version = currentVersion;
     }
 }

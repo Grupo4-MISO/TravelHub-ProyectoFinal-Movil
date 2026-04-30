@@ -3,7 +3,6 @@ using System.Windows.Input;
 using App.Models;
 using App.Providers.Interfaces;
 using App.Services;
-using App.Services.Implementations;
 using App.Services.Interfaces;
 
 namespace App.ViewModels;
@@ -23,6 +22,7 @@ public class HomeViewModel : BaseViewModel
     private readonly ICountryService _countryService;
     private readonly ICityService _cityService;
     private readonly IBackendUrlProvider _backendUrlProvider;
+    private readonly IAppSettingsService _appSettingsService;
 
     public ObservableCollection<string> PromotionalImages { get; } = [];
     public ObservableCollection<SearchAccommodationDto> FeaturedProperties { get; } = [];
@@ -132,15 +132,15 @@ public class HomeViewModel : BaseViewModel
     public ICommand IncrementRoomsCommand { get; }
     public ICommand DecrementRoomsCommand { get; }
 
-    public HomeViewModel(ICountryService countryService, ICityService cityService, IBackendUrlProvider backendUrlProvider)
+    public HomeViewModel(ICountryService countryService, ICityService cityService, IBackendUrlProvider backendUrlProvider, IAppSettingsService appSettingsService)
     {
         _countryService = countryService ?? throw new ArgumentNullException(nameof(countryService));
         _cityService = cityService ?? throw new ArgumentNullException(nameof(cityService));
         _backendUrlProvider = backendUrlProvider ?? throw new ArgumentNullException(nameof(backendUrlProvider));
+        _appSettingsService = appSettingsService ?? throw new ArgumentNullException(nameof(appSettingsService));
         Title = "TravelHub";
 
         SearchCommand = new Command(OnSearch);
-        //PropertySelectedCommand = new Command<Property>(OnPropertySelected);
         ToggleGuestConfigCommand = new Command(() => IsGuestConfigVisible = !IsGuestConfigVisible);
         IncrementAdultsCommand = new Command(() => Adults++);
         DecrementAdultsCommand = new Command(() => { if (Adults > 1) { Adults--; } });
@@ -150,20 +150,13 @@ public class HomeViewModel : BaseViewModel
         DecrementRoomsCommand = new Command(() => { if (Rooms > 1) { Rooms--; } });
 
         _ = LoadDataAsync();
-        AppSettingsService.Instance.CountryChanged += OnCountryChanged;
+        _appSettingsService.CountryChanged += OnCountryChanged;
         _backendUrlProvider.BaseUrlChanged += OnBackendUrlChanged;
     }
 
     private async Task LoadDataAsync()
     {
-        var currentCountryCode = AppSettingsService.Instance.CurrentCountryCode;
-
-        //var properties = MockDataService.GetFeaturedProperties(currentCountryCode);
-        //FeaturedProperties.Clear();
-        //foreach (var prop in properties)
-        //{
-        //    FeaturedProperties.Add(prop);
-        //}
+        var currentCountryCode = _appSettingsService.CurrentCountryCode;
 
         PromotionalImages.Clear();
         foreach (var img in MockDataService.GetPromotionalImages())
@@ -205,7 +198,7 @@ public class HomeViewModel : BaseViewModel
 
     private async void OnSearch()
     {
-        var countryCode = AppSettingsService.Instance.CurrentCountryCode;
+        var countryCode = _appSettingsService.CurrentCountryCode;
 
         var criteria = new SearchCriteria
         {

@@ -26,8 +26,8 @@ public class PropertyDetailViewModel : BaseViewModel, IQueryAttributable
         }
     }
 
-    public ObservableCollection<string> ImageUrls { get; } = [];
-    public ObservableCollection<AccommodationReviewDto> Reviews { get; } = [];
+    public ObservableCollection<string> ImageUrls { get; } = new ObservableCollection<string>();
+    public ObservableCollection<AccommodationReviewDto> Reviews { get; } = new ObservableCollection<AccommodationReviewDto>();
 
     private string _errorMessage = string.Empty;
     public string ErrorMessage

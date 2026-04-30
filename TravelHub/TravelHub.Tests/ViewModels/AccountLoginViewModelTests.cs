@@ -2,24 +2,24 @@
 using App.Responses;
 using App.Services.Interfaces;
 using App.ViewModels;
-using TravelHub.Tests.Mocks;
+using Moq;
 using Xunit;
 
 namespace TravelHub.Tests.ViewModels;
 
 public class AccountLoginViewModelTests
 {
-    private readonly MockAuthService _mockAuthService;
-    private readonly MockUserSessionService _mockUserSessionService;
-    private readonly MockNavigationService _mockNavigationService;
+    private readonly Mock<IAuthService> _authServiceMock;
+    private readonly Mock<IUserSessionService> _userSessionServiceMock;
+    private readonly Mock<INavigationService> _navigationServiceMock;
     private readonly AccountLoginViewModel _viewModel;
 
     public AccountLoginViewModelTests()
     {
-        _mockAuthService = new MockAuthService();
-        _mockUserSessionService = new MockUserSessionService();
-        _mockNavigationService = new MockNavigationService();
-        _viewModel = new AccountLoginViewModel(_mockAuthService, _mockUserSessionService, _mockNavigationService);
+        _authServiceMock = new Mock<IAuthService>();
+        _userSessionServiceMock = new Mock<IUserSessionService>();
+        _navigationServiceMock = new Mock<INavigationService>();
+        _viewModel = new AccountLoginViewModel(_authServiceMock.Object, _userSessionServiceMock.Object, _navigationServiceMock.Object);
     }
 
     [Fact]
@@ -32,21 +32,21 @@ public class AccountLoginViewModelTests
     public void Constructor_Throws_WhenAuthServiceNull()
     {
         Assert.Throws<ArgumentNullException>(() =>
-            new AccountLoginViewModel(null!, _mockUserSessionService, _mockNavigationService));
+            new AccountLoginViewModel(null!, _userSessionServiceMock.Object, _navigationServiceMock.Object));
     }
 
     [Fact]
     public void Constructor_Throws_WhenUserSessionServiceNull()
     {
         Assert.Throws<ArgumentNullException>(() =>
-            new AccountLoginViewModel(_mockAuthService, null!, _mockNavigationService));
+            new AccountLoginViewModel(_authServiceMock.Object, null!, _navigationServiceMock.Object));
     }
 
     [Fact]
     public void Constructor_Throws_WhenNavigationServiceNull()
     {
         Assert.Throws<ArgumentNullException>(() =>
-            new AccountLoginViewModel(_mockAuthService, _mockUserSessionService, null!));
+            new AccountLoginViewModel(_authServiceMock.Object, _userSessionServiceMock.Object, null!));
     }
 
     [Fact]
@@ -57,11 +57,12 @@ public class AccountLoginViewModelTests
 
         _viewModel.LoginCommand.Execute(null);
 
-        await Task.Delay(100);
+        await Task.Delay(200);
 
-        Assert.Equal("Error", _mockNavigationService.LastAlertTitle);
-        Assert.Contains("email", _mockNavigationService.LastAlertMessage?.ToLower());
-        Assert.Equal(0, _mockAuthService.LoginCallCount);
+        _navigationServiceMock.Verify(n => n.DisplayAlert("Error",
+            It.Is<string>(msg => msg.ToLower().Contains("email")),
+            "OK"), Times.Once);
+        _authServiceMock.Verify(a => a.LoginAsync(It.IsAny<AuthLoginRequest>()), Times.Never);
     }
 
     [Fact]
@@ -72,32 +73,42 @@ public class AccountLoginViewModelTests
 
         _viewModel.LoginCommand.Execute(null);
 
-        await Task.Delay(100);
+        await Task.Delay(200);
 
-        Assert.Equal("Error", _mockNavigationService.LastAlertTitle);
-        Assert.Contains("contrasena", _mockNavigationService.LastAlertMessage?.ToLower());
-        Assert.Equal(0, _mockAuthService.LoginCallCount);
+        _navigationServiceMock.Verify(n => n.DisplayAlert("Error",
+            It.Is<string>(msg => msg.ToLower().Contains("contrasena")),
+            "OK"), Times.Once);
+        _authServiceMock.Verify(a => a.LoginAsync(It.IsAny<AuthLoginRequest>()), Times.Never);
     }
 
     [Fact]
     public async Task LoginCommand_ValidCredentials_CallsLoginAsync()
     {
-        _viewModel.Email = "test@email.com";
-        _viewModel.Password = "password123";
+        var expectedRequest = new AuthLoginRequest
+        {
+            Email = "test@email.com",
+            Password = "password123"
+        };
 
-        _mockAuthService.LoginResponse = new AuthLoginResponse
+        _viewModel.Email = expectedRequest.Email;
+        _viewModel.Password = expectedRequest.Password;
+
+        var response = new AuthLoginResponse
         {
             Token = "fake-jwt-token",
             User = new AuthUserDto { Id = "1", Username = "test", Role = "User" }
         };
 
+        _authServiceMock.Setup(a => a.LoginAsync(It.Is<AuthLoginRequest>(r =>
+                r.Email == expectedRequest.Email && r.Password == expectedRequest.Password)))
+            .ReturnsAsync(new HttpResponseWrapper<AuthLoginResponse>(response, false, new System.Net.Http.HttpResponseMessage(System.Net.HttpStatusCode.OK)));
+
         _viewModel.LoginCommand.Execute(null);
 
-        await Task.Delay(200);
+        await Task.Delay(500);
 
-        Assert.Equal(1, _mockAuthService.LoginCallCount);
-        Assert.Equal("test@email.com", _mockAuthService.LastLoginRequest?.Email);
-        Assert.Equal("password123", _mockAuthService.LastLoginRequest?.Password);
+        _authServiceMock.Verify(a => a.LoginAsync(It.Is<AuthLoginRequest>(r =>
+            r.Email == expectedRequest.Email && r.Password == expectedRequest.Password)), Times.Once);
     }
 
     [Fact]
@@ -106,19 +117,21 @@ public class AccountLoginViewModelTests
         _viewModel.Email = "test@email.com";
         _viewModel.Password = "password123";
 
-        _mockAuthService.LoginResponse = new AuthLoginResponse
+        var response = new AuthLoginResponse
         {
             Token = "fake-jwt-token",
             User = new AuthUserDto { Id = "1", Username = "test", Role = "User" }
         };
 
+        _authServiceMock.Setup(a => a.LoginAsync(It.IsAny<AuthLoginRequest>()))
+            .ReturnsAsync(new HttpResponseWrapper<AuthLoginResponse>(response, false, new System.Net.Http.HttpResponseMessage(System.Net.HttpStatusCode.OK)));
+
         _viewModel.LoginCommand.Execute(null);
 
-        await Task.Delay(200);
+        await Task.Delay(500);
 
-        Assert.True(_mockUserSessionService.SetSessionCalled);
-        Assert.NotNull(_mockUserSessionService.LastSessionData);
-        Assert.Equal("fake-jwt-token", _mockUserSessionService.LastSessionData?.Token);
+        _userSessionServiceMock.Verify(s => s.SetSession(It.Is<AuthLoginResponse>(r =>
+            r.Token == response.Token)), Times.Once);
     }
 
     [Fact]
@@ -127,17 +140,20 @@ public class AccountLoginViewModelTests
         _viewModel.Email = "test@email.com";
         _viewModel.Password = "password123";
 
-        _mockAuthService.LoginResponse = new AuthLoginResponse
+        var response = new AuthLoginResponse
         {
             Token = "fake-jwt-token",
             User = new AuthUserDto { Id = "1", Username = "test", Role = "User" }
         };
 
+        _authServiceMock.Setup(a => a.LoginAsync(It.IsAny<AuthLoginRequest>()))
+            .ReturnsAsync(new HttpResponseWrapper<AuthLoginResponse>(response, false, new System.Net.Http.HttpResponseMessage(System.Net.HttpStatusCode.OK)));
+
         _viewModel.LoginCommand.Execute(null);
 
-        await Task.Delay(200);
+        await Task.Delay(500);
 
-        Assert.Equal("//account", _mockNavigationService.LastNavigationUri);
+        _navigationServiceMock.Verify(n => n.GoToAsync("//account"), Times.Once);
     }
 
     [Fact]
@@ -146,15 +162,18 @@ public class AccountLoginViewModelTests
         _viewModel.Email = "test@email.com";
         _viewModel.Password = "password123";
 
-        _mockAuthService.LoginResponse = new AuthLoginResponse
+        var response = new AuthLoginResponse
         {
             Token = "fake-jwt-token",
             User = new AuthUserDto { Id = "1", Username = "test", Role = "User" }
         };
 
+        _authServiceMock.Setup(a => a.LoginAsync(It.IsAny<AuthLoginRequest>()))
+            .ReturnsAsync(new HttpResponseWrapper<AuthLoginResponse>(response, false, new System.Net.Http.HttpResponseMessage(System.Net.HttpStatusCode.OK)));
+
         _viewModel.LoginCommand.Execute(null);
 
-        await Task.Delay(200);
+        await Task.Delay(500);
 
         Assert.Equal(string.Empty, _viewModel.Password);
     }
@@ -165,15 +184,20 @@ public class AccountLoginViewModelTests
         _viewModel.Email = "test@email.com";
         _viewModel.Password = "wrongpassword";
 
-        _mockAuthService.ShouldReturnError = true;
-        _mockAuthService.ErrorMessage = "Invalid credentials";
+        var errorResponse = new HttpResponseMessage(System.Net.HttpStatusCode.BadRequest)
+        {
+            Content = new System.Net.Http.StringContent("Invalid credentials")
+        };
+
+        _authServiceMock.Setup(a => a.LoginAsync(It.IsAny<AuthLoginRequest>()))
+            .ReturnsAsync(new HttpResponseWrapper<AuthLoginResponse>(default!, true, errorResponse));
 
         _viewModel.LoginCommand.Execute(null);
 
-        await Task.Delay(200);
+        await Task.Delay(500);
 
-        Assert.Equal("Error", _mockNavigationService.LastAlertTitle);
-        Assert.NotNull(_mockNavigationService.LastAlertMessage);
+        _navigationServiceMock.Verify(n => n.DisplayAlert("Error",
+            It.IsAny<string>(), "OK"), Times.Once);
     }
 
     [Fact]
@@ -182,20 +206,23 @@ public class AccountLoginViewModelTests
         _viewModel.Email = "test@email.com";
         _viewModel.Password = "password123";
 
-        _mockAuthService.LoginResponse = new AuthLoginResponse
+        var response = new AuthLoginResponse
         {
             Token = "fake-jwt-token",
             User = new AuthUserDto { Id = "1", Username = "test", Role = "User" }
         };
+
+        _authServiceMock.Setup(a => a.LoginAsync(It.IsAny<AuthLoginRequest>()))
+            .ReturnsAsync(new HttpResponseWrapper<AuthLoginResponse>(response, false, new System.Net.Http.HttpResponseMessage(System.Net.HttpStatusCode.OK)));
 
         var query = new Dictionary<string, object> { { "returnTo", "TravelerDataPage" } };
         _viewModel.ApplyQueryAttributes(query);
 
         _viewModel.LoginCommand.Execute(null);
 
-        await Task.Delay(200);
+        await Task.Delay(500);
 
-        Assert.Equal("..", _mockNavigationService.LastNavigationUri);
+        _navigationServiceMock.Verify(n => n.GoToAsync(".."), Times.Once);
     }
 
     [Fact]

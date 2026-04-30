@@ -2,11 +2,18 @@ using App.Services.Implementations;
 
 namespace App.Helpers;
 
-public static class SettingHelper
+public class SettingHelper
 {
-    public static string Version
+    private readonly AppSettingsService _appSettingsService;
+
+    public SettingHelper(AppSettingsService appSettingsService)
     {
-        get => AppSettingsService.Instance.CurrentVersion;
-        set => AppSettingsService.Instance.CurrentVersion = value;
+        _appSettingsService = appSettingsService ?? throw new ArgumentNullException(nameof(appSettingsService));
+    }
+
+    public string Version
+    {
+        get => _appSettingsService.CurrentVersion;
+        set => _appSettingsService.CurrentVersion = value;
     }
 }
