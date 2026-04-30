@@ -17,17 +17,17 @@ public partial class TopBar : ContentView
 
     private void OnHandlerChanged(object? sender, EventArgs e)
     {
-        //if (Handler?.MauiContext?.Services == null)
-        //    return;
+        if (Handler?.MauiContext?.Services == null)
+            return;
 
-        //_appSettingsService = Handler.MauiContext.Services.GetRequiredService<IAppSettingsService>()
-        //    ?? throw new InvalidOperationException("No se pudo resolver IAppSettingsService");
+        _appSettingsService = Handler.MauiContext.Services.GetRequiredService<IAppSettingsService>()
+            ?? throw new InvalidOperationException("No se pudo resolver IAppSettingsService");
 
-        //UpdateCountryDisplay();
-        //_appSettingsService.CountryChanged += OnCountryChanged;
+        UpdateCountryDisplay();
+        _appSettingsService.CountryChanged += OnCountryChanged;
 
-        //// Desuscribirse para no duplicar
-        //HandlerChanged -= OnHandlerChanged;
+        // Desuscribirse para no duplicar
+        HandlerChanged -= OnHandlerChanged;
     }
 
     private void UpdateCountryDisplay()
@@ -48,5 +48,10 @@ public partial class TopBar : ContentView
     private async void OnCountryButtonClicked(object sender, EventArgs e)
     {
         await Shell.Current.GoToAsync(nameof(CountryPage));
+    }
+
+    private void OnCurrencyButtonClicked(object sender, EventArgs e)
+    {
+
     }
 }

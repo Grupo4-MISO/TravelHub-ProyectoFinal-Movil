@@ -1,26 +1,27 @@
-﻿using App.Services.Interfaces;
+﻿using App.Services.Implementations;
+using App.Services.Interfaces;
 
 namespace App
 {
     public partial class App : Application
     {
-        public App()
+        public App(IAppInitializationService appInitializationService, IAppConfigurationService appConfigurationService)
         {
-            //if (appConfigurationService == null)
-            //{
-            //    throw new ArgumentNullException(nameof(appConfigurationService));
-            //}
-            //if (appInitializationService == null)
-            //{
-            //    throw new ArgumentNullException(nameof(appInitializationService));
-            //}
+            if (appConfigurationService == null)
+            {
+                throw new ArgumentNullException(nameof(appConfigurationService));
+            }
+            if (appInitializationService == null)
+            {
+                throw new ArgumentNullException(nameof(appInitializationService));
+            }
             //if (appSettingsService == null)
             //{
             //    throw new ArgumentNullException(nameof(appSettingsService));
             //}
 
             InitializeComponent();
-            //_ = InitializeApplicationAsync(appInitializationService, appConfigurationService);
+            _ = InitializeApplicationAsync(appInitializationService, appConfigurationService);
         }
 
         private static async Task InitializeApplicationAsync(
