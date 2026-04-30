@@ -35,6 +35,69 @@
                 </Border.Shadow>
                 <VerticalStackLayout Spacing="16">
                     
+                    <!-- Numero de Documento -->
+                    <VerticalStackLayout Spacing="4">
+                        <Label Text="Numero de Documento" Style="{StaticResource Caption}" />
+                        <Border Padding="12,0"
+                                BackgroundColor="{StaticResource Background}"
+                                StrokeShape="RoundRectangle 10"
+                                Stroke="{StaticResource Gray200}">
+                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                                <Image Grid.Column="0" 
+                                       WidthRequest="20" 
+                                       HeightRequest="20"
+                                       VerticalOptions="Center">
+                                    <Image.Source>
+                                        <FontImageSource
+                                            Glyph="{x:Static icons:Icons.Documento}"
+                                            FontFamily="MaterialSymbols"
+                                            Size="20"
+                                            Color="{StaticResource Gray400}" />
+                                    </Image.Source>
+                                </Image>
+                                <Entry Grid.Column="1"
+                                       Placeholder="Tu numero de documento"
+                                       Text="{Binding DocumentNumber}"
+                                       Keyboard="Numeric"
+                                       MaxLength="20"
+                                       ClearButtonVisibility="WhileEditing" />
+                            </Grid>
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- Genero -->
+                    <VerticalStackLayout Spacing="4">
+                        <Label Text="Genero" Style="{StaticResource Caption}" />
+                        <Border Padding="12,0"
+                                BackgroundColor="{StaticResource Background}"
+                                StrokeShape="RoundRectangle 10"
+                                Stroke="{StaticResource Gray200}">
+                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                                <Image Grid.Column="0" 
+                                       WidthRequest="20" 
+                                       HeightRequest="20"
+                                       VerticalOptions="Center">
+                                    <Image.Source>
+                                        <FontImageSource
+                                            Glyph="{x:Static icons:Icons.Usuario}"
+                                            FontFamily="MaterialSymbols"
+                                            Size="20"
+                                            Color="{StaticResource Gray400}" />
+                                    </Image.Source>
+                                </Image>
+                                <Picker Grid.Column="1"
+                                        Title="Selecciona tu genero"
+                                        SelectedItem="{Binding Gender}">
+                                    <Picker.Items>
+                                        <x:String>Female</x:String>
+                                        <x:String>Male</x:String>
+                                        <x:String>Other</x:String>
+                                    </Picker.Items>
+                                </Picker>
+                            </Grid>
+                        </Border>
+                    </VerticalStackLayout>
+
                     <!-- Nombre -->
                     <VerticalStackLayout Spacing="4">
                         <Label Text="Nombre" Style="{StaticResource Caption}" />

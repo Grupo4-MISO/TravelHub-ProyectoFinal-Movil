@@ -13,6 +13,8 @@ namespace App.DTOs
         public string password { get; set; } = string.Empty;
         public string phone { get; set; } = string.Empty;
         public string gender { get; set; } = string.Empty;
+        public string photo { get; set; } = string.Empty;
+        public string travelerStatus { get; set; } = "Pending";
     }
 
 }
