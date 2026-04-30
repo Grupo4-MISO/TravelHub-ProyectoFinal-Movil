@@ -16,10 +16,10 @@
                 <Image Source="travelhub.png" 
                        Aspect="AspectFit"
                        HeightRequest="40" />
-                <Label Text="Crear Cuenta"
+                <!--<Label Text="Crear Cuenta"
                        Style="{StaticResource Headline}"
                        FontSize="28"
-                       HorizontalTextAlignment="Center" />
+                       HorizontalTextAlignment="Center" />-->
                 <Label Text="Completa tus datos para registrarte"
                        Style="{StaticResource Subtitle}"
                        HorizontalTextAlignment="Center" />
@@ -144,17 +144,17 @@
                                        Keyboard="Telephone"
                                        MaxLength="20"
                                        ClearButtonVisibility="WhileEditing">
-                                    <Entry.Behaviors>
+                                    <!--<Entry.Behaviors>
                                         <behaviors:PhoneNumberFormattingBehavior />
-                                    </Entry.Behaviors>
+                                    </Entry.Behaviors>-->
                                 </Entry>
                             </Grid>
                         </Border>
                     </VerticalStackLayout>
 
-                    <!-- Contrasena -->
+                    <!-- Contraseña -->
                     <VerticalStackLayout Spacing="4">
-                        <Label Text="Contrasena" Style="{StaticResource Caption}" />
+                        <Label Text="Contraseña" Style="{StaticResource Caption}" />
                         <Border Padding="12,0"
                                 BackgroundColor="{StaticResource Background}"
                                 StrokeShape="RoundRectangle 10"

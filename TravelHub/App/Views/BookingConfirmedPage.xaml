@@ -64,8 +64,8 @@
 
                     <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="6">
                         <Label Text="Hotel:" Style="{StaticResource Caption}" />
-                        <Label Grid.Column="1" Text="{Binding Reservation.Property.Name}"
-                               FontFamily="OpenSansSemibold" FontSize="13" />
+                        <!--<Label Grid.Column="1" Text="{Binding Reservation.Property.Name}"
+                               FontFamily="OpenSansSemibold" FontSize="13" />-->
 
                         <Label Grid.Row="1" Text="Habitacion:" Style="{StaticResource Caption}" />
                         <Label Grid.Row="1" Grid.Column="1" Text="{Binding Reservation.Room.Name}"

@@ -1,4 +1,5 @@
 using App.Models;
+using App.Providers.Interfaces;
 using App.Services.Interfaces;
 
 namespace App.Services.Implementations;

@@ -1,22 +1,23 @@
+using App.DTOs;
+using App.Models;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
-using App.Models;
 
 namespace App.ViewModels;
 
 public class RoomSelectionViewModel : BaseViewModel, IQueryAttributable
 {
-    private Property _property = new();
-    public Property Property
+    private AccommodationDetailDto _property = new();
+    public AccommodationDetailDto Property
     {
         get => _property;
         set => SetProperty(ref _property, value);
     }
 
-    public ObservableCollection<Room> Rooms { get; } = [];
+    public ObservableCollection<AccommodationDetailRoomDto> Rooms { get; } = [];
 
-    private Room? _selectedRoom;
-    public Room? SelectedRoom
+    private AccommodationDetailRoomDto? _selectedRoom;
+    public AccommodationDetailRoomDto? SelectedRoom
     {
         get => _selectedRoom;
         set
@@ -34,13 +35,13 @@ public class RoomSelectionViewModel : BaseViewModel, IQueryAttributable
     public RoomSelectionViewModel()
     {
         Title = "Elegir Habitacion";
-        SelectRoomCommand = new Command<Room>(OnSelectRoom);
+        SelectRoomCommand = new Command<AccommodationDetailRoomDto>(OnSelectRoom);
         BookCommand = new Command(OnBook);
     }
 
     public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
-        if (query.TryGetValue("property", out var obj) && obj is Property property)
+        if (query.TryGetValue("property", out var obj) && obj is AccommodationDetailDto property)
         {
             Property = property;
             Rooms.Clear();
@@ -49,7 +50,7 @@ public class RoomSelectionViewModel : BaseViewModel, IQueryAttributable
         }
     }
 
-    private void OnSelectRoom(Room? room)
+    private void OnSelectRoom(AccommodationDetailRoomDto? room)
     {
         SelectedRoom = room;
     }

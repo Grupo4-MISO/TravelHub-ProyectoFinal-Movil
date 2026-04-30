@@ -19,14 +19,14 @@
                         StrokeShape="RoundRectangle 12"
                         Stroke="{StaticResource Gray100}">
                     <Grid ColumnDefinitions="80,*" ColumnSpacing="12">
-                        <Image Source="{Binding Property.ImageUrl}"
+                        <Image Source="{Binding Room.ImageUrl}"
                                WidthRequest="80" HeightRequest="80"
                                Aspect="AspectFill" />
                         <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
                             <Label Text="{Binding Property.Name}"
                                    FontFamily="OpenSansSemibold" FontSize="16" />
                             <Label Text="{Binding Property.City}" Style="{StaticResource Caption}" />
-                            <Label Text="{Binding Room.Name}" Style="{StaticResource Subtitle}" />
+                            <Label Text="{Binding Room.Description}" Style="{StaticResource Subtitle}" />
                         </VerticalStackLayout>
                     </Grid>
                 </Border>
@@ -62,10 +62,10 @@
                         Stroke="{StaticResource Gray100}">
                     <VerticalStackLayout Spacing="4">
                         <Label Text="Viajero" Style="{StaticResource Title}" />
-                        <Label Text="{Binding Traveler.FullName}"
+                        <Label Text="{Binding Traveler.first_name}"
                                FontFamily="OpenSansSemibold" FontSize="15" />
-                        <Label Text="{Binding Traveler.Email}" Style="{StaticResource Subtitle}" />
-                        <Label Text="{Binding Traveler.Phone}" Style="{StaticResource Subtitle}" />
+                        <Label Text="{Binding Traveler.email}" Style="{StaticResource Subtitle}" />
+                        <Label Text="{Binding Traveler.phone}" Style="{StaticResource Subtitle}" />
                     </VerticalStackLayout>
                 </Border>
 
@@ -77,10 +77,10 @@
                     <VerticalStackLayout Spacing="6">
                         <Label Text="Detalle de Precio" Style="{StaticResource Title}" />
                         <Grid ColumnDefinitions="*,Auto">
-                            <Label Text="{Binding Room.PricePerNight, StringFormat='Precio por noche'}"
+                            <Label Text="{Binding Room.Price, StringFormat='Precio por noche'}"
                                    Style="{StaticResource Subtitle}" />
                             <Label Grid.Column="1"
-                                   Text="{Binding Room.PricePerNight, StringFormat='${0:F0}'}"
+                                   Text="{Binding Room.Price, StringFormat='${0:F0}'}"
                                    FontFamily="OpenSansSemibold" />
                         </Grid>
                         <Grid ColumnDefinitions="*,Auto">

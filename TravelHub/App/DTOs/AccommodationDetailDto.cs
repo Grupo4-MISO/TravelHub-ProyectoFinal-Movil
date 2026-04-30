@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace App.Models;
+namespace App.DTOs;
 
 public class AccommodationDetailDto
 {
@@ -48,46 +48,4 @@ public class AccommodationDetailDto
 
     [JsonProperty("imagenes")]
     public List<AccommodationDetailImageDto> Images { get; set; } = [];
-}
-
-public class AccommodationDetailRoomDto
-{
-    [JsonProperty("id")]
-    public string Id { get; set; } = string.Empty;
-
-    [JsonProperty("code")]
-    public string Code { get; set; } = string.Empty;
-
-    [JsonProperty("descripcion")]
-    public string Description { get; set; } = string.Empty;
-
-    [JsonProperty("capacidad")]
-    public int Capacity { get; set; }
-
-    [JsonProperty("precio")]
-    public decimal Price { get; set; }
-
-    [JsonProperty("imageUrl")]
-    public string ImageUrl { get; set; } = string.Empty;
-}
-
-public class AccommodationDetailAmenityDto
-{
-    [JsonProperty("id")]
-    public string Id { get; set; } = string.Empty;
-
-    [JsonProperty("name")]
-    public string Name { get; set; } = string.Empty;
-
-    [JsonProperty("icon")]
-    public string Icon { get; set; } = string.Empty;
-}
-
-public class AccommodationDetailImageDto
-{
-    [JsonProperty("id")]
-    public string Id { get; set; } = string.Empty;
-
-    [JsonProperty("url")]
-    public string Url { get; set; } = string.Empty;
 }

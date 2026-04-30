@@ -1,7 +1,8 @@
-using System.Collections.ObjectModel;
-using System.Windows.Input;
+using App.DTOs;
 using App.Models;
 using App.Services.Interfaces;
+using System.Collections.ObjectModel;
+using System.Windows.Input;
 
 namespace App.ViewModels;
 
@@ -9,8 +10,8 @@ public class PropertyDetailViewModel : BaseViewModel, IQueryAttributable
 {
     private readonly IPropertyDetailService _propertyDetailService;
 
-    private Property _property = new();
-    public Property Property
+    private AccommodationDetailDto _property = new();
+    public AccommodationDetailDto Property
     {
         get => _property;
         set
@@ -18,18 +19,15 @@ public class PropertyDetailViewModel : BaseViewModel, IQueryAttributable
             if (SetProperty(ref _property, value))
             {
                 ImageUrls.Clear();
-                foreach (var url in value.ImageUrls)
-                    ImageUrls.Add(url);
-                Reviews.Clear();
-                foreach (var r in value.Reviews)
-                    Reviews.Add(r);
+                foreach (var img in value.Images)
+                    ImageUrls.Add(img.Url);
                 OnPropertyChanged(nameof(HasCoordinates));
             }
         }
     }
 
-    public ObservableCollection<string> ImageUrls { get; } = [];
-    public ObservableCollection<Review> Reviews { get; } = [];
+    public ObservableCollection<string> ImageUrls { get; } = new ObservableCollection<string>();
+    public ObservableCollection<AccommodationReviewDto> Reviews { get; } = new ObservableCollection<AccommodationReviewDto>();
 
     private string _errorMessage = string.Empty;
     public string ErrorMessage
@@ -42,6 +40,13 @@ public class PropertyDetailViewModel : BaseViewModel, IQueryAttributable
                 OnPropertyChanged(nameof(HasError));
             }
         }
+    }
+
+    private decimal _priceforNight = 0;
+    public decimal PriceforNight
+    {
+        get => _priceforNight;
+        set => SetProperty(ref _priceforNight, value);
     }
 
     public bool HasError => !string.IsNullOrWhiteSpace(ErrorMessage);
@@ -73,37 +78,27 @@ public class PropertyDetailViewModel : BaseViewModel, IQueryAttributable
 
     public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
-        if (query.TryGetValue("property", out var obj) && obj is Property property)
+        if (query.TryGetValue("property", out var obj) && obj is SearchAccommodationDto property)
         {
-            Property = property;
             Title = property.Name;
+            PriceforNight = property.Price;
             _ = LoadPropertyDetailAsync(property);
         }
     }
 
-    private async Task LoadPropertyDetailAsync(Property selectedProperty)
+    private async Task LoadPropertyDetailAsync(SearchAccommodationDto property)
     {
         if (IsBusy)
         {
             return;
         }
-
-        var propertyId = ResolvePropertyId(selectedProperty);
-        if (string.IsNullOrWhiteSpace(propertyId))
-        {
-            ErrorMessage = "No se pudo identificar el alojamiento seleccionado.";
-            return;
-        }
-
         IsBusy = true;
         try
         {
             ErrorMessage = string.Empty;
             ReviewsErrorMessage = string.Empty;
-            var currencyCode = selectedProperty.Country?.CurrencyCode ?? "COP";
-
-            var detailTask = _propertyDetailService.GetPropertyDetailAsync(propertyId, currencyCode);
-            var reviewsTask = _propertyDetailService.GetPropertyReviewsAsync(propertyId);
+            var detailTask =  _propertyDetailService.GetPropertyDetailAsync(property.PropertyId, property.CurrencyCode);
+            var reviewsTask = _propertyDetailService.GetPropertyReviewsAsync(property.PropertyId);
             await Task.WhenAll(detailTask, reviewsTask);
 
             var detailResponse = await detailTask;
@@ -114,14 +109,10 @@ public class PropertyDetailViewModel : BaseViewModel, IQueryAttributable
             }
 
             var propertyFromApi = detailResponse.Response;
-            if (propertyFromApi.Country != null && string.IsNullOrWhiteSpace(propertyFromApi.Country.CurrencyCode))
-            {
-                propertyFromApi.Country.CurrencyCode = string.IsNullOrWhiteSpace(currencyCode) ? "COP" : currencyCode;
-            }
 
-            if (string.IsNullOrWhiteSpace(propertyFromApi.ProviderId))
+            if (propertyFromApi == null)
             {
-                propertyFromApi.ProviderId = propertyId;
+                return;
             }
 
             var reviewsResponse = await reviewsTask;
@@ -131,7 +122,11 @@ public class PropertyDetailViewModel : BaseViewModel, IQueryAttributable
             }
             else
             {
-                propertyFromApi.Reviews = reviewsResponse.Response;
+                var reviews = reviewsResponse.Response;
+                foreach (var review in reviews)
+                {
+                    Reviews.Add(review);
+                }
             }
 
             Property = propertyFromApi;
@@ -141,16 +136,6 @@ public class PropertyDetailViewModel : BaseViewModel, IQueryAttributable
         {
             IsBusy = false;
         }
-    }
-
-    private static string ResolvePropertyId(Property property)
-    {
-        if (!string.IsNullOrWhiteSpace(property.ProviderId))
-        {
-            return property.ProviderId.Trim();
-        }
-
-        return property.Id > 0 ? property.Id.ToString() : string.Empty;
     }
 
     private async void OnChooseRoom()

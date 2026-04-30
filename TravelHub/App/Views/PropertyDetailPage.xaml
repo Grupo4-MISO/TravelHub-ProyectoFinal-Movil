@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:models="clr-namespace:App.Models"
+             xmlns:dto="clr-namespace:App.DTOs"
              xmlns:converters="clr-namespace:App.Converters"
              xmlns:maps="clr-namespace:Microsoft.Maui.Controls.Maps;assembly=Microsoft.Maui.Controls.Maps"
              x:Class="App.Views.PropertyDetailPage"
@@ -15,10 +15,10 @@
     <Grid RowDefinitions="*,Auto" BackgroundColor="{StaticResource Background}">
         <ScrollView Grid.Row="0">
             <VerticalStackLayout Spacing="0">
-                <VerticalStackLayout Padding="16,8,16,0" Spacing="6">
+                <!--<VerticalStackLayout Padding="16,8,16,0" Spacing="6">
                     <ActivityIndicator IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}" Color="{StaticResource Primary}" />
-                    <Label Text="{Binding ErrorMessage}" IsVisible="{Binding HasError}" TextColor="{StaticResource Danger}" />
-                </VerticalStackLayout>
+                    <Label Text="{Binding ErrorMessage}" IsVisible="{Binding HasError}" TextColor="{StaticResource Primary}" />
+                </VerticalStackLayout>-->
 
                 <!-- Galeria de Fotos -->
                 <CarouselView ItemsSource="{Binding ImageUrls}"
@@ -55,7 +55,7 @@
                                Style="{StaticResource Caption}" VerticalTextAlignment="Center" />
                     </HorizontalStackLayout>
 
-                    <Label Text="{Binding Property.PricePerNight, StringFormat='Desde ${0:F0} / noche'}"
+                    <Label Text="{Binding PriceforNight, StringFormat='Desde ${0:F0} / noche'}"
                            Style="{StaticResource Price}" />
                 </VerticalStackLayout>
 
@@ -84,7 +84,7 @@
                                     AlignItems="Start"
                                     BindableLayout.ItemsSource="{Binding Property.Amenities}">
                             <BindableLayout.ItemTemplate>
-                                <DataTemplate x:DataType="models:Amenity">
+                                <DataTemplate x:DataType="dto:AccommodationDetailAmenityDto">
                                     <Border Padding="10,6"
                                             Margin="0,0,8,8"
                                             BackgroundColor="{StaticResource Background}"
@@ -140,7 +140,7 @@
                                 <DataTemplate>
                                     <VerticalStackLayout Spacing="4">
                                         <Grid ColumnDefinitions="*,Auto">
-                                            <Label Text="{Binding AuthorName}"
+                                            <Label Text="{Binding UserName}"
                                                    FontFamily="OpenSansSemibold" FontSize="14" />
                                             <Label Grid.Column="1"
                                                    Text="{Binding Date, StringFormat='{0:dd/MM/yyyy}'}"
@@ -175,6 +175,21 @@
                     Command="{Binding ChooseRoomCommand}"
                     Style="{StaticResource AccentButton}"
                     HorizontalOptions="Fill" />
+        </Border>
+
+        <!-- ================= LOADER ================= -->
+        <Border
+            Grid.Row="1"
+             IsVisible="{Binding IsBusy}"
+             BackgroundColor="#FFFFFF"
+             StrokeThickness="0"
+             InputTransparent="False">
+            <VerticalStackLayout Spacing="5"
+             HorizontalOptions="Center"
+             VerticalOptions="Center">
+                <ActivityIndicator IsVisible="{Binding IsBusy}" IsRunning="{Binding IsBusy}" Color="{StaticResource Primary}" />
+                <Label Text="{Binding ErrorMessage}" IsVisible="{Binding HasError}" TextColor="{StaticResource Primary}" />
+            </VerticalStackLayout>
         </Border>
     </Grid>
 </ContentPage>

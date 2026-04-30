@@ -36,9 +36,9 @@
                                 <Border.StrokeShape>
                                     <RoundRectangle CornerRadius="150"/>
                                 </Border.StrokeShape>
-                                <Image Source="{Binding User.Photo}" Aspect="AspectFill" />
+                                <Image Source="{Binding User.photo}" Aspect="AspectFill" />
                             </Border>
-                            <Label Text="{Binding User.FirstName}"
+                            <Label Text="{Binding User.first_name}"
                                    FontFamily="OpenSansSemibold" FontSize="20"
                                    HorizontalTextAlignment="Center" />
                         </VerticalStackLayout>

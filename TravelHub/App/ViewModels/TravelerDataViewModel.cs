@@ -1,8 +1,8 @@
-using System.Windows.Input;
+using App.DTOs;
 using App.Models;
-using App.Services;
 using App.Services.Interfaces;
 using App.Views;
+using System.Windows.Input;
 
 namespace App.ViewModels;
 
@@ -10,27 +10,41 @@ public class TravelerDataViewModel : BaseViewModel, IQueryAttributable
 {
     private readonly IUserSessionService _userSessionService;
     private readonly ITravelerProfileService _travelerProfileService;
+    private readonly IAppSettingsService _appSettingsService;
     private bool _travelerLoaded;
     private bool _loginNavigationInProgress;
     private bool _suppressDirtyTracking;
 
+    private string _imageUrl = string.Empty;
+    private string _travelerId = string.Empty;
     private string _originalFirstName = string.Empty;
     private string _originalLastName = string.Empty;
     private string _originalDocumentNumber = string.Empty;
     private string _originalPhone = string.Empty;
 
-    private Property _property = new();
-    public Property Property
+    private AccommodationDetailDto _property = new();
+    public AccommodationDetailDto Property
     {
         get => _property;
         set => SetProperty(ref _property, value);
     }
 
-    private Room _room = new();
-    public Room Room
+    private AccommodationDetailRoomDto _room = new();
+    public AccommodationDetailRoomDto Room
     {
         get => _room;
         set => SetProperty(ref _room, value);
+    }
+
+    private string ImageUrl
+    {
+        get => _imageUrl;
+        set => SetProperty(ref _imageUrl, value);
+    }
+    public string TravelerId
+    {
+        get => _travelerId;
+        set => SetProperty(ref _travelerId, value);
     }
 
     private string _firstName = string.Empty;
@@ -149,22 +163,23 @@ public class TravelerDataViewModel : BaseViewModel, IQueryAttributable
     public ICommand ContinueCommand { get; }
     public ICommand UpdateTravelerCommand { get; }
 
-    public TravelerDataViewModel(IUserSessionService userSessionService, ITravelerProfileService travelerProfileService)
+    public TravelerDataViewModel(IUserSessionService userSessionService, ITravelerProfileService travelerProfileService, IAppSettingsService appSettingsService)
     {
         _userSessionService = userSessionService ?? throw new ArgumentNullException(nameof(userSessionService));
         _travelerProfileService = travelerProfileService ?? throw new ArgumentNullException(nameof(travelerProfileService));
+        _appSettingsService = appSettingsService ?? throw new ArgumentNullException(nameof(appSettingsService));
         Title = "Datos del Viajero";
         LoadPhoneCodeFromCurrentCountry();
         ContinueCommand = new Command(OnContinue);
         UpdateTravelerCommand = new Command(OnUpdateTravelerData);
-        AppSettingsService.Instance.CountryChanged += OnCountryChanged;
+        _appSettingsService.CountryChanged += OnCountryChanged;
     }
 
     private void LoadPhoneCodeFromCurrentCountry()
     {
-        var country = AppSettingsService.Instance.CurrentCountry;
-        PhoneCode = country.PhoneCode;
-        CountryFlag = country.FlagEmoji;
+        var country = _appSettingsService.CurrentCountry;
+        PhoneCode = country?.PhoneCode ?? string.Empty;
+        CountryFlag = country?.FlagEmoji ?? string.Empty;
     }
 
     private void OnCountryChanged(object? sender, string _)
@@ -174,10 +189,15 @@ public class TravelerDataViewModel : BaseViewModel, IQueryAttributable
 
     public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
-        if (query.TryGetValue("property", out var pObj) && pObj is Property property)
+        if (query.TryGetValue("property", out var pObj) && pObj is AccommodationDetailDto property)
+        {
             Property = property;
-        if (query.TryGetValue("room", out var rObj) && rObj is Room room)
+            ImageUrl = property.Images?.FirstOrDefault()?.Url ?? string.Empty;
+        }
+        if (query.TryGetValue("room", out var rObj) && rObj is AccommodationDetailRoomDto room)
+        {
             Room = room;
+        }
     }
 
     public async Task EnsureAuthenticatedAndLoadTravelerAsync()
@@ -208,8 +228,8 @@ public class TravelerDataViewModel : BaseViewModel, IQueryAttributable
             return;
         }
 
-        var travelerId = _userSessionService.User.Id;
-        if (string.IsNullOrWhiteSpace(travelerId))
+        var userId = _userSessionService.User.Id;
+        if (string.IsNullOrWhiteSpace(userId))
         {
             await Shell.Current.DisplayAlert("Error", "No se encontró un usuario autenticado.", "OK");
             return;
@@ -218,7 +238,7 @@ public class TravelerDataViewModel : BaseViewModel, IQueryAttributable
         IsBusy = true;
         try
         {
-            var response = await _travelerProfileService.GetTravelerByIdAsync(travelerId);
+            var response = await _travelerProfileService.GetTravelerByUserIdAsync(userId);
             if (response.Error || response.Response == null)
             {
                 var message = await response.GetErrorMessageAsync();
@@ -231,6 +251,7 @@ public class TravelerDataViewModel : BaseViewModel, IQueryAttributable
 
             var traveler = response.Response;
             _suppressDirtyTracking = true;
+            TravelerId = traveler.Id;
             FirstName = traveler.FirstName ?? string.Empty;
             LastName = traveler.LastName ?? string.Empty;
             Email = traveler.Email ?? string.Empty;
@@ -267,10 +288,16 @@ public class TravelerDataViewModel : BaseViewModel, IQueryAttributable
             return;
         }
 
-        var travelerId = _userSessionService.User.Id;
-        if (string.IsNullOrWhiteSpace(travelerId))
+        var userId = _userSessionService.User.Id;
+        if (string.IsNullOrWhiteSpace(userId))
         {
             await Shell.Current.DisplayAlert("Error", "No se encontró el usuario autenticado.", "OK");
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(TravelerId))
+        {
+            await Shell.Current.DisplayAlert("Error", "No se encontró el perfil del cliente.", "OK");
             return;
         }
 
@@ -286,7 +313,7 @@ public class TravelerDataViewModel : BaseViewModel, IQueryAttributable
                 Phone = FullPhoneNumber
             };
 
-            var response = await _travelerProfileService.UpdateTravelerAsync(travelerId, payload);
+            var response = await _travelerProfileService.UpdateTravelerAsync(TravelerId, payload);
             if (response.Error)
             {
                 var message = await response.GetErrorMessageAsync();
@@ -334,12 +361,11 @@ public class TravelerDataViewModel : BaseViewModel, IQueryAttributable
 
         var traveler = new Traveler
         {
-            FirstName = FirstName,
-            LastName = LastName,
-            Email = Email,
-            Phone = FullPhoneNumber,
-            DocumentType = "CC",
-            DocumentNumber = DocumentNumber
+            first_name = FirstName,
+            last_name = LastName,
+            email = Email,
+            phone = FullPhoneNumber,
+            documentNumber = DocumentNumber
         };
 
         var navParams = new Dictionary<string, object>

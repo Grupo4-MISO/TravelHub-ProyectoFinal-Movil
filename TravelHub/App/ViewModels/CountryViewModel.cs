@@ -1,7 +1,7 @@
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using App.Models;
-using App.Services;
+using App.Providers.Interfaces;
 using App.Services.Interfaces;
 
 namespace App.ViewModels;
@@ -11,6 +11,8 @@ public partial class CountryViewModel : BaseViewModel
     private ObservableCollection<CountryItem> _countries = [];
     private readonly ICountryService _countryService;
     private readonly IBackendUrlProvider _backendUrlProvider;
+    private readonly IMainThreadService _mainThreadService;
+    private readonly IAppSettingsService _appSettingsService;
     private bool _isLoading;
     private string _errorMessage = string.Empty;
 
@@ -35,16 +37,18 @@ public partial class CountryViewModel : BaseViewModel
     public ICommand SelectCountryCommand { get; }
     public ICommand RetryLoadCommand { get; }
 
-    public CountryViewModel(ICountryService countryService, IBackendUrlProvider backendUrlProvider)
+    public CountryViewModel(ICountryService countryService, IBackendUrlProvider backendUrlProvider, IMainThreadService mainThreadService, IAppSettingsService appSettingsService)
     {
         _countryService = countryService ?? throw new ArgumentNullException(nameof(countryService));
         _backendUrlProvider = backendUrlProvider ?? throw new ArgumentNullException(nameof(backendUrlProvider));
+        _mainThreadService = mainThreadService ?? throw new ArgumentNullException(nameof(mainThreadService));
+        _appSettingsService = appSettingsService ?? throw new ArgumentNullException(nameof(appSettingsService));
         SelectCountryCommand = new Command<CountryItem?>(async (country) => await SelectCountry(country));
         RetryLoadCommand = new Command(async () => await LoadCountries());
         _backendUrlProvider.BaseUrlChanged += OnBackendUrlChanged;
-        
-        // Cargar pa�ses al inicializar
-        MainThread.BeginInvokeOnMainThread(async () => await LoadCountries());
+
+        // Cargar países al inicializar
+        _mainThreadService.BeginInvokeOnMainThread(async () => await LoadCountries());
     }
 
     private async Task LoadCountries()
@@ -58,17 +62,17 @@ public partial class CountryViewModel : BaseViewModel
 
             if (response.Error)
             {
-                ErrorMessage = "No se pudieron cargar los pa�ses. Intenta m�s tarde.";
+                ErrorMessage = "No se pudieron cargar los países. Intenta más tarde.";
                 return;
             }
 
             if (response.Response == null || response.Response.Count == 0)
             {
-                ErrorMessage = "No hay pa�ses disponibles.";
+                ErrorMessage = "No hay países disponibles.";
                 return;
             }
 
-            var currentCode = AppSettingsService.Instance.CurrentCountryCode;
+            var currentCode = _appSettingsService.CurrentCountryCode;
             Countries.Clear();
 
             foreach (var country in response.Response)
@@ -79,7 +83,7 @@ public partial class CountryViewModel : BaseViewModel
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"Error en LoadCountries: {ex.Message}");
-            ErrorMessage = "Error inesperado al cargar los pa�ses.";
+            ErrorMessage = "Error inesperado al cargar los países.";
         }
         finally
         {
@@ -91,28 +95,22 @@ public partial class CountryViewModel : BaseViewModel
     {
         if (selectedCountry == null) return;
 
-        // Actualizar selecci�n
+        // Actualizar selección
         foreach (var country in Countries)
         {
             country.IsSelected = country.Code == selectedCountry.Code;
         }
 
-        // Guardar configuraci�n
-        AppSettingsService.Instance.SetCountry(selectedCountry.Code);
+        // Guardar configuración
+        _appSettingsService.SetCountry(selectedCountry.Code);
 
-        // Mostrar confirmaci�n
-        await Shell.Current.DisplayAlert(
-            "Pa�s seleccionado",
-            $"Ahora est�s navegando en {selectedCountry.Name}",
-            "OK");
-
-        // Volver atr�s
+        // Volver atrás
         await Shell.Current.GoToAsync("..");
     }
 
     private void OnBackendUrlChanged(object? sender, string newBaseUrl)
     {
-        MainThread.BeginInvokeOnMainThread(async () => await LoadCountries());
+        _mainThreadService.BeginInvokeOnMainThread(async () => await LoadCountries());
     }
 }
 

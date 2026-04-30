@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace App.Models;
+namespace App.DTOs;
 
 public class AccommodationReviewDto
 {
@@ -20,5 +20,5 @@ public class AccommodationReviewDto
     public string Comment { get; set; } = string.Empty;
 
     [JsonProperty("rating")]
-    public int Rating { get; set; }
+    public double Rating { get; set; }
 }

@@ -77,15 +77,15 @@ public class AccountViewModel : BaseViewModel
 
     private async void OnLogout()
     {
-        bool confirm = await Shell.Current.DisplayAlert("Cerrar Sesion", "Deseas cerrar tu sesion?", "Si", "No");
-        if (confirm)
-        {
+        //bool confirm = await Shell.Current.DisplayAlert("Cerrar Sesion", "Deseas cerrar tu sesion?", "Si", "No");
+        //if (confirm)
+        //{
             await _userSessionService.ClearSession();
             IsLoggedIn = false;
             Email = string.Empty;
             Password = string.Empty;
             User = new Traveler();
-        }
+        //}
     }
 
     private async void OnLogin()
@@ -145,13 +145,12 @@ public class AccountViewModel : BaseViewModel
         var sessionUser = _userSessionService.User;
         User = new Traveler
         {
-            FirstName = sessionUser.Username,
-            LastName = string.Empty,
-            Email = string.Empty,
-            Phone = string.Empty,
-            DocumentType = string.Empty,
-            DocumentNumber = string.Empty,
-            Photo  = "https://cdn-icons-png.flaticon.com/512/3237/3237447.png"
+            first_name = sessionUser.Username,
+            last_name = string.Empty,
+            email = string.Empty,
+            phone = string.Empty,
+            documentNumber = string.Empty,
+            photo  = "https://static.vecteezy.com/system/resources/previews/008/442/086/original/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg"
         };
     }
 }
