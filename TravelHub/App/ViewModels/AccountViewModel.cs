@@ -145,13 +145,12 @@ public class AccountViewModel : BaseViewModel
         var sessionUser = _userSessionService.User;
         User = new Traveler
         {
-            FirstName = sessionUser.Username,
-            LastName = string.Empty,
-            Email = string.Empty,
-            Phone = string.Empty,
-            DocumentType = string.Empty,
-            DocumentNumber = string.Empty,
-            Photo  = "https://cdn-icons-png.flaticon.com/512/3237/3237447.png"
+            first_name = sessionUser.Username,
+            last_name = string.Empty,
+            email = string.Empty,
+            phone = string.Empty,
+            documentNumber = string.Empty,
+            photo  = "https://cdn-icons-png.flaticon.com/512/3237/3237447.png"
         };
     }
 }

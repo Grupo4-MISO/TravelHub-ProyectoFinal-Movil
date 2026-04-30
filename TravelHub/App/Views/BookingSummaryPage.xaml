@@ -62,10 +62,10 @@
                         Stroke="{StaticResource Gray100}">
                     <VerticalStackLayout Spacing="4">
                         <Label Text="Viajero" Style="{StaticResource Title}" />
-                        <Label Text="{Binding Traveler.FullName}"
+                        <Label Text="{Binding Traveler.first_name}"
                                FontFamily="OpenSansSemibold" FontSize="15" />
-                        <Label Text="{Binding Traveler.Email}" Style="{StaticResource Subtitle}" />
-                        <Label Text="{Binding Traveler.Phone}" Style="{StaticResource Subtitle}" />
+                        <Label Text="{Binding Traveler.email}" Style="{StaticResource Subtitle}" />
+                        <Label Text="{Binding Traveler.phone}" Style="{StaticResource Subtitle}" />
                     </VerticalStackLayout>
                 </Border>
 

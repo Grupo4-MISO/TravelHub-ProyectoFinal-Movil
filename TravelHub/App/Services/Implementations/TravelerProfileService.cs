@@ -22,9 +22,9 @@ public class TravelerProfileService : ITravelerProfileService
         _userSessionService = userSessionService ?? throw new ArgumentNullException(nameof(userSessionService));
     }
 
-    public Task<HttpResponseWrapper<TravelerProfileResponse>> GetTravelerByIdAsync(string travelerId)
+    public Task<HttpResponseWrapper<TravelerProfileResponse>> GetTravelerByUserIdAsync(string userId)
     {
-        if (string.IsNullOrWhiteSpace(travelerId))
+        if (string.IsNullOrWhiteSpace(userId))
         {
             return Task.FromResult(
                 new HttpResponseWrapper<TravelerProfileResponse>(
@@ -35,8 +35,8 @@ public class TravelerProfileService : ITravelerProfileService
 
         _backEndService.SetAuthorization(_userSessionService.Token);
 
-        var encodedId = Uri.EscapeDataString(travelerId.Trim());
-        var url = _backendUrlProvider.Build($"/api/v1/Travelers/{encodedId}");
+        var encodedId = Uri.EscapeDataString(userId.Trim());
+        var url = _backendUrlProvider.Build($"/api/v1/Travelers/users/{encodedId}");
         return _backEndService.GetAsync<TravelerProfileResponse>(url);
     }
 
@@ -56,5 +56,13 @@ public class TravelerProfileService : ITravelerProfileService
         var encodedId = Uri.EscapeDataString(travelerId.Trim());
         var url = _backendUrlProvider.Build($"/api/v1/Travelers/{encodedId}");
         return _backEndService.PutAsync(url, request);
+    }
+
+    public Task<HttpResponseWrapper<object>> CreateTravelerAsync(TravelerCreateDTO request)
+    {
+        _backEndService.SetAuthorization(_userSessionService.Token);
+
+        var url = _backendUrlProvider.Build($"/api/v1/Travelers");
+        return _backEndService.PostAsync(url, request);
     }
 }

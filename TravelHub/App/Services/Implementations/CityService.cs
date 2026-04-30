@@ -45,7 +45,7 @@ namespace App.Services.Implementations
             }
 
             var cities = await _cityRepository.GetCitiesAsync(normalizedCountryCode);
-            if (cities != null)
+            if (cities != null && cities.Count > 0)
             {
                 var cityNames = cities.Select(c => c.Name).ToList();
                 _popularCitiesByCountryCache[normalizedCountryCode] = cityNames;

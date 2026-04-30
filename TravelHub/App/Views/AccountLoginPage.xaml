@@ -12,9 +12,9 @@
             <!-- Logo / Titulo -->
             <VerticalStackLayout Spacing="8" HorizontalOptions="Center" Margin="0,40,0,20">
                 <Image Source="travelhub.png" Aspect="AspectFill" />
-                <Label Text="TravelHub"
+                <!--<Label Text="TravelHub"
                        Style="{StaticResource Headline}"
-                       HorizontalTextAlignment="Center" />
+                       HorizontalTextAlignment="Center" />-->
                 <Label Text="Inicia sesion para continuar"
                        Style="{StaticResource Subtitle}"
                        HorizontalTextAlignment="Center" />

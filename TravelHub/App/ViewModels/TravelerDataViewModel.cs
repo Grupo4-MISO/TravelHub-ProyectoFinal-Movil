@@ -14,6 +14,7 @@ public class TravelerDataViewModel : BaseViewModel, IQueryAttributable
     private bool _loginNavigationInProgress;
     private bool _suppressDirtyTracking;
 
+    private string _travelerId = string.Empty;
     private string _originalFirstName = string.Empty;
     private string _originalLastName = string.Empty;
     private string _originalDocumentNumber = string.Empty;
@@ -31,6 +32,12 @@ public class TravelerDataViewModel : BaseViewModel, IQueryAttributable
     {
         get => _room;
         set => SetProperty(ref _room, value);
+    }
+
+    public string TravelerId
+    {
+        get => _travelerId;
+        set => SetProperty(ref _travelerId, value);
     }
 
     private string _firstName = string.Empty;
@@ -208,17 +215,17 @@ public class TravelerDataViewModel : BaseViewModel, IQueryAttributable
             return;
         }
 
-        var travelerId = _userSessionService.User.Id;
-        if (string.IsNullOrWhiteSpace(travelerId))
+        var userId = _userSessionService.User.Id;
+        if (string.IsNullOrWhiteSpace(userId))
         {
             await Shell.Current.DisplayAlert("Error", "No se encontró un usuario autenticado.", "OK");
             return;
         }
-
+            
         IsBusy = true;
         try
         {
-            var response = await _travelerProfileService.GetTravelerByIdAsync(travelerId);
+            var response = await _travelerProfileService.GetTravelerByUserIdAsync(userId);
             if (response.Error || response.Response == null)
             {
                 var message = await response.GetErrorMessageAsync();
@@ -231,6 +238,7 @@ public class TravelerDataViewModel : BaseViewModel, IQueryAttributable
 
             var traveler = response.Response;
             _suppressDirtyTracking = true;
+            TravelerId = traveler.Id;
             FirstName = traveler.FirstName ?? string.Empty;
             LastName = traveler.LastName ?? string.Empty;
             Email = traveler.Email ?? string.Empty;
@@ -267,10 +275,16 @@ public class TravelerDataViewModel : BaseViewModel, IQueryAttributable
             return;
         }
 
-        var travelerId = _userSessionService.User.Id;
-        if (string.IsNullOrWhiteSpace(travelerId))
+        var userId = _userSessionService.User.Id;
+        if (string.IsNullOrWhiteSpace(userId))
         {
             await Shell.Current.DisplayAlert("Error", "No se encontró el usuario autenticado.", "OK");
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(TravelerId))
+        {
+            await Shell.Current.DisplayAlert("Error", "No se encontró el perfil del cliente.", "OK");
             return;
         }
 
@@ -286,7 +300,7 @@ public class TravelerDataViewModel : BaseViewModel, IQueryAttributable
                 Phone = FullPhoneNumber
             };
 
-            var response = await _travelerProfileService.UpdateTravelerAsync(travelerId, payload);
+            var response = await _travelerProfileService.UpdateTravelerAsync(TravelerId, payload);
             if (response.Error)
             {
                 var message = await response.GetErrorMessageAsync();
@@ -334,12 +348,11 @@ public class TravelerDataViewModel : BaseViewModel, IQueryAttributable
 
         var traveler = new Traveler
         {
-            FirstName = FirstName,
-            LastName = LastName,
-            Email = Email,
-            Phone = FullPhoneNumber,
-            DocumentType = "CC",
-            DocumentNumber = DocumentNumber
+            first_name = FirstName,
+            last_name = LastName,
+            email = Email,
+            phone = FullPhoneNumber,
+            documentNumber = DocumentNumber
         };
 
         var navParams = new Dictionary<string, object>

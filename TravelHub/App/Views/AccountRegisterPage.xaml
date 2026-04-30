@@ -144,9 +144,9 @@
                                        Keyboard="Telephone"
                                        MaxLength="20"
                                        ClearButtonVisibility="WhileEditing">
-                                    <Entry.Behaviors>
+                                    <!--<Entry.Behaviors>
                                         <behaviors:PhoneNumberFormattingBehavior />
-                                    </Entry.Behaviors>
+                                    </Entry.Behaviors>-->
                                 </Entry>
                             </Grid>
                         </Border>

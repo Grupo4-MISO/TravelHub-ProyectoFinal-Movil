@@ -201,7 +201,7 @@
                 <Button Text="Actualizar datos"
                         IsVisible="{Binding ShowUpdateButton}"
                         Command="{Binding UpdateTravelerCommand}"
-                        Style="{StaticResource AccentButton}"
+                        Style="{StaticResource UpdateButton}"
                         HorizontalOptions="Fill" />
             </Grid>
         </Border>

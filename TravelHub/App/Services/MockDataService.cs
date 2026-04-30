@@ -503,7 +503,7 @@ public class MockDataService
                 BookingCode = "TH-2026-0001",
                 Property = properties[0],
                 Room = properties[0].Rooms[1],
-                Traveler = GetSampleTraveler(),
+                //Traveler = GetSampleTraveler(),
                 CheckIn = DateTime.Today.AddDays(15),
                 CheckOut = DateTime.Today.AddDays(19),
                 Adults = 2,
@@ -515,20 +515,20 @@ public class MockDataService
         ];
     }
 
-    public static Traveler GetSampleTraveler()
-    {
-        return new Traveler
-        {
-            Id = 1,
-            Photo = "https://images.imagenmia.com/model_version/bbfea91410ef7994cfefde4a33e032f3aebf7b90dda683f7fa32ea2685d2e7bb/1723819204347-output.jpg",
-            FirstName = "Juan",
-            LastName = "Rodriguez",
-            Email = "j.rodriguez@email.com",
-            Phone = "+57 321557899",
-            DocumentType = "CC",
-            DocumentNumber = "1090388345"
-        };
-    }
+    //public static Traveler GetSampleTraveler()
+    //{
+    //    return new Traveler
+    //    {
+    //        Id = 1,
+    //        Photo = "https://images.imagenmia.com/model_version/bbfea91410ef7994cfefde4a33e032f3aebf7b90dda683f7fa32ea2685d2e7bb/1723819204347-output.jpg",
+    //        FirstName = "Juan",
+    //        LastName = "Rodriguez",
+    //        Email = "j.rodriguez@email.com",
+    //        Phone = "+57 321557899",
+    //        DocumentType = "CC",
+    //        DocumentNumber = "1090388345"
+    //    };
+    //}
 
     public static List<Amenity> GetAmenities()
     {
