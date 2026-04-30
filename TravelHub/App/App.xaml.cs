@@ -16,7 +16,7 @@ namespace App
             }
 
             InitializeComponent();
-            _ = InitializeApplicationAsync(appInitializationService, appConfigurationService);
+            //_ = InitializeApplicationAsync(appInitializationService, appConfigurationService);
         }
 
         private static async Task InitializeApplicationAsync(
