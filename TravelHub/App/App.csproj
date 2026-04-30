@@ -32,7 +32,22 @@
 	</PropertyGroup>
 	
 		<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0-android|AnyCPU'">
-		  <AndroidPackageFormat>apk</AndroidPackageFormat>
+			<!-- Arquitectura arm64 únicamente (Play Store genera APKs por dispositivo desde el AAB/APK) -->
+			<RuntimeIdentifiers>android-arm64</RuntimeIdentifiers>
+			<AndroidSupportedAbis>arm64-v8a</AndroidSupportedAbis>
+			<AndroidPackageFormat>apk</AndroidPackageFormat>
+			<AndroidEnableMultiDex>False</AndroidEnableMultiDex>
+			<AndroidUseAapt2>True</AndroidUseAapt2>
+			<AndroidCreatePackagePerAbi>False</AndroidCreatePackagePerAbi>
+			<!-- AOT mejora el rendimiento en producción -->
+			<RunAOTCompilation>true</RunAOTCompilation>
+			<AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
+			<EnableLLVM>true</EnableLLVM>
+			<!-- Soporte de páginas de memoria de 16 KB requerido por Google Play (Android 15+) -->
+			<!-- AndroidEnable16KPages: configura el runtime .NET para kernels con páginas de 16 KB -->
+			<AndroidEnable16KPages>true</AndroidEnable16KPages>
+			<!-- AndroidEnsure16KPageAlignment: alinea todas las librerías nativas (.so) a 16 KB -->
+			<AndroidEnsure16KPageAlignment>true</AndroidEnsure16KPageAlignment>
 		</PropertyGroup>
 	
 
