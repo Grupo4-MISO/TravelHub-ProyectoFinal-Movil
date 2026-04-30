@@ -49,6 +49,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<IUserSessionService, UserSessionService>();
         builder.Services.AddSingleton<ITravelerProfileService, TravelerProfileService>();
         builder.Services.AddSingleton<INavigationService, ShellNavigationService>();
+        builder.Services.AddSingleton<IBookingService, BookingService>();
 
         // Register Repositories
         builder.Services.AddSingleton<IDatabaseService, DatabaseService>();

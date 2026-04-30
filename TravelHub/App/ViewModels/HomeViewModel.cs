@@ -198,6 +198,12 @@ public class HomeViewModel : BaseViewModel
 
     private async void OnSearch()
     {
+        if (string.IsNullOrWhiteSpace(SelectedCity))
+        {
+            await Shell.Current.DisplayAlert("Error", "Por favor, seleccione una ciudad.", "OK");
+            return;
+        }
+
         var countryCode = _appSettingsService.CurrentCountryCode;
 
         var criteria = new SearchCriteria
