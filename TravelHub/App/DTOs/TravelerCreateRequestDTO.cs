@@ -7,9 +7,9 @@ public class TravelerCreateRequestDTO
 {
 
     [JsonProperty("traveler")]
-    public TravelerCreateDTO traveler { get; set; }
+    public TravelerCreateDTO traveler { get; set; } = new TravelerCreateDTO();
 
-    [JsonProperty("addresses")]
-    public AddressCreateDTO address { get; set; }
+    [JsonProperty("address")]
+    public AddressCreateDTO address { get; set; } = new AddressCreateDTO();
 
 }

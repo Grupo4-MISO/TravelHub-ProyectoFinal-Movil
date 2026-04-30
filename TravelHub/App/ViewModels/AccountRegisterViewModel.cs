@@ -1,3 +1,4 @@
+using App.DTOs;
 using App.Services.Interfaces;
 
 namespace App.ViewModels;
@@ -6,12 +7,27 @@ public class AccountRegisterViewModel : BaseViewModel
 {
     private readonly INavigationService _navigationService;
     private readonly IAppSettingsService _appSettingsService;
+    private readonly IAuthService _authService;
 
     private string _firstName = string.Empty;
     public string FirstName
     {
         get => _firstName;
         set => SetProperty(ref _firstName, value);
+    }
+
+    private string _documentNumber = string.Empty;
+    public string DocumentNumber
+    {
+        get => _documentNumber;
+        set => SetProperty(ref _documentNumber, value);
+    }
+
+    private string _gender = "Other";
+    public string Gender
+    {
+        get => _gender;
+        set => SetProperty(ref _gender, value);
     }
 
     private string _lastName = string.Empty;
@@ -73,10 +89,11 @@ public class AccountRegisterViewModel : BaseViewModel
     public Command RegisterCommand { get; }
     public Command GoToLoginCommand { get; }
 
-    public AccountRegisterViewModel(INavigationService navigationService, IAppSettingsService appSettingsService)
+    public AccountRegisterViewModel(INavigationService navigationService, IAppSettingsService appSettingsService, IAuthService authService)
     {
         _navigationService = navigationService ?? throw new ArgumentNullException(nameof(navigationService));
         _appSettingsService = appSettingsService ?? throw new ArgumentNullException(nameof(appSettingsService));
+        _authService = authService ?? throw new ArgumentNullException(nameof(authService));
         Title = "Registro";
         LoadPhoneCode();
         RegisterCommand = new Command(async () => await Register());
@@ -101,15 +118,43 @@ public class AccountRegisterViewModel : BaseViewModel
 
         try
         {
-            // Simulación de registro (aquí iría la lógica real con API)
-            await Task.Delay(1500);
+            var request = new TravelerCreateRequestDTO
+            {
+                traveler = new TravelerCreateDTO
+                {
+                    documentNumber = DocumentNumber.Trim(),
+                    first_name = FirstName.Trim(),
+                    last_name = LastName.Trim(),
+                    email = Email.Trim(),
+                    password = Password,
+                    phone = FullPhoneNumber,
+                    gender = Gender,
+                    photo = string.Empty,
+                    travelerStatus = "Pending"
+                },
+                address = new AddressCreateDTO()
+            };
+
+            var response = await _authService.RegisterAsync(request);
+
+            if (response.Error)
+            {
+                var errorMessage = "Error al crear la cuenta. Intenta nuevamente.";
+                if (response.HttpResponseMessage != null)
+                {
+                    var content = await response.HttpResponseMessage.Content.ReadAsStringAsync();
+                    if (!string.IsNullOrWhiteSpace(content))
+                        errorMessage = content;
+                }
+                await _navigationService.DisplayAlert("Error", errorMessage, "OK");
+                return;
+            }
 
             await _navigationService.DisplayAlert(
                 "Registro exitoso",
                 "Tu cuenta ha sido creada. Ahora puedes iniciar sesión.",
                 "OK");
 
-            // Navegar de vuelta al login
             await _navigationService.GoToAsync("..");
         }
         catch (Exception ex)
@@ -132,6 +177,12 @@ public class AccountRegisterViewModel : BaseViewModel
         if (string.IsNullOrWhiteSpace(FirstName))
         {
             await _navigationService.DisplayAlert("Error", "Por favor ingresa tu nombre", "OK");
+            return false;
+        }
+
+        if (string.IsNullOrWhiteSpace(DocumentNumber))
+        {
+            await _navigationService.DisplayAlert("Error", "Por favor ingresa tu numero de documento", "OK");
             return false;
         }
 

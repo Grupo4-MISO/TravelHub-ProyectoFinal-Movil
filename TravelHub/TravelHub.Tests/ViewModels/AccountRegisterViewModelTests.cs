@@ -1,4 +1,6 @@
 using App.Models;
+using App.DTOs;
+using App.Responses;
 using App.Services.Interfaces;
 using App.ViewModels;
 using Moq;
@@ -10,12 +12,14 @@ public class AccountRegisterViewModelTests
 {
     private readonly Mock<INavigationService> _navigationServiceMock;
     private readonly Mock<IAppSettingsService> _appSettingsServiceMock;
+    private readonly Mock<IAuthService> _authServiceMock;
     private readonly AccountRegisterViewModel _viewModel;
 
     public AccountRegisterViewModelTests()
     {
         _navigationServiceMock = new Mock<INavigationService>();
         _appSettingsServiceMock = new Mock<IAppSettingsService>();
+        _authServiceMock = new Mock<IAuthService>();
 
         _appSettingsServiceMock.Setup(s => s.CurrentCountry)
             .Returns(new Country
@@ -26,7 +30,10 @@ public class AccountRegisterViewModelTests
                 FlagEmoji = "🇨🇴"
             });
 
-        _viewModel = new AccountRegisterViewModel(_navigationServiceMock.Object, _appSettingsServiceMock.Object);
+        _viewModel = new AccountRegisterViewModel(
+            _navigationServiceMock.Object,
+            _appSettingsServiceMock.Object,
+            _authServiceMock.Object);
     }
 
     [Fact]
@@ -41,10 +48,12 @@ public class AccountRegisterViewModelTests
     public async Task RegisterCommand_EmptyFirstName_ShowsError()
     {
         _viewModel.LastName = "Perez";
+        _viewModel.DocumentNumber = "12345678";
         _viewModel.Email = "test@email.com";
         _viewModel.PhoneNumber = "3001234567";
         _viewModel.Password = "password123";
         _viewModel.ConfirmPassword = "password123";
+        _viewModel.Gender = "Male";
         _viewModel.AcceptTerms = true;
 
         _viewModel.RegisterCommand.Execute(null);
@@ -56,14 +65,36 @@ public class AccountRegisterViewModelTests
     }
 
     [Fact]
+    public async Task RegisterCommand_EmptyDocumentNumber_ShowsError()
+    {
+        _viewModel.FirstName = "Juan";
+        _viewModel.LastName = "Perez";
+        _viewModel.Email = "test@email.com";
+        _viewModel.PhoneNumber = "3001234567";
+        _viewModel.Password = "password123";
+        _viewModel.ConfirmPassword = "password123";
+        _viewModel.Gender = "Male";
+        _viewModel.AcceptTerms = true;
+
+        _viewModel.RegisterCommand.Execute(null);
+        await Task.Delay(500);
+
+        _navigationServiceMock.Verify(n => n.DisplayAlert("Error",
+            It.Is<string>(msg => msg.ToLower().Contains("documento")),
+            "OK"), Times.Once);
+    }
+
+    [Fact]
     public async Task RegisterCommand_InvalidEmail_ShowsError()
     {
         _viewModel.FirstName = "Juan";
         _viewModel.LastName = "Perez";
+        _viewModel.DocumentNumber = "12345678";
         _viewModel.Email = "correo-invalido";
         _viewModel.PhoneNumber = "3001234567";
         _viewModel.Password = "password123";
         _viewModel.ConfirmPassword = "password123";
+        _viewModel.Gender = "Male";
         _viewModel.AcceptTerms = true;
 
         _viewModel.RegisterCommand.Execute(null);
@@ -79,10 +110,12 @@ public class AccountRegisterViewModelTests
     {
         _viewModel.FirstName = "Juan";
         _viewModel.LastName = "Perez";
+        _viewModel.DocumentNumber = "12345678";
         _viewModel.Email = "test@email.com";
         _viewModel.PhoneNumber = "3001234567";
         _viewModel.Password = "password123";
         _viewModel.ConfirmPassword = "password321";
+        _viewModel.Gender = "Male";
         _viewModel.AcceptTerms = true;
 
         _viewModel.RegisterCommand.Execute(null);
@@ -98,11 +131,16 @@ public class AccountRegisterViewModelTests
     {
         _viewModel.FirstName = "Juan";
         _viewModel.LastName = "Perez";
+        _viewModel.DocumentNumber = "12345678";
         _viewModel.Email = "test@email.com";
         _viewModel.PhoneNumber = "3001234567";
         _viewModel.Password = "password123";
         _viewModel.ConfirmPassword = "password123";
+        _viewModel.Gender = "Male";
         _viewModel.AcceptTerms = true;
+
+        _authServiceMock.Setup(a => a.RegisterAsync(It.IsAny<TravelerCreateRequestDTO>()))
+            .ReturnsAsync(new HttpResponseWrapper<object>(null, false, new HttpResponseMessage(System.Net.HttpStatusCode.OK)));
 
         _viewModel.RegisterCommand.Execute(null);
         await Task.Delay(2500);
@@ -110,6 +148,7 @@ public class AccountRegisterViewModelTests
         _navigationServiceMock.Verify(n => n.DisplayAlert("Registro exitoso",
             It.IsAny<string>(), "OK"), Times.Once);
         _navigationServiceMock.Verify(n => n.GoToAsync(".."), Times.Once);
+        _authServiceMock.Verify(a => a.RegisterAsync(It.IsAny<TravelerCreateRequestDTO>()), Times.Once);
     }
 
     [Fact]
@@ -134,13 +173,20 @@ public class AccountRegisterViewModelTests
     public void Constructor_Throws_WhenNavigationServiceNull()
     {
         Assert.Throws<ArgumentNullException>(() =>
-            new AccountRegisterViewModel(null!, _appSettingsServiceMock.Object));
+            new AccountRegisterViewModel(null!, _appSettingsServiceMock.Object, _authServiceMock.Object));
     }
 
     [Fact]
     public void Constructor_Throws_WhenAppSettingsServiceNull()
     {
         Assert.Throws<ArgumentNullException>(() =>
-            new AccountRegisterViewModel(_navigationServiceMock.Object, null!));
+            new AccountRegisterViewModel(_navigationServiceMock.Object, null!, _authServiceMock.Object));
+    }
+
+    [Fact]
+    public void Constructor_Throws_WhenAuthServiceNull()
+    {
+        Assert.Throws<ArgumentNullException>(() =>
+            new AccountRegisterViewModel(_navigationServiceMock.Object, _appSettingsServiceMock.Object, null!));
     }
 }

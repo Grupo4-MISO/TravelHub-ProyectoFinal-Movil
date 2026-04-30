@@ -1,0 +1,23 @@
+Planea Refactorizar la aplicación, Usa buenas prácticas en MAUI, utiliza patrones de diseño necesarios, crea las clases correspondientes que permitan Implementar ahora la lógica de creación de cuenta en el formulario de AccountRegisterPage usando TravelerCreateRequestDTO realizando un Post a https://dpyrs6tuvj15e.cloudfront.net/api/v1/Travelers
+Payload {
+  "address": {
+    "city": "string",
+    "country": "string",
+    "countryCode": "string",
+    "line1": "string",
+    "line2": "string",
+    "postal_code": "string",
+    "state": "string"
+  },
+  "traveler": {
+    "documentNumber": 900123456,
+    "email": "user@example.com",
+    "first_name": "string",
+    "gender": "Female",
+    "last_name": "string",
+    "password": "string",
+    "phone": "string",
+    "photo": "string",
+    "travelerStatus": "Pending"
+  }
+}
