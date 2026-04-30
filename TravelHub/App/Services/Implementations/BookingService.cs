@@ -1,0 +1,31 @@
+using App.DTOs;
+using App.Responses;
+using App.Services.Interfaces;
+using App.Providers.Interfaces;
+
+namespace App.Services.Implementations;
+
+public class BookingService : IBookingService
+{
+    private readonly IBackEndService _backEndService;
+    private readonly IBackendUrlProvider _backendUrlProvider;
+
+    public BookingService(IBackEndService backEndService, IBackendUrlProvider backendUrlProvider)
+    {
+        _backEndService = backEndService;
+        _backendUrlProvider = backendUrlProvider;
+    }
+
+    public async Task<HttpResponseWrapper<List<BookingResponseDto>>> GetUserBookingsAsync(string userId)
+    {
+        var url = _backendUrlProvider.Build($"/api/v1/reservas/usuario/{userId}");
+        return await _backEndService.GetAsync<List<BookingResponseDto>>(url);
+    }
+
+    public async Task<HttpResponseWrapper<Dictionary<string, HotelInventoryDto>>> GetHotelsByRoomIdsAsync(List<string> roomIds)
+    {
+        var url = _backendUrlProvider.Build("/api/v1/inventarios/hoteles");
+        var payload = new { habitaciones_ids = roomIds };
+        return await _backEndService.PostAsync<object, Dictionary<string, HotelInventoryDto>>(url, payload);
+    }
+}

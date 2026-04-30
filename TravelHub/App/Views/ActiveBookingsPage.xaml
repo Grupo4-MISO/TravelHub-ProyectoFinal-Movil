@@ -7,10 +7,6 @@
              IconImageSource="ic_reserve.png"
              Shell.NavBarIsVisible="False">
 
-    <ContentPage.BindingContext>
-        <vm:ActiveBookingsViewModel />
-    </ContentPage.BindingContext>
-
     <Grid RowDefinitions="Auto,*" BackgroundColor="{StaticResource Background}" RowSpacing="10">
 
         <!-- Header -->
@@ -39,30 +35,32 @@
                             <Border.Shadow>
                                 <Shadow Brush="#18000000" Offset="0,2" Radius="8" />
                             </Border.Shadow>
-                            <Border.GestureRecognizers>
+                            <!--<Border.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ActiveBookingsViewModel}}, Path=BookingSelectedCommand}"
                                                       CommandParameter="{Binding .}" />
-                            </Border.GestureRecognizers>
-                            <VerticalStackLayout>
-                                <Image Source="{Binding Property.ImageUrl}"
-                                       Aspect="AspectFill"
-                                       HeightRequest="140" />
-                                <VerticalStackLayout Padding="14" Spacing="6">
-                                    <Grid ColumnDefinitions="*,Auto">
-                                        <Label Text="{Binding Property.Name}"
-                                               FontFamily="OpenSansSemibold" FontSize="16" />
-                                        <Border Grid.Column="1"
-                                                BackgroundColor="{StaticResource Success}"
-                                                StrokeShape="RoundRectangle 6"
-                                                Stroke="Transparent"
-                                                Padding="8,3">
-                                            <Label Text="{Binding Status}"
-                                                   TextColor="{StaticResource White}"
-                                                   FontSize="11" />
-                                        </Border>
-                                    </Grid>
-                                    <Label Text="{Binding Property.City}" Style="{StaticResource Caption}" />
-                                    <Label Text="{Binding Room.Name}" Style="{StaticResource Subtitle}" />
+                            </Border.GestureRecognizers>-->
+                             <VerticalStackLayout>
+                                 <Image Source="{Binding HotelImage}"
+                                        Aspect="AspectFill"
+                                        HeightRequest="140" />
+                                 <VerticalStackLayout Padding="14" Spacing="6">
+                                     <Grid ColumnDefinitions="*,Auto">
+                                         <Label Text="{Binding HotelName}"
+                                                FontFamily="OpenSansSemibold" FontSize="16" />
+                                         <Border Grid.Column="1"
+                                                 BackgroundColor="{StaticResource Success}"
+                                                 StrokeShape="RoundRectangle 6"
+                                                 Stroke="Transparent"
+                                                 Padding="8,3">
+                                             <Label Text="{Binding Status}"
+                                                    VerticalTextAlignment="Center"
+                                                    TextColor="{StaticResource White}"
+                                                    FontSize="11" />
+                                         </Border>
+                                     </Grid>
+                                     <Label Text="{Binding HotelCity}" Style="{StaticResource Caption}" />
+
+                                     <Label Text="{Binding BookingCode}" Style="{StaticResource Subtitle}" />
 
                                     <Grid ColumnDefinitions="*,*" Margin="0,4,0,0">
                                         <VerticalStackLayout>
@@ -81,9 +79,12 @@
                                         <Label Text="{Binding BookingCode}"
                                                Style="{StaticResource Caption}"
                                                VerticalTextAlignment="Center" />
-                                        <Button Grid.Column="1" Text="Hacer Check-in"
+                                        <!--<Button Grid.Column="1" Text="Hacer Check-in"
                                                 Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ActiveBookingsViewModel}}, Path=CheckInCommand}"
                                                 CommandParameter="{Binding .}"
+                                                Padding="12,6" FontSize="12"
+                                                MinimumHeightRequest="36" />-->
+                                        <Button Grid.Column="1" Text="Hacer Check-in"
                                                 Padding="12,6" FontSize="12"
                                                 MinimumHeightRequest="36" />
                                     </Grid>
@@ -104,5 +105,19 @@
                 </CollectionView.EmptyView>
             </CollectionView>
         </RefreshView>
+        <!-- ================= LOADER ================= -->
+        <Border
+                Grid.Row="1"
+                 IsVisible="{Binding IsRefreshing}"
+                 BackgroundColor="#FFFFFF"
+                 StrokeThickness="0"
+                 InputTransparent="False">
+            <VerticalStackLayout Spacing="5"
+                     HorizontalOptions="Center"
+                     VerticalOptions="Center">
+                <ActivityIndicator IsVisible="{Binding IsRefreshing}" IsRunning="{Binding IsRefreshing}" Color="{StaticResource Primary}" />
+                <Label Text="{Binding ErrorMessage}" IsVisible="{Binding HasError}" TextColor="{StaticResource Primary}" />
+            </VerticalStackLayout>
+        </Border>
     </Grid>
 </ContentPage>
