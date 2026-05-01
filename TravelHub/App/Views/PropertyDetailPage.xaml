@@ -4,6 +4,7 @@
              xmlns:dto="clr-namespace:App.DTOs"
              xmlns:converters="clr-namespace:App.Converters"
              xmlns:maps="clr-namespace:Microsoft.Maui.Controls.Maps;assembly=Microsoft.Maui.Controls.Maps"
+             xmlns:local="clr-namespace:App.MarkupExtensions"
              x:Class="App.Views.PropertyDetailPage"
              Title="{Binding Title}">
 
@@ -51,7 +52,7 @@
                                TextColor="{StaticResource Star}" FontSize="16" />
                         <Label Text="{Binding Property.Rating, StringFormat='{0:F1}'}"
                                FontFamily="OpenSansSemibold" FontSize="16" />
-                        <Label Text="{Binding Property.ReviewCount, StringFormat='({0} resenas)'}"
+                            <Label Text="{Binding Property.ReviewCount, StringFormat='({0} reseñas)'}" 
                                Style="{StaticResource Caption}" VerticalTextAlignment="Center" />
                     </HorizontalStackLayout>
 
@@ -65,7 +66,7 @@
                         StrokeShape="RoundRectangle 12"
                         Stroke="{StaticResource Gray100}">
                     <VerticalStackLayout Spacing="8">
-                        <Label Text="Descripcion" Style="{StaticResource Title}" />
+                        <Label Text="{local:Translate Detail_Descripcion}" Style="{StaticResource Title}" />
                         <Label Text="{Binding Property.Description}"
                                Style="{StaticResource Subtitle}"
                                LineBreakMode="WordWrap" />
@@ -78,7 +79,7 @@
                         StrokeShape="RoundRectangle 12"
                         Stroke="{StaticResource Gray100}">
                     <VerticalStackLayout Spacing="10">
-                        <Label Text="Amenidades" Style="{StaticResource Title}" />
+                         <Label Text="{local:Translate Detail_Amenidades}" Style="{StaticResource Title}" />
                         <FlexLayout Wrap="Wrap" 
                                     JustifyContent="Start"
                                     AlignItems="Start"
@@ -128,7 +129,7 @@
                         StrokeShape="RoundRectangle 12"
                         Stroke="{StaticResource Gray100}">
                     <VerticalStackLayout Spacing="12">
-                        <Label Text="Comentarios" Style="{StaticResource Title}" />
+                         <Label Text="{local:Translate Detail_Comentarios}" Style="{StaticResource Title}" />
                         <Label Text="{Binding ReviewsErrorMessage}"
                                IsVisible="{Binding HasReviewsError}"
                                TextColor="{StaticResource Danger}" />
@@ -157,7 +158,7 @@
                                 </DataTemplate>
                             </CollectionView.ItemTemplate>
                             <CollectionView.EmptyView>
-                                <Label Text="Este alojamiento aún no tiene comentarios."
+                                 <Label Text="{local:Translate Detail_SinComentarios}"
                                        Style="{StaticResource Subtitle}" />
                             </CollectionView.EmptyView>
                         </CollectionView>
@@ -171,7 +172,7 @@
         <Border Grid.Row="1" Padding="16,12"
                 BackgroundColor="{StaticResource Surface}"
                 Stroke="{StaticResource Gray100}">
-            <Button Text="Elegir Habitacion"
+            <Button Text="{local:Translate Detail_ElegirHabitacion}"
                     Command="{Binding ChooseRoomCommand}"
                     Style="{StaticResource AccentButton}"
                     HorizontalOptions="Fill" />

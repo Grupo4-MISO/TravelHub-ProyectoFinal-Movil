@@ -4,6 +4,7 @@
              xmlns:vm="clr-namespace:App.ViewModels"
              xmlns:controls="clr-namespace:App.Controls"
              xmlns:converters="clr-namespace:App.Converters"
+             xmlns:local="clr-namespace:App.MarkupExtensions"
              x:Class="App.Views.HomePage"
              IconImageSource="ic_search.png"
              Shell.NavBarIsVisible="False">
@@ -57,7 +58,7 @@
                         <Shadow Brush="#20000000" Offset="0,2" Radius="8" />
                     </Border.Shadow>
                     <VerticalStackLayout Spacing="12">
-                        <Label Text="Buscar Hospedaje"
+                        <Label Text="{local:Translate Home_BuscarHospedaje}"
                                Style="{StaticResource SubHeadline}" />
 
                         <!-- Ciudad -->
@@ -65,7 +66,7 @@
                                 BackgroundColor="{StaticResource Background}"
                                 StrokeShape="RoundRectangle 10"
                                 Stroke="{StaticResource Gray200}">
-                            <Picker Title="Ciudad destino"
+                            <Picker Title="{local:Translate Home_CiudadDestino}"
                                      SelectedIndex="0"
                                     ItemsSource="{Binding PopularCities}"
                                     SelectedItem="{Binding SelectedCity}" />
@@ -78,7 +79,7 @@
                                     StrokeShape="RoundRectangle 10"
                                     Stroke="{StaticResource Gray200}">
                                 <VerticalStackLayout>
-                                    <Label Text="Check-in" Style="{StaticResource Caption}" />
+                                    <Label Text="{local:Translate Home_CheckIn}" Style="{StaticResource Caption}" />
                                     <DatePicker Date="{Binding CheckInDate}"
                                                 MinimumDate="{Binding MinDate}"
                                                 Format="dd/MM/yyyy" />
@@ -89,7 +90,7 @@
                                     StrokeShape="RoundRectangle 10"
                                     Stroke="{StaticResource Gray200}">
                                 <VerticalStackLayout>
-                                    <Label Text="Check-out" Style="{StaticResource Caption}" />
+                                    <Label Text="{local:Translate Home_CheckOut}" Style="{StaticResource Caption}" />
                                     <DatePicker Date="{Binding CheckOutDate}"
                                                 MinimumDate="{Binding CheckInDate}"
                                                 Format="dd/MM/yyyy" />
@@ -121,7 +122,7 @@
                               IsVisible="{Binding IsGuestConfigVisible}">
                             <!-- Adultos -->
                             <Grid Grid.Row="0" ColumnDefinitions="*,auto">
-                                <Label Grid.Column="0" Text="Adultos" Style="{StaticResource Caption}" 
+                                <Label Grid.Column="0" Text="{local:Translate Home_Adultos}" Style="{StaticResource Caption}" 
                                        HorizontalTextAlignment="Start" VerticalTextAlignment="Center" />
                                 <Grid Grid.Column="1" ColumnDefinitions="Auto,*,Auto" HorizontalOptions="Center">
                                     <Button Text="-" Command="{Binding DecrementAdultsCommand}"
@@ -147,7 +148,7 @@
 
                             <!-- Ninos -->
                             <Grid Grid.Row="1" ColumnDefinitions="*,auto">
-                                <Label Grid.Column="0" Text="Ninos" Style="{StaticResource Caption}" 
+                                <Label Grid.Column="0" Text="{local:Translate Home_Ninos}" Style="{StaticResource Caption}" 
                                          HorizontalTextAlignment="Start" VerticalTextAlignment="Center" />
                                 <Grid Grid.Column="1" ColumnDefinitions="Auto,*,Auto" HorizontalOptions="Center">
                                     <Button Text="-" Command="{Binding DecrementChildrenCommand}"
@@ -173,7 +174,7 @@
 
                             <!-- Habitaciones -->
                             <Grid Grid.Row="2" ColumnDefinitions="*,auto">
-                                <Label Grid.Column="0" Text="Habitaciones" Style="{StaticResource Caption}" 
+                                <Label Grid.Column="0" Text="{local:Translate Home_Habitaciones}" Style="{StaticResource Caption}" 
                                          HorizontalTextAlignment="Start" VerticalTextAlignment="Center" />
                                 <Grid Grid.Column="1" ColumnDefinitions="Auto,*,Auto" HorizontalOptions="Center">
                                     <Button Text="-" Command="{Binding DecrementRoomsCommand}"
@@ -199,7 +200,7 @@
                         </Grid>
 
                         <!-- Boton Buscar -->
-                        <Button Text="Buscar"
+                        <Button Text="{local:Translate Home_Buscar}"
                                 Command="{Binding SearchCommand}"
                                 Style="{StaticResource AccentButton}"
                                 HorizontalOptions="Fill" />

@@ -1,6 +1,6 @@
 <Solution>
   <Project Path="App/App.csproj">
-    <Deploy Solution="Debug|*" />
+    <Deploy />
   </Project>
   <Project Path="TravelHub.Tests/TravelHub.Tests.csproj" />
 </Solution>

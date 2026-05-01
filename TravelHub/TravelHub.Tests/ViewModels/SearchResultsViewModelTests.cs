@@ -9,12 +9,21 @@ namespace TravelHub.Tests.ViewModels;
 public class SearchResultsViewModelTests
 {
     private readonly Mock<IAccommodationSearchService> _searchServiceMock;
+    private readonly Mock<ILocalizationService> _localizationServiceMock;
     private readonly SearchResultsViewModel _viewModel;
 
     public SearchResultsViewModelTests()
     {
         _searchServiceMock = new Mock<IAccommodationSearchService>();
-        _viewModel = new SearchResultsViewModel(_searchServiceMock.Object);
+        _localizationServiceMock = new Mock<ILocalizationService>();
+        
+        // Setup localization service to return expected strings
+        _localizationServiceMock.Setup(x => x.GetString("Search_Recomendados")).Returns("Recomendados");
+        _localizationServiceMock.Setup(x => x.GetString("Search_PrecioMenor")).Returns("Precio menor");
+        _localizationServiceMock.Setup(x => x.GetString("Search_PrecioMayor")).Returns("Precio mayor");
+        _localizationServiceMock.Setup(x => x.GetString("Search_MejorCalificado")).Returns("Mejor calificado");
+        
+        _viewModel = new SearchResultsViewModel(_searchServiceMock.Object, _localizationServiceMock.Object);
     }
 
     [Fact]
@@ -27,7 +36,14 @@ public class SearchResultsViewModelTests
     public void Constructor_Throws_WhenSearchServiceNull()
     {
         Assert.Throws<ArgumentNullException>(() =>
-            new SearchResultsViewModel(null!));
+            new SearchResultsViewModel(null!, _localizationServiceMock.Object));
+    }
+    
+    [Fact]
+    public void Constructor_Throws_WhenLocalizationServiceNull()
+    {
+        Assert.Throws<ArgumentNullException>(() =>
+            new SearchResultsViewModel(_searchServiceMock.Object, null!));
     }
 
     [Fact]

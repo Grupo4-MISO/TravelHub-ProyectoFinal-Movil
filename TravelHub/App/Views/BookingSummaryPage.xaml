@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:App.ViewModels"
+             xmlns:local="clr-namespace:App.MarkupExtensions"
              x:Class="App.Views.BookingSummaryPage"
              Title="{Binding Title}">
 
@@ -37,21 +38,21 @@
                         StrokeShape="RoundRectangle 12"
                         Stroke="{StaticResource Gray100}">
                     <VerticalStackLayout Spacing="8">
-                        <Label Text="Fechas" Style="{StaticResource Title}" />
+                        <Label Text="{local:Translate Summary_Fechas}" Style="{StaticResource Title}" />
                         <Grid ColumnDefinitions="*,*">
                             <VerticalStackLayout>
-                                <Label Text="Check-in" Style="{StaticResource Caption}" />
+                                <Label Text="{local:Translate Summary_CheckIn}" Style="{StaticResource Caption}" />
                                 <Label Text="{Binding CheckIn, StringFormat='{0:dd/MM/yyyy}'}"
                                        FontFamily="OpenSansSemibold" FontSize="15" />
                             </VerticalStackLayout>
                             <VerticalStackLayout Grid.Column="1">
-                                <Label Text="Check-out" Style="{StaticResource Caption}" />
+                                <Label Text="{local:Translate Summary_CheckOut}" Style="{StaticResource Caption}" />
                                 <Label Text="{Binding CheckOut, StringFormat='{0:dd/MM/yyyy}'}"
                                        FontFamily="OpenSansSemibold" FontSize="15" />
                             </VerticalStackLayout>
                         </Grid>
-                        <Label Text="{Binding Nights, StringFormat='{0} noche(s)'}"
-                               Style="{StaticResource Subtitle}" />
+<Label Text="{Binding Nights, StringFormat={local:Translate Summary_Noches}}"
+       Style="{StaticResource Subtitle}" />
                     </VerticalStackLayout>
                 </Border>
 
@@ -61,7 +62,7 @@
                         StrokeShape="RoundRectangle 12"
                         Stroke="{StaticResource Gray100}">
                     <VerticalStackLayout Spacing="4">
-                        <Label Text="Viajero" Style="{StaticResource Title}" />
+                        <Label Text="{local:Translate Summary_Viajero}" Style="{StaticResource Title}" />
                         <Label Text="{Binding Traveler.first_name}"
                                FontFamily="OpenSansSemibold" FontSize="15" />
                         <Label Text="{Binding Traveler.email}" Style="{StaticResource Subtitle}" />
@@ -75,22 +76,22 @@
                         StrokeShape="RoundRectangle 12"
                         Stroke="{StaticResource Gray100}">
                     <VerticalStackLayout Spacing="6">
-                        <Label Text="Detalle de Precio" Style="{StaticResource Title}" />
+                        <Label Text="{local:Translate Summary_DetallePrecio}" Style="{StaticResource Title}" />
                         <Grid ColumnDefinitions="*,Auto">
-                            <Label Text="{Binding Room.Price, StringFormat='Precio por noche'}"
-                                   Style="{StaticResource Subtitle}" />
+<Label Text="{local:Translate Summary_PrecioNoche}"
+       Style="{StaticResource Subtitle}" />
                             <Label Grid.Column="1"
                                    Text="{Binding Room.Price, StringFormat='${0:F0}'}"
                                    FontFamily="OpenSansSemibold" />
                         </Grid>
                         <Grid ColumnDefinitions="*,Auto">
-                            <Label Text="{Binding Nights, StringFormat='x {0} noche(s)'}"
-                                   Style="{StaticResource Subtitle}" />
+<Label Text="{Binding Nights, StringFormat={local:Translate Summary_XNoches}}"
+       Style="{StaticResource Subtitle}" />
                         </Grid>
                         <BoxView HeightRequest="1" Color="{StaticResource Gray200}" Margin="0,4" />
                         <Grid ColumnDefinitions="*,Auto">
-                            <Label Text="Total"
-                                   FontFamily="OpenSansSemibold" FontSize="18" />
+<Label Text="{local:Translate Summary_Total}"
+       FontFamily="OpenSansSemibold" FontSize="18" />
                             <Label Grid.Column="1"
                                    Text="{Binding TotalPrice, StringFormat='${0:F0}'}"
                                    Style="{StaticResource Price}" />
@@ -101,9 +102,9 @@
                 <!-- Terminos -->
                 <Grid ColumnDefinitions="auto, *">
                     <CheckBox Grid.Column="0" IsChecked="{Binding AcceptTerms}" />
-                    <Label Grid.Column="1" Text="Acepto los terminos, condiciones y politicas de cancelacion"
-                           Style="{StaticResource Caption}"
-                           VerticalTextAlignment="Center" />
+<Label Grid.Column="1" Text="{local:Translate Summary_Terminos}"
+       Style="{StaticResource Caption}"
+       VerticalTextAlignment="Center" />
                 </Grid>
 
             </VerticalStackLayout>
@@ -113,10 +114,10 @@
         <Border Grid.Row="1" Padding="16,12"
                 BackgroundColor="{StaticResource Surface}"
                 Stroke="{StaticResource Gray100}">
-            <Button Text="Reservar Ahora"
-                    Command="{Binding ConfirmBookingCommand}"
-                    Style="{StaticResource AccentButton}"
-                    HorizontalOptions="Fill" />
+<Button Text="{local:Translate Summary_ReservarAhora}"
+        Command="{Binding ConfirmBookingCommand}"
+        Style="{StaticResource AccentButton}"
+        HorizontalOptions="Fill" />
         </Border>
     </Grid>
 </ContentPage>
