@@ -1,0 +1,516 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- AppShell -->
+  <data name="Shell_Buscar" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="Shell_Reservas" xml:space="preserve">
+    <value>Bookings</value>
+  </data>
+  <data name="Shell_MiCuenta" xml:space="preserve">
+    <value>My Account</value>
+  </data>
+
+  <!-- HomePage -->
+  <data name="Home_BuscarHospedaje" xml:space="preserve">
+    <value>Search Accommodation</value>
+  </data>
+  <data name="Home_CiudadDestino" xml:space="preserve">
+    <value>Destination city</value>
+  </data>
+  <data name="Home_CheckIn" xml:space="preserve">
+    <value>Check-in</value>
+  </data>
+  <data name="Home_CheckOut" xml:space="preserve">
+    <value>Check-out</value>
+  </data>
+  <data name="Home_Adultos" xml:space="preserve">
+    <value>Adults</value>
+  </data>
+  <data name="Home_Ninos" xml:space="preserve">
+    <value>Children</value>
+  </data>
+  <data name="Home_Habitaciones" xml:space="preserve">
+    <value>Rooms</value>
+  </data>
+  <data name="Home_Buscar" xml:space="preserve">
+    <value>Search</value>
+  </data>
+
+  <!-- SearchResultsPage -->
+  <data name="Search_Filtros" xml:space="preserve">
+    <value>Filters</value>
+  </data>
+  <data name="Search_Ordenar" xml:space="preserve">
+    <value>Sort by</value>
+  </data>
+  <data name="Search_Recomendados" xml:space="preserve">
+    <value>Recommended</value>
+  </data>
+  <data name="Search_PrecioMenor" xml:space="preserve">
+    <value>Lowest price</value>
+  </data>
+  <data name="Search_PrecioMayor" xml:space="preserve">
+    <value>Highest price</value>
+  </data>
+  <data name="Search_MejorCalificado" xml:space="preserve">
+    <value>Top rated</value>
+  </data>
+  <data name="Search_PrecioPorNoche" xml:space="preserve">
+    <value>Price per night</value>
+  </data>
+  <data name="Search_CalificacionMinima" xml:space="preserve">
+    <value>Minimum rating</value>
+  </data>
+  <data name="Search_Aplicar" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="Search_Limpiar" xml:space="preserve">
+    <value>Clear</value>
+  </data>
+  <data name="Search_Resenas" xml:space="preserve">
+    <value>({0} reviews)</value>
+  </data>
+  <data name="Search_PorNoche" xml:space="preserve">
+    <value>/ night</value>
+  </data>
+  <data name="Search_Disponible" xml:space="preserve">
+    <value>Available</value>
+  </data>
+  <data name="Search_NoResultados" xml:space="preserve">
+    <value>No results found</value>
+  </data>
+  <data name="Search_ModificarFiltros" xml:space="preserve">
+    <value>Try modifying your search filters</value>
+  </data>
+
+  <!-- PropertyDetailPage -->
+  <data name="Detail_Resenas" xml:space="preserve">
+    <value>({0} reviews)</value>
+  </data>
+  <data name="Detail_Desde" xml:space="preserve">
+    <value>From ${0:F0} / night</value>
+  </data>
+  <data name="Detail_Descripcion" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="Detail_Amenidades" xml:space="preserve">
+    <value>Amenities</value>
+  </data>
+  <data name="Detail_Comentarios" xml:space="preserve">
+    <value>Comments</value>
+  </data>
+  <data name="Detail_SinComentarios" xml:space="preserve">
+    <value>This accommodation has no reviews yet.</value>
+  </data>
+  <data name="Detail_ElegirHabitacion" xml:space="preserve">
+    <value>Choose Room</value>
+  </data>
+
+  <!-- RoomSelectionPage -->
+  <data name="Room_MaxHuespedes" xml:space="preserve">
+    <value>Max {0} guests</value>
+  </data>
+  <data name="Room_Seleccionar" xml:space="preserve">
+    <value>Select</value>
+  </data>
+  <data name="Room_Seleccionada" xml:space="preserve">
+    <value>Selected: {0}</value>
+  </data>
+  <data name="Room_Reservar" xml:space="preserve">
+    <value>Book Now</value>
+  </data>
+
+  <!-- TravelerDataPage -->
+  <data name="Traveler_PorNoche" xml:space="preserve">
+    <value>/ night</value>
+  </data>
+  <data name="Traveler_Datos" xml:space="preserve">
+    <value>Traveler Data</value>
+  </data>
+  <data name="Traveler_Nombre" xml:space="preserve">
+    <value>First Name</value>
+  </data>
+  <data name="Traveler_NombrePlaceholder" xml:space="preserve">
+    <value>My name</value>
+  </data>
+  <data name="Traveler_Apellido" xml:space="preserve">
+    <value>Last Name</value>
+  </data>
+  <data name="Traveler_ApellidoPlaceholder" xml:space="preserve">
+    <value>My last name</value>
+  </data>
+  <data name="Traveler_Email" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="Traveler_EmailPlaceholder" xml:space="preserve">
+    <value>youremail@email.com</value>
+  </data>
+  <data name="Traveler_Telefono" xml:space="preserve">
+    <value>Phone</value>
+  </data>
+  <data name="Traveler_TelefonoPlaceholder" xml:space="preserve">
+    <value>321 123 4567</value>
+  </data>
+  <data name="Traveler_TelefonoCompleto" xml:space="preserve">
+    <value>Full phone: {0}</value>
+  </data>
+  <data name="Traveler_Documento" xml:space="preserve">
+    <value>ID Document</value>
+  </data>
+  <data name="Traveler_DocumentoPlaceholder" xml:space="preserve">
+    <value>Identification number</value>
+  </data>
+  <data name="Traveler_Asegurate" xml:space="preserve">
+    <value>Make sure your data is correct. We will use it to send you the booking confirmation.</value>
+  </data>
+  <data name="Traveler_Continuar" xml:space="preserve">
+    <value>Continue</value>
+  </data>
+  <data name="Traveler_Actualizar" xml:space="preserve">
+    <value>Update data</value>
+  </data>
+
+  <!-- BookingSummaryPage -->
+  <data name="Summary_Fechas" xml:space="preserve">
+    <value>Dates</value>
+  </data>
+  <data name="Summary_CheckIn" xml:space="preserve">
+    <value>Check-in</value>
+  </data>
+  <data name="Summary_CheckOut" xml:space="preserve">
+    <value>Check-out</value>
+  </data>
+  <data name="Summary_Noches" xml:space="preserve">
+    <value>{0} night(s)</value>
+  </data>
+  <data name="Summary_Viajero" xml:space="preserve">
+    <value>Traveler</value>
+  </data>
+  <data name="Summary_DetallePrecio" xml:space="preserve">
+    <value>Price Details</value>
+  </data>
+  <data name="Summary_PrecioNoche" xml:space="preserve">
+    <value>Price per night</value>
+  </data>
+  <data name="Summary_XNoches" xml:space="preserve">
+    <value>x {0} night(s)</value>
+  </data>
+  <data name="Summary_Total" xml:space="preserve">
+    <value>Total</value>
+  </data>
+  <data name="Summary_Terminos" xml:space="preserve">
+    <value>I accept the terms, conditions and cancellation policies</value>
+  </data>
+  <data name="Summary_ReservarAhora" xml:space="preserve">
+    <value>Book Now</value>
+  </data>
+
+  <!-- BookingDetailsPage -->
+  <data name="Details_Titulo" xml:space="preserve">
+    <value>Booking Details</value>
+  </data>
+  <data name="Details_ReservaNum" xml:space="preserve">
+    <value>Booking #{0}</value>
+  </data>
+  <data name="Details_CheckIn" xml:space="preserve">
+    <value>Check-in</value>
+  </data>
+  <data name="Details_CheckOut" xml:space="preserve">
+    <value>Check-out</value>
+  </data>
+  <data name="Details_Huespedes" xml:space="preserve">
+    <value>Guests</value>
+  </data>
+  <data name="Details_Personas" xml:space="preserve">
+    <value>{0} people</value>
+  </data>
+  <data name="Details_Habitacion" xml:space="preserve">
+    <value>Room</value>
+  </data>
+  <data name="Details_Servicios" xml:space="preserve">
+    <value>Included Services</value>
+  </data>
+  <data name="Details_InfoPago" xml:space="preserve">
+    <value>Payment Information</value>
+  </data>
+  <data name="Details_PrecioNoche" xml:space="preserve">
+    <value>Price per night</value>
+  </data>
+  <data name="Details_Impuestos" xml:space="preserve">
+    <value>Taxes and charges</value>
+  </data>
+  <data name="Details_Total" xml:space="preserve">
+    <value>Total</value>
+  </data>
+  <data name="Details_Moneda" xml:space="preserve">
+    <value>Currency: {0}</value>
+  </data>
+  <data name="Details_EstadoPago" xml:space="preserve">
+    <value>Payment status</value>
+  </data>
+  <data name="Details_Documentos" xml:space="preserve">
+    <value>Booking Documents</value>
+  </data>
+  <data name="Details_DescargarConfirmacion" xml:space="preserve">
+    <value>Download Confirmation</value>
+  </data>
+  <data name="Details_DescargarFactura" xml:space="preserve">
+    <value>Download Invoice</value>
+  </data>
+  <data name="Details_ContactarHotel" xml:space="preserve">
+    <value>Contact Hotel</value>
+  </data>
+  <data name="Details_Llamar" xml:space="preserve">
+    <value>Call: {0}</value>
+  </data>
+  <data name="Details_Email" xml:space="preserve">
+    <value>Email: {0}</value>
+  </data>
+  <data name="Details_Direccion" xml:space="preserve">
+    <value>Address</value>
+  </data>
+  <data name="Details_Modificar" xml:space="preserve">
+    <value>Modify</value>
+  </data>
+  <data name="Details_Cancelar" xml:space="preserve">
+    <value>Cancel Booking</value>
+  </data>
+
+  <!-- BookingConfirmedPage -->
+  <data name="Confirmed_Titulo" xml:space="preserve">
+    <value>Booking Confirmed!</value>
+  </data>
+  <data name="Confirmed_Mensaje" xml:space="preserve">
+    <value>Your booking has been successfully registered</value>
+  </data>
+  <data name="Confirmed_Codigo" xml:space="preserve">
+    <value>Booking Code</value>
+  </data>
+  <data name="Confirmed_Detalles" xml:space="preserve">
+    <value>Booking Details</value>
+  </data>
+  <data name="Confirmed_Hotel" xml:space="preserve">
+    <value>Hotel:</value>
+  </data>
+  <data name="Confirmed_Habitacion" xml:space="preserve">
+    <value>Room:</value>
+  </data>
+  <data name="Confirmed_CheckIn" xml:space="preserve">
+    <value>Check-in:</value>
+  </data>
+  <data name="Confirmed_CheckOut" xml:space="preserve">
+    <value>Check-out:</value>
+  </data>
+  <data name="Confirmed_Total" xml:space="preserve">
+    <value>Total</value>
+  </data>
+  <data name="Confirmed_IrInicio" xml:space="preserve">
+    <value>Go to Home</value>
+  </data>
+  <data name="Confirmed_VerReservas" xml:space="preserve">
+    <value>View My Bookings</value>
+  </data>
+
+  <!-- ActiveBookingsPage -->
+  <data name="Bookings_Titulo" xml:space="preserve">
+    <value>My Bookings</value>
+  </data>
+  <data name="Bookings_CheckIn" xml:space="preserve">
+    <value>Check-in</value>
+  </data>
+  <data name="Bookings_CheckOut" xml:space="preserve">
+    <value>Check-out</value>
+  </data>
+  <data name="Bookings_HacerCheckIn" xml:space="preserve">
+    <value>Check-in</value>
+  </data>
+  <data name="Bookings_SinReservas" xml:space="preserve">
+    <value>No active bookings</value>
+  </data>
+  <data name="Bookings_BuscaViaje" xml:space="preserve">
+    <value>Search and book your next trip</value>
+  </data>
+
+  <!-- AccountPage -->
+  <data name="Account_Titulo" xml:space="preserve">
+    <value>My Account</value>
+  </data>
+  <data name="Account_EditarPerfil" xml:space="preserve">
+    <value>Edit Profile</value>
+  </data>
+  <data name="Account_Historial" xml:space="preserve">
+    <value>Booking History</value>
+  </data>
+  <data name="Account_CerrarSesion" xml:space="preserve">
+    <value>Log Out</value>
+  </data>
+  <data name="Account_Version" xml:space="preserve">
+    <value>TravelHub v1.0</value>
+  </data>
+  <data name="Account_IniciaSesion" xml:space="preserve">
+    <value>Log in to continue</value>
+  </data>
+  <data name="Account_Email" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="Account_EmailPlaceholder" xml:space="preserve">
+    <value>youremail@email.com</value>
+  </data>
+  <data name="Account_Password" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="Account_PasswordPlaceholder" xml:space="preserve">
+    <value>My password</value>
+  </data>
+  <data name="Account_IniciarSesion" xml:space="preserve">
+    <value>Log In</value>
+  </data>
+  <data name="Account_NoTienesCuenta" xml:space="preserve">
+    <value>Don't have an account?</value>
+  </data>
+  <data name="Account_Registrate" xml:space="preserve">
+    <value>Sign Up</value>
+  </data>
+
+  <!-- AccountLoginPage -->
+  <data name="Login_Titulo" xml:space="preserve">
+    <value>Log in to continue</value>
+  </data>
+  <data name="Login_Email" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="Login_EmailPlaceholder" xml:space="preserve">
+    <value>youremail@email.com</value>
+  </data>
+  <data name="Login_Password" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="Login_PasswordPlaceholder" xml:space="preserve">
+    <value>My password</value>
+  </data>
+  <data name="Login_IniciarSesion" xml:space="preserve">
+    <value>Log In</value>
+  </data>
+  <data name="Login_NoTienesCuenta" xml:space="preserve">
+    <value>Don't have an account?</value>
+  </data>
+  <data name="Login_Registrate" xml:space="preserve">
+    <value>Sign Up</value>
+  </data>
+
+  <!-- AccountRegisterPage -->
+  <data name="Register_Titulo" xml:space="preserve">
+    <value>Complete your data to register</value>
+  </data>
+  <data name="Register_Documento" xml:space="preserve">
+    <value>ID Number</value>
+  </data>
+  <data name="Register_DocumentoPlaceholder" xml:space="preserve">
+    <value>Your ID number</value>
+  </data>
+  <data name="Register_Genero" xml:space="preserve">
+    <value>Gender</value>
+  </data>
+  <data name="Register_GeneroTitle" xml:space="preserve">
+    <value>Select your gender</value>
+  </data>
+  <data name="Register_Female" xml:space="preserve">
+    <value>Female</value>
+  </data>
+  <data name="Register_Male" xml:space="preserve">
+    <value>Male</value>
+  </data>
+  <data name="Register_Other" xml:space="preserve">
+    <value>Other</value>
+  </data>
+  <data name="Register_Nombre" xml:space="preserve">
+    <value>First Name</value>
+  </data>
+  <data name="Register_NombrePlaceholder" xml:space="preserve">
+    <value>Your name</value>
+  </data>
+  <data name="Register_Apellido" xml:space="preserve">
+    <value>Last Name</value>
+  </data>
+  <data name="Register_ApellidoPlaceholder" xml:space="preserve">
+    <value>Your last name</value>
+  </data>
+  <data name="Register_Email" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="Register_EmailPlaceholder" xml:space="preserve">
+    <value>youremail@email.com</value>
+  </data>
+  <data name="Register_Telefono" xml:space="preserve">
+    <value>Phone</value>
+  </data>
+  <data name="Register_TelefonoPlaceholder" xml:space="preserve">
+    <value>321 123 4567</value>
+  </data>
+  <data name="Register_Contrasena" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="Register_ContrasenaPlaceholder" xml:space="preserve">
+    <value>Minimum 6 characters</value>
+  </data>
+  <data name="Register_ConfirmarContrasena" xml:space="preserve">
+    <value>Confirm Password</value>
+  </data>
+  <data name="Register_ConfirmarPlaceholder" xml:space="preserve">
+    <value>Repeat your password</value>
+  </data>
+  <data name="Register_Acepto" xml:space="preserve">
+    <value>I accept the</value>
+  </data>
+  <data name="Register_Terminos" xml:space="preserve">
+    <value>terms and conditions</value>
+  </data>
+  <data name="Register_Registrarse" xml:space="preserve">
+    <value>Sign Up</value>
+  </data>
+  <data name="Register_YaTienesCuenta" xml:space="preserve">
+    <value>Already have an account?</value>
+  </data>
+  <data name="Register_IniciaSesion" xml:space="preserve">
+    <value>Log In</value>
+  </data>
+
+  <!-- CountryPage -->
+  <data name="Country_Titulo" xml:space="preserve">
+    <value>Select Country</value>
+  </data>
+  <data name="Country_Descripcion" xml:space="preserve">
+    <value>Select the country where you want to search for accommodations</value>
+  </data>
+  <data name="Country_Reintentar" xml:space="preserve">
+    <value>Retry</value>
+  </data>
+  <data name="Country_Moneda" xml:space="preserve">
+    <value>Currency: {0}</value>
+  </data>
+
+  <!-- Idioma / Language -->
+  <data name="Language_Espanol" xml:space="preserve">
+    <value>Spanish</value>
+  </data>
+  <data name="Language_English" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="Language_Seleccionar" xml:space="preserve">
+    <value>Select language</value>
+  </data>
+</root>

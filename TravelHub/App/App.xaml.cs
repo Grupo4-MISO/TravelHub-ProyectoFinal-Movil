@@ -1,11 +1,12 @@
 ﻿using App.Services.Implementations;
 using App.Services.Interfaces;
+using App.MarkupExtensions;
 
 namespace App
 {
     public partial class App : Application
     {
-        public App(IAppInitializationService appInitializationService, IAppConfigurationService appConfigurationService)
+        public App(IAppInitializationService appInitializationService, IAppConfigurationService appConfigurationService, ILocalizationService localizationService)
         {
             if (appConfigurationService == null)
             {
@@ -21,6 +22,7 @@ namespace App
             //}
 
             InitializeComponent();
+            TranslateExtension.Initialize(localizationService);
             _ = InitializeApplicationAsync(appInitializationService, appConfigurationService);
         }
 

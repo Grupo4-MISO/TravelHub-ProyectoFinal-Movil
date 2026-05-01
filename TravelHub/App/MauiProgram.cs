@@ -2,6 +2,7 @@
 using App.Services.Interfaces;
 using App.ViewModels;
 using App.Views;
+using App.MarkupExtensions;
 using CommunityToolkit.Maui;
 using Microsoft.Extensions.Logging;
 using App.Repositories.Interfaces;
@@ -50,6 +51,9 @@ public static class MauiProgram
         builder.Services.AddSingleton<ITravelerProfileService, TravelerProfileService>();
         builder.Services.AddSingleton<INavigationService, ShellNavigationService>();
         builder.Services.AddSingleton<IBookingService, BookingService>();
+        builder.Services.AddSingleton<IPreferencesService, PreferencesService>();
+        builder.Services.AddSingleton<ILocalizationService>(sp => 
+            new LocalizationService(sp.GetRequiredService<IPreferencesService>()));
 
         // Register Repositories
         builder.Services.AddSingleton<IDatabaseService, DatabaseService>();

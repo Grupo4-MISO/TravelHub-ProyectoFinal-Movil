@@ -4,8 +4,9 @@
              xmlns:vm="clr-namespace:App.ViewModels"
              xmlns:models="clr-namespace:App.ViewModels"
              xmlns:icons="clr-namespace:App.Resources.Styles"
+             xmlns:local="clr-namespace:App.MarkupExtensions"
              x:Class="App.Views.CountryPage"
-             Title="Seleccionar Pais">
+             Title="{local:Translate Country_Titulo}">
     
     <Grid RowDefinitions="Auto,*" BackgroundColor="{StaticResource Background}">
         
@@ -13,9 +14,9 @@
         <VerticalStackLayout Grid.Row="0" 
                             Padding="16" 
                             BackgroundColor="{StaticResource Surface}">
-            <Label Text="Selecciona el país donde deseas buscar hospedajes" 
-                   Style="{StaticResource Subtitle}"
-                   Margin="0,4,0,0" />
+<Label Text="{local:Translate Country_Descripcion}" 
+       Style="{StaticResource Subtitle}"
+       Margin="0,4,0,0" />
         </VerticalStackLayout>
 
         <!-- Loading Indicator -->
@@ -41,9 +42,9 @@
                    TextColor="{StaticResource Danger}"
                    HorizontalTextAlignment="Center"
                    FontSize="14" />
-            <Button Text="Reintentar"
-                    Command="{Binding RetryLoadCommand}"
-                    BackgroundColor="{StaticResource Primary}" />
+<Button Text="{local:Translate Country_Reintentar}"
+        Command="{Binding RetryLoadCommand}"
+        BackgroundColor="{StaticResource Primary}" />
         </VerticalStackLayout>
 
         <!-- Lista de países -->
@@ -78,9 +79,9 @@
                                 <Label Text="{Binding Name}"
                                        FontFamily="OpenSansSemibold"
                                        FontSize="16" />
-                                <Label Text="{Binding CurrencyCode, StringFormat='Moneda: {0}'}"
-                                       Style="{StaticResource Caption}"
-                                       FontSize="12" />
+<Label Text="{Binding CurrencyCode, StringFormat={local:Translate Country_Moneda}}"
+       Style="{StaticResource Caption}"
+       FontSize="12" />
                             </VerticalStackLayout>
                             
                             <!-- Indicador de selección -->

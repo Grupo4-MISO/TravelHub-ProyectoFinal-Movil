@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:icons="clr-namespace:App.Resources.Styles"
              xmlns:behaviors="clr-namespace:App.Behaviors"
+             xmlns:local="clr-namespace:App.MarkupExtensions"
              x:Class="App.Views.TravelerDataPage"
              Title="{Binding Title}">
 
@@ -26,9 +27,9 @@
                             <Label Text="{Binding Room.Description}"
                                    FontSize="13"
                                    TextColor="{StaticResource PrimaryDark}" />
-                            <Label Text="{Binding Room.Price, StringFormat='${0:F0} / noche'}"
-                                   FontFamily="OpenSansSemibold" FontSize="13"
-                                   TextColor="{StaticResource Primary}" />
+<Label Text="{Binding Room.Price, StringFormat={local:Translate Traveler_PorNoche}}"
+       FontFamily="OpenSansSemibold" FontSize="13"
+       TextColor="{StaticResource Primary}" />
                         </VerticalStackLayout>
                     </Grid>
                 </Border>
@@ -39,32 +40,32 @@
                         StrokeShape="RoundRectangle 12"
                         Stroke="{StaticResource Gray100}">
                     <VerticalStackLayout Spacing="14">
-                        <Label Text="Datos del Viajero" Style="{StaticResource Title}" />
+                        <Label Text="{local:Translate Traveler_Datos}" Style="{StaticResource Title}" />
 
                         <VerticalStackLayout Spacing="4">
-                            <Label Text="Nombre" Style="{StaticResource Caption}" />
+                            <Label Text="{local:Translate Traveler_Nombre}" Style="{StaticResource Caption}" />
                             <Border Padding="12,0"
                                     BackgroundColor="{StaticResource Background}"
                                     StrokeShape="RoundRectangle 10"
                                     Stroke="{StaticResource Gray200}">
-                                <Entry Placeholder="Mi nombre"
-                                       Text="{Binding FirstName}" />
+<Entry Placeholder="{local:Translate Traveler_NombrePlaceholder}"
+       Text="{Binding FirstName}" />
                             </Border>
                         </VerticalStackLayout>
 
                         <VerticalStackLayout Spacing="4">
-                            <Label Text="Apellido" Style="{StaticResource Caption}" />
+                            <Label Text="{local:Translate Traveler_Apellido}" Style="{StaticResource Caption}" />
                             <Border Padding="12,0"
                                     BackgroundColor="{StaticResource Background}"
                                     StrokeShape="RoundRectangle 10"
                                     Stroke="{StaticResource Gray200}">
-                                <Entry Placeholder="Mi apellido"
-                                       Text="{Binding LastName}" />
+<Entry Placeholder="{local:Translate Traveler_ApellidoPlaceholder}"
+       Text="{Binding LastName}" />
                             </Border>
                         </VerticalStackLayout>
 
                         <VerticalStackLayout Spacing="4">
-                            <Label Text="Email" Style="{StaticResource Caption}" />
+                            <Label Text="{local:Translate Traveler_Email}" Style="{StaticResource Caption}" />
                             <Border Padding="12,0"
                                     BackgroundColor="{StaticResource Background}"
                                     StrokeShape="RoundRectangle 10"
@@ -82,17 +83,17 @@
                                                 Color="{StaticResource Gray400}" />
                                         </Image.Source>
                                     </Image>
-                                    <Entry Grid.Column="1"
-                                           Placeholder="tucorreo@email.com"
-                                           Text="{Binding Email}"
-                                           Keyboard="Email"
-                                           ClearButtonVisibility="WhileEditing" />
+<Entry Grid.Column="1"
+       Placeholder="{local:Translate Traveler_EmailPlaceholder}"
+       Text="{Binding Email}"
+       Keyboard="Email"
+       ClearButtonVisibility="WhileEditing" />
                                 </Grid>
                             </Border>
                         </VerticalStackLayout>
 
                         <VerticalStackLayout Spacing="4">
-                            <Label Text="Teléfono" Style="{StaticResource Caption}" />
+                            <Label Text="{local:Translate Traveler_Telefono}" Style="{StaticResource Caption}" />
                             <Border Padding="12,8"
                                     BackgroundColor="{StaticResource Background}"
                                     StrokeShape="RoundRectangle 10"
@@ -113,10 +114,10 @@
                                            VerticalOptions="Center" />
 
                                     <!-- Campo de entrada del número -->
-                                    <Entry Grid.Column="2"
-                                           Placeholder="321 123 4567"
-                                           Text="{Binding PhoneNumber}"
-                                           Keyboard="Telephone">
+<Entry Grid.Column="2"
+       Placeholder="{local:Translate Traveler_TelefonoPlaceholder}"
+       Text="{Binding PhoneNumber}"
+       Keyboard="Telephone">
                                         <!--<Entry.Behaviors>
                                             <behaviors:PhoneNumberFormattingBehavior />
                                         </Entry.Behaviors>-->
@@ -131,7 +132,7 @@
                         </VerticalStackLayout>
 
                         <VerticalStackLayout Spacing="4">
-                            <Label Text="Documento de identidad" Style="{StaticResource Caption}" />
+                            <Label Text="{local:Translate Traveler_Documento}" Style="{StaticResource Caption}" />
                             <Border Padding="12,0"
                                     BackgroundColor="{StaticResource Background}"
                                     StrokeShape="RoundRectangle 10"
@@ -149,11 +150,11 @@
                                                 Color="{StaticResource Gray400}" />
                                         </Image.Source>
                                     </Image>
-                                    <Entry Grid.Column="1"
-                                           Placeholder="Número de identificación"
-                                           Text="{Binding DocumentNumber}"
-                                           Keyboard="Numeric"
-                                           ClearButtonVisibility="WhileEditing" />
+<Entry Grid.Column="1"
+       Placeholder="{local:Translate Traveler_DocumentoPlaceholder}"
+       Text="{Binding DocumentNumber}"
+       Keyboard="Numeric"
+       ClearButtonVisibility="WhileEditing" />
                                 </Grid>
                             </Border>
                         </VerticalStackLayout>
@@ -174,12 +175,12 @@
                                             Color="{StaticResource Primary}" />
                                     </Image.Source>
                                 </Image>
-                                <Label Text="Asegúrate de que tus datos sean correctos. Los usaremos para enviarte la confirmación de tu reserva."
-                                       Style="{StaticResource Caption}"
-                                       FontSize="12"
-                                       LineBreakMode="WordWrap"
-                                       VerticalOptions="Center"
-                                       FlexLayout.Grow="1" />
+<Label Text="{local:Translate Traveler_Asegurate}"
+       Style="{StaticResource Caption}"
+       FontSize="12"
+       LineBreakMode="WordWrap"
+       VerticalOptions="Center"
+       FlexLayout.Grow="1" />
                             </HorizontalStackLayout>
                         </Border>
                     </VerticalStackLayout>
@@ -193,16 +194,16 @@
                 BackgroundColor="{StaticResource Surface}"
                 Stroke="{StaticResource Gray100}">
             <Grid>
-                <Button Text="Continuar"
-                        IsVisible="{Binding ShowContinueButton}"
-                        Command="{Binding ContinueCommand}"
-                        Style="{StaticResource AccentButton}"
-                        HorizontalOptions="Fill" />
-                <Button Text="Actualizar datos"
-                        IsVisible="{Binding ShowUpdateButton}"
-                        Command="{Binding UpdateTravelerCommand}"
-                        Style="{StaticResource UpdateButton}"
-                        HorizontalOptions="Fill" />
+<Button Text="{local:Translate Traveler_Continuar}"
+        IsVisible="{Binding ShowContinueButton}"
+        Command="{Binding ContinueCommand}"
+        Style="{StaticResource AccentButton}"
+        HorizontalOptions="Fill" />
+<Button Text="{local:Translate Traveler_Actualizar}"
+        IsVisible="{Binding ShowUpdateButton}"
+        Command="{Binding UpdateTravelerCommand}"
+        Style="{StaticResource UpdateButton}"
+        HorizontalOptions="Fill" />
             </Grid>
         </Border>
     </Grid>

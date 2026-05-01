@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:App.MarkupExtensions"
              x:Class="App.Views.AccountLoginPage"
              Title="{Binding Title}"
              Shell.NavBarIsVisible="False">
@@ -15,9 +16,9 @@
                 <!--<Label Text="TravelHub"
                        Style="{StaticResource Headline}"
                        HorizontalTextAlignment="Center" />-->
-                <Label Text="Inicia sesion para continuar"
-                       Style="{StaticResource Subtitle}"
-                       HorizontalTextAlignment="Center" />
+<Label Text="{local:Translate Login_Titulo}"
+       Style="{StaticResource Subtitle}"
+       HorizontalTextAlignment="Center" />
             </VerticalStackLayout>
 
             <!-- Formulario -->
@@ -30,42 +31,42 @@
                 </Border.Shadow>
                 <VerticalStackLayout Spacing="16">
                     <VerticalStackLayout Spacing="4">
-                        <Label Text="Email" Style="{StaticResource Caption}" />
+                        <Label Text="{local:Translate Login_Email}" Style="{StaticResource Caption}" />
                         <Border Padding="12,0"
                                 BackgroundColor="{StaticResource Background}"
                                 StrokeShape="RoundRectangle 10"
                                 Stroke="{StaticResource Gray200}">
-                            <Entry Placeholder="micorreo@email.com"
-                                   Text="{Binding Email}"
-                                   Keyboard="Email" />
+<Entry Placeholder="{local:Translate Login_EmailPlaceholder}"
+       Text="{Binding Email}"
+       Keyboard="Email" />
                         </Border>
                     </VerticalStackLayout>
 
                     <VerticalStackLayout Spacing="4">
-                        <Label Text="Password" Style="{StaticResource Caption}" />
+                        <Label Text="{local:Translate Login_Password}" Style="{StaticResource Caption}" />
                         <Border Padding="12,0"
                                 BackgroundColor="{StaticResource Background}"
                                 StrokeShape="RoundRectangle 10"
                                 Stroke="{StaticResource Gray200}">
-                            <Entry Placeholder="Mi clave"
-                                   Text="{Binding Password}"
-                                   IsPassword="True" />
+<Entry Placeholder="{local:Translate Login_PasswordPlaceholder}"
+       Text="{Binding Password}"
+       IsPassword="True" />
                         </Border>
                     </VerticalStackLayout>
 
-                    <Button Text="Iniciar Sesion"
-                            Command="{Binding LoginCommand}"
-                            HorizontalOptions="Fill" />
+<Button Text="{local:Translate Login_IniciarSesion}"
+        Command="{Binding LoginCommand}"
+        HorizontalOptions="Fill" />
 
                     <HorizontalStackLayout Spacing="4" HorizontalOptions="Center">
-                        <Label Text="No tienes cuenta?"
-                               Style="{StaticResource Caption}"
-                               VerticalTextAlignment="Center" />
-                        <Label Text="Registrate"
-                               TextColor="{StaticResource Primary}"
-                               FontFamily="OpenSansSemibold"
-                               FontSize="13"
-                               VerticalTextAlignment="Center">
+<Label Text="{local:Translate Login_NoTienesCuenta}"
+       Style="{StaticResource Caption}"
+       VerticalTextAlignment="Center" />
+<Label Text="{local:Translate Login_Registrate}"
+       TextColor="{StaticResource Primary}"
+       FontFamily="OpenSansSemibold"
+       FontSize="13"
+       VerticalTextAlignment="Center">
                             <Label.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding RegisterCommand}" />
                             </Label.GestureRecognizers>

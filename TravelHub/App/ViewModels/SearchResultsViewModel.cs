@@ -2,15 +2,19 @@ using System.Collections.ObjectModel;
 using System.Windows.Input;
 using App.Models;
 using App.Services.Interfaces;
+using App.Services.Implementations;
 
 namespace App.ViewModels;
 
 public class SearchResultsViewModel : BaseViewModel, IQueryAttributable
 {
     private readonly IAccommodationSearchService _accommodationSearchService;
+    private readonly ILocalizationService _localizationService;
     private readonly List<SearchAccommodationDto> _allProperties = [];
 
     public ObservableCollection<SearchAccommodationDto> Properties { get; } = [];
+
+    public ObservableCollection<string> SortOptions { get; } = [];
 
     private SearchCriteria _criteria = new();
     public SearchCriteria Criteria
@@ -19,7 +23,7 @@ public class SearchResultsViewModel : BaseViewModel, IQueryAttributable
         set => SetProperty(ref _criteria, value);
     }
 
-    private string _sortBy = "Recomendados";
+    private string _sortBy = string.Empty;
     public string SortBy
     {
         get => _sortBy;
@@ -85,14 +89,41 @@ public class SearchResultsViewModel : BaseViewModel, IQueryAttributable
     public ICommand ApplyFilterCommand { get; }
     public ICommand ClearFilterCommand { get; }
 
-    public SearchResultsViewModel(IAccommodationSearchService accommodationSearchService)
+    public SearchResultsViewModel(IAccommodationSearchService accommodationSearchService, ILocalizationService localizationService)
     {
         _accommodationSearchService = accommodationSearchService ?? throw new ArgumentNullException(nameof(accommodationSearchService));
+        _localizationService = localizationService ?? throw new ArgumentNullException(nameof(localizationService));
+        
         Title = "Resultados";
+        
+        // Initialize sort options with localized strings
+        SortOptions.Add(_localizationService.GetString("Search_Recomendados"));
+        SortOptions.Add(_localizationService.GetString("Search_PrecioMenor"));
+        SortOptions.Add(_localizationService.GetString("Search_PrecioMayor"));
+        SortOptions.Add(_localizationService.GetString("Search_MejorCalificado"));
+        
+        SortBy = SortOptions.First();
+        
         PropertySelectedCommand = new Command<SearchAccommodationDto>(OnPropertySelected);
         ToggleFilterCommand = new Command(() => IsFilterVisible = !IsFilterVisible);
         ApplyFilterCommand = new Command(OnApplyFilter);
         ClearFilterCommand = new Command(OnClearFilter);
+        
+        _localizationService.LanguageChanged += (s, e) =>
+        {
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                var currentSort = SortBy;
+                SortOptions.Clear();
+                SortOptions.Add(_localizationService.GetString("Search_Recomendados"));
+                SortOptions.Add(_localizationService.GetString("Search_PrecioMenor"));
+                SortOptions.Add(_localizationService.GetString("Search_PrecioMayor"));
+                SortOptions.Add(_localizationService.GetString("Search_MejorCalificado"));
+                
+                // Try to find the equivalent option in new language
+                SortBy = SortOptions.FirstOrDefault() ?? string.Empty;
+            });
+        };
     }
 
     public void ApplyQueryAttributes(IDictionary<string, object> query)
@@ -151,9 +182,9 @@ public class SearchResultsViewModel : BaseViewModel, IQueryAttributable
 
         var sorted = SortBy switch
         {
-            "Precio menor" => filtered.OrderBy(p => p.Price),
-            "Precio mayor" => filtered.OrderByDescending(p => p.Price),
-            "Mejor calificado" => filtered.OrderByDescending(p => p.Rating),
+            var s when s == _localizationService.GetString("Search_PrecioMenor") => filtered.OrderBy(p => p.Price),
+            var s when s == _localizationService.GetString("Search_PrecioMayor") => filtered.OrderByDescending(p => p.Price),
+            var s when s == _localizationService.GetString("Search_MejorCalificado") => filtered.OrderByDescending(p => p.Rating),
             _ => filtered
         };
 
