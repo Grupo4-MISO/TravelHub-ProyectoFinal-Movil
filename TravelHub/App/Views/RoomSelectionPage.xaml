@@ -70,9 +70,16 @@
                 Stroke="{StaticResource Gray100}"
                 IsVisible="{Binding IsRoomSelected}">
             <VerticalStackLayout Spacing="8">
-                <Label Text="{local:Translate Room_Seleccionada, StringFormat='Seleccionada: {0}'}"
-                       FontFamily="OpenSansSemibold" FontSize="14"
-                       HorizontalTextAlignment="Center" />
+                <Label FontFamily="OpenSansSemibold" FontSize="14"
+                       HorizontalTextAlignment="Center">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="{local:Translate Room_Seleccionada}" />
+                            <Span Text=" " />
+                            <Span Text="{Binding SelectedRoom.Description}" />
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
                 <Button Text="{local:Translate Room_Reservar}"
                         Command="{Binding BookCommand}"
                         Style="{StaticResource AccentButton}"

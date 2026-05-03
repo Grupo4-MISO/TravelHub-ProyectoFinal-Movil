@@ -18,6 +18,15 @@
     <Color x:Key="Star">#FFC107</Color>
     <Color x:Key="Error">#F44336</Color>
     <Color x:Key="Danger">#F44336</Color>
+    
+    <!-- Dynamic Text Size Resources -->
+    <x:Double x:Key="BaseFontSize">14</x:Double>
+    <x:Double x:Key="HeadlineFontSize">28</x:Double>
+    <x:Double x:Key="SubHeadlineFontSize">20</x:Double>
+    <x:Double x:Key="TitleFontSize">18</x:Double>
+    <x:Double x:Key="SubtitleFontSize">14</x:Double>
+    <x:Double x:Key="CaptionFontSize">14</x:Double>
+    <x:Double x:Key="PriceFontSize">20</x:Double>
 
     <!-- Base Colors -->
     <Color x:Key="White">White</Color>

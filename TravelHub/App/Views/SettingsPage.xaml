@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:viewmodels="clr-namespace:App.ViewModels"
+    x:Class="App.Views.SettingsPage"
+    Title="Configuración">
+
+
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="25">
+            
+            <!-- Header -->
+            <Label Text="Accesibilidad" 
+                   Style="{DynamicResource Headline}" 
+                   HorizontalOptions="Center" />
+            
+            <!-- Dark Mode -->
+            <Frame Padding="15" CornerRadius="10" BackgroundColor="{DynamicResource Surface}">
+                <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
+                    <Label Text="Modo Oscuro" 
+                           Style="{DynamicResource Title}" 
+                           HorizontalOptions="StartAndExpand" />
+                    <Switch IsToggled="{Binding DarkModeEnabled}" 
+                            OnColor="{DynamicResource Primary}" />
+                </HorizontalStackLayout>
+            </Frame>
+            
+            <!-- Color Blindness Mode -->
+            <Frame Padding="15" CornerRadius="10" BackgroundColor="{DynamicResource Surface}">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Modo Daltonismo" Style="{DynamicResource Title}" />
+                    <Picker Title="Seleccionar modo"
+                            ItemsSource="{Binding ColorBlindnessOptions}"
+                            SelectedItem="{Binding ColorBlindnessMode}" />
+                </VerticalStackLayout>
+            </Frame>
+            
+            <!-- Text Size -->
+            <Frame Padding="15" CornerRadius="10" BackgroundColor="{DynamicResource Surface}">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Tamaño de Texto" Style="{DynamicResource Title}" />
+                    <Picker Title="Seleccionar tamaño"
+                            ItemsSource="{Binding TextSizeOptions}"
+                            SelectedItem="{Binding TextSizeScale}" />
+                </VerticalStackLayout>
+            </Frame>
+            
+            <!-- Restore Defaults Button -->
+            <Button Text="Restaurar Valores Predeterminados" 
+                    Command="{Binding RestoreDefaultsCommand}" 
+                    Style="{DynamicResource OutlineButton}"
+                    Margin="0,20,0,0" />
+            
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

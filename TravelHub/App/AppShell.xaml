@@ -44,6 +44,20 @@
                     Size="24" />
             </ShellContent.Icon>
         </ShellContent>
+
+        <ShellContent
+            Title="Configuración"
+            Route="settings">
+            <ShellContent.Content>
+                <views:SettingsPage />
+            </ShellContent.Content>
+            <ShellContent.Icon>
+                <FontImageSource
+                    Glyph="{x:Static icons:Icons.Configuracion}"
+                    FontFamily="MaterialSymbols"
+                    Size="24" />
+            </ShellContent.Icon>
+        </ShellContent>
     </TabBar>
 
 </Shell>
