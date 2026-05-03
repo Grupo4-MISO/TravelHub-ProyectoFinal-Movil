@@ -43,6 +43,10 @@ TravelHub-ProyectoFinal-Movil/
 3. Flujo completo de reserva: Selección → Viajero → Resumen → Confirmación
 4. Gestión de cuenta (registro/inicio de sesión) y reservas activas
 5. Soporte multi-moneda (COP, PEN, USD, MXN, CLP, ARS) y países
+6. **Accesibilidad**:
+   - Modo Daltonismo para usuarios con protanopia, deuteranopia y tritanopia
+   - Ajuste de tamaño de texto (1.0x, 1.25x, 1.5x, 2.0x)
+   - Modo Oscuro para reducir fatiga visual
 
 ## Equipo de Desarrollo
 - Neider Fajardo

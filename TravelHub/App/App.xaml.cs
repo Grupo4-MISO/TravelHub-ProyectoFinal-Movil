@@ -1,12 +1,17 @@
-﻿using App.Services.Implementations;
-using App.Services.Interfaces;
+﻿using App.Services.Interfaces;
+using App.Services.Implementations;
 using App.MarkupExtensions;
+using System.Threading.Tasks;
 
 namespace App
 {
     public partial class App : Application
     {
-        public App(IAppInitializationService appInitializationService, IAppConfigurationService appConfigurationService, ILocalizationService localizationService)
+        public App(
+            IAppInitializationService appInitializationService, 
+            IAppConfigurationService appConfigurationService, 
+            ILocalizationService localizationService,
+            IAccessibilityService accessibilityService)
         {
             if (appConfigurationService == null)
             {
@@ -16,22 +21,22 @@ namespace App
             {
                 throw new ArgumentNullException(nameof(appInitializationService));
             }
-            //if (appSettingsService == null)
-            //{
-            //    throw new ArgumentNullException(nameof(appSettingsService));
-            //}
 
             InitializeComponent();
             TranslateExtension.Initialize(localizationService);
-            _ = InitializeApplicationAsync(appInitializationService, appConfigurationService);
+            
+            _ = InitializeApplicationAsync(appInitializationService, appConfigurationService, accessibilityService);
         }
 
         private static async Task InitializeApplicationAsync(
             IAppInitializationService appInitializationService,
-            IAppConfigurationService appConfigurationService)
+            IAppConfigurationService appConfigurationService,
+            IAccessibilityService accessibilityService)
         {
             await appInitializationService.InitializeAsync();
             await appConfigurationService.RefreshBackendUrlAsync();
+            await accessibilityService.LoadSettingsAsync();
+            await accessibilityService.ApplySettingsAsync();
         }
 
         protected override Window CreateWindow(IActivationState? activationState)

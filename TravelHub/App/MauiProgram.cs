@@ -54,6 +54,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<IPreferencesService, PreferencesService>();
         builder.Services.AddSingleton<ILocalizationService>(sp => 
             new LocalizationService(sp.GetRequiredService<IPreferencesService>()));
+        builder.Services.AddSingleton<IAccessibilityService, AccessibilityService>();
 
         // Register Repositories
         builder.Services.AddSingleton<IDatabaseService, DatabaseService>();
@@ -74,6 +75,7 @@ public static class MauiProgram
         builder.Services.AddScoped<ActiveBookingsViewModel>();
         builder.Services.AddScoped<AccountViewModel>();
         builder.Services.AddScoped<CountryViewModel>();
+        builder.Services.AddTransient<SettingsViewModel>();
 
         // Register pages
         builder.Services.AddTransient<HomePage>();
@@ -89,6 +91,7 @@ public static class MauiProgram
         builder.Services.AddTransient<ActiveBookingsPage>();
         builder.Services.AddTransient<AccountPage>();
         builder.Services.AddTransient<CountryPage>();
+        builder.Services.AddTransient<SettingsPage>();
 
 #if DEBUG
         builder.Logging.AddDebug();
