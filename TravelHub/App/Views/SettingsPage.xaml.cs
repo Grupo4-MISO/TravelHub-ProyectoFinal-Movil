@@ -7,23 +7,25 @@ public partial class SettingsPage : ContentPage
     public SettingsPage()
     {
         InitializeComponent();
-        Loaded += OnPageLoaded;
     }
 
-    private void OnPageLoaded(object sender, EventArgs e)
+    protected override void OnNavigatedTo(NavigatedToEventArgs args)
     {
-        Loaded -= OnPageLoaded;
+        base.OnNavigatedTo(args);
         
-        try
+        if (BindingContext == null)
         {
-            if (IPlatformApplication.Current?.Services != null)
+            try
             {
-                BindingContext = IPlatformApplication.Current.Services.GetRequiredService<SettingsViewModel>();
+                if (IPlatformApplication.Current?.Services != null)
+                {
+                    BindingContext = IPlatformApplication.Current.Services.GetRequiredService<SettingsViewModel>();
+                }
             }
-        }
-        catch (Exception ex)
-        {
-            System.Diagnostics.Debug.WriteLine($"Error initializing SettingsPage: {ex}");
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error initializing SettingsPage: {ex}");
+            }
         }
     }
 }
