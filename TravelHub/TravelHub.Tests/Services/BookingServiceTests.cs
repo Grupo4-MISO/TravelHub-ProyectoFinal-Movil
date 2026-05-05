@@ -208,4 +208,66 @@ public class BookingServiceTests
         Assert.NotNull(result.Response);
         Assert.Empty(result.Response);
     }
+
+    [Fact]
+    public async Task CreateReservationHoldAsync_Should_Call_Hold_Endpoint_With_Correct_Payload()
+    {
+        // Arrange
+        var holdPayload = new ReservationHoldRequestDto
+        {
+            UserId = "user-123",
+            HabitacionId = "room-456",
+            CheckIn = "2026-06-01",
+            CheckOut = "2026-06-03"
+        };
+        var url = "https://dpyrs6tuvj15e.cloudfront.net/api/v1/reservas/hold";
+
+        _backendUrlProviderMock
+            .Setup(x => x.Build("/api/v1/reservas/hold"))
+            .Returns(url);
+
+        _backEndServiceMock
+            .Setup(x => x.PostAsync(url, It.IsAny<ReservationHoldRequestDto>()))
+            .ReturnsAsync(new HttpResponseWrapper<object>(null, false, new HttpResponseMessage(HttpStatusCode.Created)));
+
+        // Act
+        var result = await _bookingService.CreateReservationHoldAsync(holdPayload);
+
+        // Assert
+        Assert.False(result.Error);
+        _backEndServiceMock.Verify(x => x.PostAsync(url, It.Is<ReservationHoldRequestDto>(payload =>
+            payload.UserId == holdPayload.UserId &&
+            payload.HabitacionId == holdPayload.HabitacionId &&
+            payload.CheckIn == holdPayload.CheckIn &&
+            payload.CheckOut == holdPayload.CheckOut
+        )), Times.Once);
+    }
+
+    [Fact]
+    public async Task CreateReservationHoldAsync_Should_Return_Error_When_Api_Fails()
+    {
+        // Arrange
+        var holdPayload = new ReservationHoldRequestDto
+        {
+            UserId = "user-123",
+            HabitacionId = "room-456",
+            CheckIn = "2026-06-01",
+            CheckOut = "2026-06-03"
+        };
+        var url = "https://dpyrs6tuvj15e.cloudfront.net/api/v1/reservas/hold";
+
+        _backendUrlProviderMock
+            .Setup(x => x.Build("/api/v1/reservas/hold"))
+            .Returns(url);
+
+        _backEndServiceMock
+            .Setup(x => x.PostAsync(url, It.IsAny<ReservationHoldRequestDto>()))
+            .ReturnsAsync(new HttpResponseWrapper<object>(null, true, new HttpResponseMessage(HttpStatusCode.BadRequest)));
+
+        // Act
+        var result = await _bookingService.CreateReservationHoldAsync(holdPayload);
+
+        // Assert
+        Assert.True(result.Error);
+    }
 }
