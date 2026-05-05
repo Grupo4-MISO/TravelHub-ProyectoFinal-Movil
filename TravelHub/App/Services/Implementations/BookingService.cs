@@ -28,4 +28,10 @@ public class BookingService : IBookingService
         var payload = new { habitaciones_ids = roomIds };
         return await _backEndService.PostAsync<object, Dictionary<string, HotelInventoryDto>>(url, payload);
     }
+
+    public async Task<HttpResponseWrapper<object>> CreateReservationHoldAsync(ReservationHoldRequestDto payload)
+    {
+        var url = _backendUrlProvider.Build("/api/v1/reservas/hold");
+        return await _backEndService.PostAsync(url, payload);
+    }
 }

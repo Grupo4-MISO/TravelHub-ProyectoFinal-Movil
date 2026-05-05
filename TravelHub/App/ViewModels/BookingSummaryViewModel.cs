@@ -1,11 +1,19 @@
 using App.DTOs;
 using App.Models;
+using App.Services.Interfaces;
+using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Core;
 using System.Windows.Input;
 
 namespace App.ViewModels;
 
 public class BookingSummaryViewModel : BaseViewModel, IQueryAttributable
 {
+    private readonly IBookingService _bookingService;
+    private readonly IUserSessionService _userSessionService;
+    private bool _holdCreationAttempted;
+    private bool _isCreatingHold;
+
     private string _imageUrl = string.Empty;
     private string ImageUrl
     {
@@ -74,8 +82,10 @@ public class BookingSummaryViewModel : BaseViewModel, IQueryAttributable
 
     public ICommand ConfirmBookingCommand { get; }
 
-    public BookingSummaryViewModel()
+    public BookingSummaryViewModel(IBookingService bookingService, IUserSessionService userSessionService)
     {
+        _bookingService = bookingService ?? throw new ArgumentNullException(nameof(bookingService));
+        _userSessionService = userSessionService ?? throw new ArgumentNullException(nameof(userSessionService));
         Title = "Resumen de Reserva";
         ConfirmBookingCommand = new Command(OnConfirmBooking);
     }
@@ -96,11 +106,71 @@ public class BookingSummaryViewModel : BaseViewModel, IQueryAttributable
         OnPropertyChanged(nameof(TotalPrice));
     }
 
+    public async Task EnsureReservationHoldAsync()
+    {
+        if (_holdCreationAttempted || _isCreatingHold)
+        {
+            return;
+        }
+
+        _holdCreationAttempted = true;
+        _isCreatingHold = true;
+        try
+        {
+            var userId = _userSessionService.User?.Id?.Trim();
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                await Shell.Current.DisplayAlertAsync("Error", "No se encontró un usuario autenticado.", "OK");
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(Room.Id))
+            {
+                await Shell.Current.DisplayAlertAsync("Error", "No se encontró la habitación seleccionada.", "OK");
+                return;
+            }
+
+            if (CheckOut <= CheckIn)
+            {
+                await Shell.Current.DisplayAlertAsync("Error", "Las fechas de la reserva no son válidas.", "OK");
+                return;
+            }
+
+            var holdPayload = new ReservationHoldRequestDto
+            {
+                UserId = userId,
+                HabitacionId = Room.Id,
+                CheckIn = CheckIn.ToString("yyyy-MM-dd"),
+                CheckOut = CheckOut.ToString("yyyy-MM-dd")
+            };
+
+            var response = await _bookingService.CreateReservationHoldAsync(holdPayload);
+            if (response.Error)
+            {
+                var message = await response.GetErrorMessageAsync();
+                await Shell.Current.DisplayAlertAsync(
+                    "Error",
+                    string.IsNullOrWhiteSpace(message)
+                        ? "No fue posible guardar temporalmente tu reserva."
+                        : message,
+                    "OK");
+                return;
+            }
+
+            var toast = Toast.Make("Hemos guardado tu selección mientras te decides.", ToastDuration.Short, 14);
+            await toast.Show();
+        }
+        finally
+        {
+            _isCreatingHold = false;
+        }
+    }
+
     private async void OnConfirmBooking()
     {
         if (!AcceptTerms)
         {
-            await Shell.Current.DisplayAlert("Aviso", "Debes aceptar los terminos y condiciones.", "OK");
+            await Shell.Current.DisplayAlertAsync("Aviso", "Debes aceptar los terminos y condiciones.", "OK");
             return;
         }
 
