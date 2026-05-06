@@ -1,6 +1,7 @@
 using App.Services.Interfaces;
 using App.Services.Implementations;
 using Moq;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace TravelHub.Tests.Services
@@ -65,14 +66,30 @@ namespace TravelHub.Tests.Services
         public void SetLanguage_RaisesLanguageChangedEvent()
         {
             // Arrange
-            var eventRaised = false;
-            _localizationService.LanguageChanged += (s, e) => eventRaised = true;
+            var languageChangedSignal = new TaskCompletionSource<bool>();
+            _localizationService.LanguageChanged += (s, e) => languageChangedSignal.TrySetResult(true);
 
             // Act
             _localizationService.SetLanguage("en");
 
             // Assert
-            Assert.True(eventRaised);
+            Assert.True(languageChangedSignal.Task.Wait(TimeSpan.FromSeconds(1)));
+        }
+
+        [Fact]
+        public void SetLanguage_DoesNothing_WhenLanguageIsUnchanged()
+        {
+            // Arrange
+            var eventRaised = false;
+            _localizationService.LanguageChanged += (s, e) => eventRaised = true;
+            _mockPreferences.Invocations.Clear();
+
+            // Act
+            _localizationService.SetLanguage("es");
+
+            // Assert
+            Assert.False(eventRaised);
+            _mockPreferences.Verify(x => x.Set<string>(PreferenceKey, It.IsAny<string>()), Times.Never);
         }
 
         [Fact]

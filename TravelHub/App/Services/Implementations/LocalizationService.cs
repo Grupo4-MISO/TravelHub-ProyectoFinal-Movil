@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Resources;
+using System.Threading.Tasks;
 using App.Services.Interfaces;
 
 namespace App.Services.Implementations
@@ -41,11 +42,20 @@ namespace App.Services.Implementations
         public void SetLanguage(string cultureCode)
         {
             var culture = new CultureInfo(cultureCode);
+            if (CurrentCulture?.Name == culture.Name)
+            {
+                return;
+            }
+
             CurrentCulture = culture;
             
             _preferencesService.Set<string>(PreferenceKey, cultureCode);
             
-            LanguageChanged?.Invoke(this, EventArgs.Empty);
+            var handlers = LanguageChanged;
+            if (handlers != null)
+            {
+                _ = Task.Run(() => handlers(this, EventArgs.Empty));
+            }
         }
     }
 }
