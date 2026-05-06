@@ -12,7 +12,7 @@ public class PaymentProviderDto
     public string Name { get; set; } = string.Empty;
 
     [JsonProperty("config")]
-    public PaymentProviderConfigDto Config { get; set; } = new();
+    public PaymentProviderConfigDto? Config { get; set; }
 
     [JsonProperty("is_active")]
     public Boolean IsActive { get; set; }

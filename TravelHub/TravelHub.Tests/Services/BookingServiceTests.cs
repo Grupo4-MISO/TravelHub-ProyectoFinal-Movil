@@ -41,8 +41,8 @@ public class BookingServiceTests
                 CheckIn = "2026-05-01",
                 CheckOut = "2026-05-03",
                 Estado = "confirmada",
-                CreatedAt = "2026-04-30T03:24:36.124491",
-                UpdatedAt = "2026-04-30T03:03:50.916582"
+                CreatedAt = DateTime.Parse("2026-04-30T03:24:36.124491"),
+                UpdatedAt = DateTime.Parse("2026-04-30T03:03:50.916582")
             }
         };
 

@@ -35,9 +35,21 @@ public class BookingService : IBookingService
         return await _backEndService.PostAsync(url, payload);
     }
 
+    public async Task<HttpResponseWrapper<CreateReservationRequest>> CreateReservationAsync(ReservationHoldRequestDto payload)
+    {
+        var url = _backendUrlProvider.Build("/api/v1/reservas/crear");
+        return await _backEndService.PostAsync<ReservationHoldRequestDto, CreateReservationRequest>(url, payload);
+    }
+
     public async Task<HttpResponseWrapper<List<PaymentProviderDto>>> GetPaymentProvidersAsync()
     {
         var url = _backendUrlProvider.Build("/api/v1/Transactions/providers");
-        return await _backEndService.PostAsync<object, List<PaymentProviderDto>>(url, new { });
+        return await _backEndService.GetAsync<List<PaymentProviderDto>>(url);
+    }
+
+    public async Task<HttpResponseWrapper<PaymentResponseDTO>> CreatePaymentAsync(PaymentRequestDTO payload)
+    {
+        var url = _backendUrlProvider.Build("/api/v1/Transactions/payments");
+        return await _backEndService.PostAsync<PaymentRequestDTO, PaymentResponseDTO>(url, payload);
     }
 }

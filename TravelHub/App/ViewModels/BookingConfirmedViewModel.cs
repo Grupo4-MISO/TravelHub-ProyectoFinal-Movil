@@ -1,13 +1,15 @@
 using App.DTOs;
-using System.Windows.Input;
 using App.Models;
+using App.Services.Implementations;
 using App.Services.Interfaces;
 using System.Collections.ObjectModel;
+using System.Windows.Input;
 
 namespace App.ViewModels;
 
 public class BookingConfirmedViewModel : BaseViewModel, IQueryAttributable
 {
+    private readonly IUserSessionService _userSessionService;
     private readonly IBookingService _bookingService;
     private bool _paymentProvidersLoaded;
     private bool _isLoadingProviders;
@@ -40,14 +42,22 @@ public class BookingConfirmedViewModel : BaseViewModel, IQueryAttributable
         ? "Pagar"
         : $"Pagar con {SelectedPaymentProvider.Name}";
 
+    private string _currency = "COP";
+    public string Currency
+    {
+        get => _currency;
+        set => SetProperty(ref _currency, value);
+    }
+
     public ICommand SelectPaymentProviderCommand { get; }
     public ICommand PayCommand { get; }
     public ICommand GoHomeCommand { get; }
     public ICommand ViewBookingsCommand { get; }
 
-    public BookingConfirmedViewModel(IBookingService bookingService)
+    public BookingConfirmedViewModel(IBookingService bookingService, IUserSessionService userSessionService)
     {
         _bookingService = bookingService ?? throw new ArgumentNullException(nameof(bookingService));
+        _userSessionService = userSessionService ?? throw new ArgumentNullException(nameof(userSessionService));
         Title = "Reserva Confirmada";
         SelectPaymentProviderCommand = new Command<PaymentProviderDto>(OnSelectPaymentProvider);
         PayCommand = new Command(OnPay);
@@ -110,12 +120,51 @@ public class BookingConfirmedViewModel : BaseViewModel, IQueryAttributable
             return;
         }
 
-        await Shell.Current.DisplayAlertAsync(
-            "Pago",
-            $"Continuaremos con {SelectedPaymentProvider.Name}.",
-            "OK");
-    }
+        //await Shell.Current.DisplayAlertAsync(
+        //    "Pago",
+        //    $"Continuaremos con {SelectedPaymentProvider.Name}.",
+        //    "OK");
 
+        var paymentRequest = new PaymentRequestDTO
+        {
+            ReservaId = Reservation.Booking.Id,
+            Amount = Reservation.TotalPrice,
+            Currency = Currency, // Cambiar según sea necesario
+            ProviderId = SelectedPaymentProvider.Id,
+            Description = $"Pago reserva {Reservation.Booking.BookingCode}",
+            Metadata = new Dictionary<string, string>
+            {
+                { "user_id", _userSessionService.User.Id },
+                { "name", _userSessionService.User.Username }
+            }
+        };
+
+        var response = await _bookingService.CreatePaymentAsync(paymentRequest);
+        if (response.Error || response.Response == null)
+        {
+            var message = await response.GetErrorMessageAsync();
+            await Shell.Current.DisplayAlertAsync(
+                "Error",
+                string.IsNullOrWhiteSpace(message)
+                    ? "No fue posible crear un pago."
+                    : message,
+                "OK");
+            return;
+        }
+
+        var payment = response.Response;
+        if (payment.Url == null)
+        {
+            await Shell.Current.DisplayAlertAsync(
+                "Error",
+                "No fue posible crear un pago.",
+                "OK");
+            return;
+        }
+
+        await Launcher.OpenAsync(payment.Url);
+        GoHomeCommand.Execute(null);
+    }
     private async void OnGoHome()
     {
         await Shell.Current.GoToAsync("//home");

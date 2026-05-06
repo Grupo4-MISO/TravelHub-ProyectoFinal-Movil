@@ -39,11 +39,11 @@
                     Stroke="Transparent"
                     HorizontalOptions="Center">
                 <VerticalStackLayout Spacing="4" HorizontalOptions="Center">
-<Label Text="{local:Translate Confirmed_Codigo}"
-       Style="{StaticResource Caption}"
-       HorizontalTextAlignment="Center"
-       TextColor="{StaticResource PrimaryDark}" />
-                    <Label Text="{Binding Reservation.BookingCode}"
+                <Label Text="{local:Translate Confirmed_Codigo}"
+                       Style="{StaticResource Caption}"
+                       HorizontalTextAlignment="Center"
+                       TextColor="{StaticResource PrimaryDark}" />
+                    <Label Text="{Binding Reservation.Booking.BookingCode}"
                            FontFamily="OpenSansSemibold"
                            FontSize="24"
                            HorizontalTextAlignment="Center"
@@ -61,11 +61,11 @@
 
                     <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="6">
                         <Label Text="{local:Translate Confirmed_Hotel}" Style="{StaticResource Caption}" />
-                        <!--<Label Grid.Column="1" Text="{Binding Reservation.Property.Name}"
-                               FontFamily="OpenSansSemibold" FontSize="13" />-->
+                        <Label Grid.Column="1" Text="{Binding Reservation.Property.Name}"
+                               FontFamily="OpenSansSemibold" FontSize="13" />
 
                         <Label Grid.Row="1" Text="{local:Translate Confirmed_Habitacion}" Style="{StaticResource Caption}" />
-                        <Label Grid.Row="1" Grid.Column="1" Text="{Binding Reservation.Room.Name}"
+                        <Label Grid.Row="1" Grid.Column="1" Text="{Binding Reservation.Room.Description}"
                                FontSize="13" />
 
                         <Label Grid.Row="2" Text="{local:Translate Confirmed_CheckIn}" Style="{StaticResource Caption}" />
@@ -106,18 +106,22 @@
                                         StrokeShape="RoundRectangle 10"
                                         Stroke="{StaticResource Gray100}"
                                         Padding="12">
-                                    <Grid ColumnDefinitions="56,*,Auto" ColumnSpacing="10">
-                                        <Image Source="{Binding Logo}"
-                                               WidthRequest="56"
-                                               HeightRequest="36"
+                                    <Grid ColumnDefinitions="60,*,Auto" ColumnSpacing="10">
+                                        <Image 
+                                               WidthRequest="60"
+                                               HeightRequest="60"
                                                Aspect="AspectFit"
-                                               VerticalOptions="Center" />
+                                               VerticalOptions="Center">
+                                            <Image.Source>
+                                                <UriImageSource Uri="{Binding Logo}" />
+                                            </Image.Source>
+                                        </Image>
                                         <Label Grid.Column="1"
                                                Text="{Binding Name}"
                                                FontFamily="OpenSansSemibold"
                                                VerticalOptions="Center" />
                                         <Button Grid.Column="2"
-                                                Text="{local:Translate Room_Seleccionar}"
+                                                Text="OK"
                                                 Command="{Binding Source={x:Reference RootPage}, Path=BindingContext.SelectPaymentProviderCommand}"
                                                 CommandParameter="{Binding .}"
                                                 BackgroundColor="{StaticResource Primary}"

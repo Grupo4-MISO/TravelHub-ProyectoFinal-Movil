@@ -173,14 +173,45 @@ public class BookingSummaryViewModel : BaseViewModel, IQueryAttributable
             await Shell.Current.DisplayAlertAsync("Aviso", "Debes aceptar los terminos y condiciones.", "OK");
             return;
         }
+        var userId = _userSessionService.User?.Id?.Trim();
+        if (string.IsNullOrWhiteSpace(userId))
+        {
+            await Shell.Current.DisplayAlertAsync("Error", "No se encontró un usuario autenticado.", "OK");
+            return;
+        }
+        var holdPayload = new ReservationHoldRequestDto
+        {
+            UserId = userId,
+            HabitacionId = Room.Id,
+            CheckIn = CheckIn.ToString("yyyy-MM-dd"),
+            CheckOut = CheckOut.ToString("yyyy-MM-dd")
+        };
+
+        var response = await _bookingService.CreateReservationAsync(holdPayload);
+        if (response.Error || response.Response.Reserva == null)
+        {
+            var message = await response.GetErrorMessageAsync();
+            await Shell.Current.DisplayAlertAsync(
+                "Error",
+                string.IsNullOrWhiteSpace(message)
+                    ? "No fue posible confirmar tu reserva."
+                    : message,
+                "OK");
+            return;
+        }
+
+        var toast = Toast.Make("Reserva confirmada.", ToastDuration.Short, 14);
+        await toast.Show();
 
         var reservationTemporal = new ReservationTemporalDTO
         {
+            Booking = response.Response.Reserva,
             Property = Property,
             Room = Room,
             Traveler = Traveler,
             CheckIn = CheckIn,
-            CheckOut = CheckOut
+            CheckOut = CheckOut,
+            TotalPrice = TotalPrice
         };
 
         var navParams = new Dictionary<string, object> { { "reservation", reservationTemporal } };

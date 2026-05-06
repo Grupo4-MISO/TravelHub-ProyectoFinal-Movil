@@ -125,8 +125,8 @@ public class ActiveBookingsViewModel : BaseViewModel
             CheckIn = DateTime.TryParse(dto.CheckIn, out var checkIn) ? checkIn : DateTime.MinValue,
             CheckOut = DateTime.TryParse(dto.CheckOut, out var checkOut) ? checkOut : DateTime.MinValue,
             Status = dto.Estado,
-            CreatedAt = DateTime.TryParse(dto.CreatedAt, out var createdAt) ? createdAt : DateTime.MinValue,
-            UpdatedAt = DateTime.TryParse(dto.UpdatedAt, out var updatedAt) ? updatedAt : DateTime.MinValue
+            CreatedAt = dto.CreatedAt,
+            UpdatedAt = dto.UpdatedAt
         };
 
         if (hotels != null && hotels.TryGetValue(dto.HabitacionId, out var hotel))

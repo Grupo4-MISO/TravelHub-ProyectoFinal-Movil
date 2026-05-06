@@ -23,8 +23,8 @@ public class BookingResponseDto
     public string Estado { get; set; } = string.Empty;
 
     [JsonProperty("created_at")]
-    public string CreatedAt { get; set; } = string.Empty;
+    public DateTime CreatedAt { get; set; }
 
     [JsonProperty("updated_at")]
-    public string UpdatedAt { get; set; } = string.Empty;
+    public DateTime? UpdatedAt { get; set; }
 }

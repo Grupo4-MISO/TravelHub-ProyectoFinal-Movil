@@ -8,8 +8,8 @@ public class Reservation
     public DateTime CheckIn { get; set; }
     public DateTime CheckOut { get; set; }
     public string Status { get; set; } = "Confirmada";
-    public DateTime CreatedAt { get; set; }
-    public DateTime UpdatedAt { get; set; }
+    public DateTime? CreatedAt { get; set; }
+    public DateTime? UpdatedAt { get; set; }
     
     // Hotel details (populated from hotel inventory API)
     public string HotelName { get; set; } = string.Empty;
