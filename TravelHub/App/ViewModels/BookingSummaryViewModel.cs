@@ -174,21 +174,16 @@ public class BookingSummaryViewModel : BaseViewModel, IQueryAttributable
             return;
         }
 
-        //var reservation = new Reservation
-        //{
-        //    Id = new Random().Next(1000, 9999),
-        //    BookingCode = $"TH-{DateTime.Now:yyyy}-{new Random().Next(1000, 9999):D4}",
-        //    Property = Property,
-        //    Room = Room,
-        //    Traveler = Traveler,
-        //    CheckIn = CheckIn,
-        //    CheckOut = CheckOut,
-        //    Adults = 2,
-        //    TotalPrice = TotalPrice,
-        //    Status = "Confirmada"
-        //};
+        var reservationTemporal = new ReservationTemporalDTO
+        {
+            Property = Property,
+            Room = Room,
+            Traveler = Traveler,
+            CheckIn = CheckIn,
+            CheckOut = CheckOut
+        };
 
-        //var navParams = new Dictionary<string, object> { { "reservation", reservation } };
-        //await Shell.Current.GoToAsync("BookingConfirmedPage", navParams);
+        var navParams = new Dictionary<string, object> { { "reservation", reservationTemporal } };
+        await Shell.Current.GoToAsync("BookingConfirmedPage", navParams);
     }
 }

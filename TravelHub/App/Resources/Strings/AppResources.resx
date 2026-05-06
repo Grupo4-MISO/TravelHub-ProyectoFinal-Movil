@@ -324,6 +324,12 @@
   <data name="Confirmed_VerReservas" xml:space="preserve">
     <value>Ver Mis Reservas</value>
   </data>
+  <data name="Confirmed_MediosPago" xml:space="preserve">
+    <value>Medios de pago</value>
+  </data>
+  <data name="Confirmed_Seleccionado" xml:space="preserve">
+    <value>Seleccionado:</value>
+  </data>
 
   <!-- ActiveBookingsPage -->
   <data name="Bookings_Titulo" xml:space="preserve">

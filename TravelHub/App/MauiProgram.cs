@@ -9,6 +9,8 @@ using App.Repositories.Interfaces;
 using App.Repositories.Implementations;
 using App.Providers.Interfaces;
 using App.Providers.Implementations;
+using Microsoft.Maui.Controls.Hosting;
+using Microsoft.Maui.Hosting;
 
 namespace App;
 
@@ -27,8 +29,6 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 fonts.AddFont("MaterialIcons-Regular.ttf", "MaterialSymbols");
             });
-
-
 
         // Register Services
         builder.Services.AddSingleton<IPreferencesService, PreferencesService>();

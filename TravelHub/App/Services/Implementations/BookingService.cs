@@ -34,4 +34,10 @@ public class BookingService : IBookingService
         var url = _backendUrlProvider.Build("/api/v1/reservas/hold");
         return await _backEndService.PostAsync(url, payload);
     }
+
+    public async Task<HttpResponseWrapper<List<PaymentProviderDto>>> GetPaymentProvidersAsync()
+    {
+        var url = _backendUrlProvider.Build("/api/v1/Transactions/providers");
+        return await _backEndService.PostAsync<object, List<PaymentProviderDto>>(url, new { });
+    }
 }
