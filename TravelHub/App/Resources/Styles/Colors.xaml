@@ -18,6 +18,7 @@
     <Color x:Key="Star">#FFC107</Color>
     <Color x:Key="Error">#F44336</Color>
     <Color x:Key="Danger">#F44336</Color>
+    <Color x:Key="Warning">#FF9800</Color>
     
     <!-- Dynamic Text Size Resources -->
     <x:Double x:Key="BaseFontSize">14</x:Double>

@@ -18,6 +18,7 @@
     <Color x:Key="Star">#FFD54F</Color>
     <Color x:Key="Error">#E57373</Color>
     <Color x:Key="Danger">#E57373</Color>
+    <Color x:Key="Warning">#FFB74D</Color>
 
     <!-- Gray Scale Dark -->
     <Color x:Key="Gray100">#2D2D2D</Color>

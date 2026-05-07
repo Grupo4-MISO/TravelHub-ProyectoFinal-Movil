@@ -2,8 +2,10 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:App.ViewModels"
+             xmlns:views="clr-namespace:App.Views"
              xmlns:local="clr-namespace:App.MarkupExtensions"
              x:Class="App.Views.ActiveBookingsPage"
+             x:Name="activeBookingsPage"
              Title="{Binding Title}"
              IconImageSource="ic_reserve.png"
              Shell.NavBarIsVisible="False">
@@ -45,23 +47,34 @@
                                         Aspect="AspectFill"
                                         HeightRequest="140" />
                                  <VerticalStackLayout Padding="14" Spacing="6">
-                                     <Grid ColumnDefinitions="*,Auto">
-                                         <Label Text="{Binding HotelName}"
+                                    <Label Text="{Binding HotelName}"
                                                 FontFamily="OpenSansSemibold" FontSize="16" />
-                                         <Border Grid.Column="1"
-                                                 BackgroundColor="{StaticResource Success}"
-                                                 StrokeShape="RoundRectangle 6"
-                                                 Stroke="Transparent"
-                                                 Padding="8,3">
-                                             <Label Text="{Binding Status}"
-                                                    VerticalTextAlignment="Center"
-                                                    TextColor="{StaticResource White}"
-                                                    FontSize="11" />
-                                         </Border>
-                                     </Grid>
-                                     <Label Text="{Binding HotelCity}" Style="{StaticResource Caption}" />
+                                    <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
+                                        <Label Grid.Column="0" Grid.Row="0" Text="{Binding HotelCity}" Style="{StaticResource Caption}" />
 
-                                     <Label Text="{Binding BookingCode}" Style="{StaticResource Subtitle}" />
+                                        <Label Grid.Column="0" Grid.Row="1" Text="{Binding BookingCode}" Style="{StaticResource Subtitle}" />
+                                        <Border Grid.Column="1" Grid.Row="0"
+                                                StrokeShape="RoundRectangle 6"
+                                                Stroke="Transparent"
+                                                Padding="8,3">
+                                            <Border.Triggers>
+                                                <DataTrigger TargetType="Border" Binding="{Binding Status}" Value="pendiente">
+                                                    <Setter Property="BackgroundColor" Value="{StaticResource Warning}" />
+                                                </DataTrigger>
+                                                <DataTrigger TargetType="Border" Binding="{Binding Status}" Value="confirmada">
+                                                    <Setter Property="BackgroundColor" Value="{StaticResource Success}" />
+                                                </DataTrigger>
+                                                <DataTrigger TargetType="Border" Binding="{Binding Status}" Value="completada">
+                                                    <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
+                                                </DataTrigger>
+                                            </Border.Triggers>
+                                            <Label Text="{Binding Status}"
+                                                   VerticalTextAlignment="Center"
+                                                   TextColor="{StaticResource White}"
+                                                   FontSize="11" />
+                                        </Border>
+                                     </Grid>
+                                     
 
                                     <Grid ColumnDefinitions="*,*" Margin="0,4,0,0">
                                         <VerticalStackLayout>
@@ -86,6 +99,8 @@
                 Padding="12,6" FontSize="12"
                 MinimumHeightRequest="36" />-->
 <Button Grid.Column="1" Text="{local:Translate Bookings_HacerCheckIn}"
+        Command="{Binding BindingContext.CheckInCommand, Source={x:Reference activeBookingsPage}}"
+        CommandParameter="{Binding .}"
         Padding="12,6" FontSize="12"
         MinimumHeightRequest="36" />
                                     </Grid>

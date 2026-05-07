@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
+             xmlns:zx="clr-namespace:ZXing.Net.Maui;assembly=ZXing.Net.MAUI"
+             x:Class="App.Views.QrScannerPage"
+             x:Name="qrScannerPage"
+             Title="Escanear QR"
+             Shell.NavBarIsVisible="False">
+
+    <Grid RowDefinitions="*,Auto" BackgroundColor="Black">
+
+        <zxing:CameraBarcodeReaderView x:Name="cameraView"
+                                        Grid.Row="0"
+                                        BarcodesDetected="OnBarcodesDetected">
+
+            <zxing:CameraBarcodeReaderView.Options>
+                <zx:BarcodeReaderOptions
+                    Formats="QrCode"
+                    AutoRotate="True"
+                    Multiple="False" />
+            </zxing:CameraBarcodeReaderView.Options>
+
+        </zxing:CameraBarcodeReaderView>
+
+        <Grid Grid.Row="0" 
+              VerticalOptions="Start" 
+              BackgroundColor="#80000000" 
+              Padding="20,50,20,20">
+            <Label Text="Apunta la cámara al código QR para hacer check-in"
+                   TextColor="White"
+                   FontSize="16"
+                   HorizontalTextAlignment="Center" />
+        </Grid>
+
+        <Grid Grid.Row="0"
+              VerticalOptions="End"
+              BackgroundColor="#80000000"
+              Padding="20">
+            <Button Text="Cancelar"
+                    BackgroundColor="Red"
+                    TextColor="White"
+                    Clicked="Cancel_Clicked" />
+        </Grid>
+
+    </Grid>
+
+</ContentPage>

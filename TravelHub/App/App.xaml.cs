@@ -1,17 +1,22 @@
-﻿using App.Services.Interfaces;
-using App.Services.Implementations;
 using App.MarkupExtensions;
+using App.Services.Implementations;
+using App.Services.Interfaces;
+using Microsoft.Extensions.Logging;
+using OneSignalSDK.DotNet;
 using System.Threading.Tasks;
+using System;
 
 namespace App
 {
     public partial class App : Application
     {
         public App(
-            IAppInitializationService appInitializationService, 
-            IAppConfigurationService appConfigurationService, 
+            IAppInitializationService appInitializationService,
+            IAppConfigurationService appConfigurationService,
             ILocalizationService localizationService,
-            IAccessibilityService accessibilityService)
+            IAccessibilityService accessibilityService,
+            IBackEndService backEndService,
+            IUserSessionService userSessionService)
         {
             if (appConfigurationService == null)
             {
@@ -21,11 +26,35 @@ namespace App
             {
                 throw new ArgumentNullException(nameof(appInitializationService));
             }
+            if (backEndService == null)
+            {
+                throw new ArgumentNullException(nameof(backEndService));
+            }
+            if (userSessionService == null)
+            {
+                throw new ArgumentNullException(nameof(userSessionService));
+            }
 
             InitializeComponent();
             TranslateExtension.Initialize(localizationService);
-            
+
             _ = InitializeApplicationAsync(appInitializationService, appConfigurationService, accessibilityService);
+
+            // Suscribirse al evento de token expirado
+            if (backEndService is BackEndService bes)
+            {
+                bes.OnUnauthorizedResponse += async () =>
+                {
+                    await userSessionService.ClearSession();
+                    await MainThread.InvokeOnMainThreadAsync(async () =>
+                    {
+                        await Shell.Current.GoToAsync("//account");
+                    });
+                };
+            }
+
+            // Iniciar el servicio de OneSignal
+            InitializeOneSignal();
         }
 
         private static async Task InitializeApplicationAsync(
@@ -42,6 +71,19 @@ namespace App
         protected override Window CreateWindow(IActivationState? activationState)
         {
             return new Window(new AppShell());
+        }
+
+        // Inicialización de OneSignal
+        private void InitializeOneSignal()
+        {
+            // Enable verbose OneSignal logging to debug issues if needed.
+            //OneSignal.Debug.LogLevel = LogLevel.VERBOSE;
+
+            OneSignal.Initialize("4a46cf3a-a9ec-456b-b382-de8793e5f38b");
+
+            // RequestPermissionAsync will show the notification permission prompt.
+            // We recommend removing the following code and instead using an In-App Message to prompt for notification permission (See step 5)
+            OneSignal.Notifications.RequestPermissionAsync(true);
         }
     }
 

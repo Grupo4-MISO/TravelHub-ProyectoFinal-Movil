@@ -1,6 +1,8 @@
 using App.Models;
 using App.Services.Interfaces;
+using App.Utils;
 using Microsoft.Maui.Storage;
+using OneSignalSDK.DotNet;
 
 namespace App.Services.Implementations;
 
@@ -16,7 +18,9 @@ public class UserSessionService : IUserSessionService
     public string Token { get; private set; } = string.Empty;
     public AuthUserDto User { get; private set; } = new();
 
-    public bool IsAuthenticated => !string.IsNullOrWhiteSpace(Token) && !string.IsNullOrWhiteSpace(User.Id);
+    public bool IsAuthenticated => !string.IsNullOrWhiteSpace(Token) && !string.IsNullOrWhiteSpace(User.Id) && !IsTokenExpired;
+
+    public bool IsTokenExpired => JwtDecoder.IsTokenExpired(Token);
 
     public UserSessionService(IBackEndService backEndService)
     {
@@ -44,10 +48,12 @@ public class UserSessionService : IUserSessionService
         Preferences.Default.Set(UserNameKey, User.Username);
         Preferences.Default.Set(UserRoleKey, User.Role);
         await _backEndService.SetAuthorization(Token);
+        RegisterUserForNotifications(User.Id);
     }
 
     public async Task ClearSession()
     {
+        UnregisterUserFromNotifications();
         Token = string.Empty;
         User = new AuthUserDto();
 
@@ -55,7 +61,7 @@ public class UserSessionService : IUserSessionService
         Preferences.Default.Remove(UserIdKey);
         Preferences.Default.Remove(UserNameKey);
         Preferences.Default.Remove(UserRoleKey);
-        _backEndService.SetAuthorization(null);
+        await _backEndService.SetAuthorization(null);
     }
 
     private void LoadFromPreferences()
@@ -71,6 +77,30 @@ public class UserSessionService : IUserSessionService
         if (!string.IsNullOrWhiteSpace(Token))
         {
             _backEndService.SetAuthorization(Token);
+        }
+    }
+
+    private static void RegisterUserForNotifications(string userId)
+    {
+        if (string.IsNullOrWhiteSpace(userId))
+        {
+            return;
+        }
+
+        OneSignal.Logout();
+        OneSignal.Login(userId);
+    }
+
+    private static void UnregisterUserFromNotifications()
+    {
+        OneSignal.Logout();
+    }
+
+    public async Task ValidateSessionAsync()
+    {
+        if (IsTokenExpired)
+        {
+            await ClearSession();
         }
     }
 }

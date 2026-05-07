@@ -41,8 +41,8 @@ public class BookingServiceTests
                 CheckIn = "2026-05-01",
                 CheckOut = "2026-05-03",
                 Estado = "confirmada",
-                CreatedAt = "2026-04-30T03:24:36.124491",
-                UpdatedAt = "2026-04-30T03:03:50.916582"
+                CreatedAt = DateTime.Parse("2026-04-30T03:24:36.124491"),
+                UpdatedAt = DateTime.Parse("2026-04-30T03:03:50.916582")
             }
         };
 
@@ -266,6 +266,61 @@ public class BookingServiceTests
 
         // Act
         var result = await _bookingService.CreateReservationHoldAsync(holdPayload);
+
+        // Assert
+        Assert.True(result.Error);
+    }
+
+    [Fact]
+    public async Task GetPaymentProvidersAsync_Should_Call_Transactions_Providers_Endpoint()
+    {
+        // Arrange
+        var url = "https://dpyrs6tuvj15e.cloudfront.net/api/v1/Transactions/providers";
+        var expectedProviders = new List<PaymentProviderDto>
+        {
+            new PaymentProviderDto
+            {
+                Id = "9a4a97e8-7f0e-46fb-a451-d7de8ef19ba5",
+                Name = "Stripe",
+                IsActive = true,
+                Logo = "https://logos-world.net/wp-content/uploads/2021/03/Stripe-Logo.png"
+            }
+        };
+
+        _backendUrlProviderMock
+            .Setup(x => x.Build("/api/v1/Transactions/providers"))
+            .Returns(url);
+
+        _backEndServiceMock
+            .Setup(x => x.PostAsync<object, List<PaymentProviderDto>>(url, It.IsAny<object>()))
+            .ReturnsAsync(new HttpResponseWrapper<List<PaymentProviderDto>>(expectedProviders, false, new HttpResponseMessage(HttpStatusCode.OK)));
+
+        // Act
+        var result = await _bookingService.GetPaymentProvidersAsync();
+
+        // Assert
+        Assert.False(result.Error);
+        Assert.NotNull(result.Response);
+        Assert.Single(result.Response);
+        Assert.Equal("Stripe", result.Response[0].Name);
+    }
+
+    [Fact]
+    public async Task GetPaymentProvidersAsync_Should_Return_Error_When_Api_Returns_Failure()
+    {
+        // Arrange
+        var url = "https://dpyrs6tuvj15e.cloudfront.net/api/v1/Transactions/providers";
+
+        _backendUrlProviderMock
+            .Setup(x => x.Build("/api/v1/Transactions/providers"))
+            .Returns(url);
+
+        _backEndServiceMock
+            .Setup(x => x.PostAsync<object, List<PaymentProviderDto>>(url, It.IsAny<object>()))
+            .ReturnsAsync(new HttpResponseWrapper<List<PaymentProviderDto>>(null, true, new HttpResponseMessage(HttpStatusCode.BadRequest)));
+
+        // Act
+        var result = await _bookingService.GetPaymentProvidersAsync();
 
         // Assert
         Assert.True(result.Error);

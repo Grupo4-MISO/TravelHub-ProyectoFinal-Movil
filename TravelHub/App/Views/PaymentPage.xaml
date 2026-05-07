@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:App.MarkupExtensions"
+             x:Class="App.Views.PaymentPage"
+             x:Name="RootPage"
+             Title="{Binding Title}"
+             Shell.NavBarIsVisible="True">
+
+    <Grid BackgroundColor="{StaticResource Background}" RowDefinitions="*">
+        <VerticalStackLayout Padding="24" Spacing="16">
+
+            <!-- Payment Info -->
+            <Border Padding="20"
+                    BackgroundColor="White"
+                    StrokeShape="RoundRectangle 12"
+                    Stroke="Transparent"
+                    HorizontalOptions="Center">
+                <VerticalStackLayout Spacing="4" HorizontalOptions="Center">
+                    <Label Text="Total a pagar"
+                           Style="{StaticResource Caption}"
+                           HorizontalTextAlignment="Center"
+                           TextColor="{StaticResource PrimaryDark}" />
+                    <Label Text="{Binding Amount, StringFormat='${0:F0}'}"
+                           FontFamily="OpenSansSemibold"
+                           FontSize="24"
+                           HorizontalTextAlignment="Center"
+                           TextColor="{StaticResource PrimaryDark}" />
+                    <Label Text="{Binding Description}"
+                           Style="{StaticResource Caption}"
+                           HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Payment Providers -->
+            <Border Padding="16"
+                    BackgroundColor="{StaticResource Surface}"
+                    StrokeShape="RoundRectangle 12"
+                    Stroke="{StaticResource Gray100}">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Selecciona un medio de pago" Style="{StaticResource Title}" />
+                    <CollectionView ItemsSource="{Binding PaymentProviders}"
+                                    SelectionMode="Single"
+                                    SelectedItem="{Binding SelectedPaymentProvider, Mode=TwoWay}">
+                        <CollectionView.ItemsLayout>
+                            <LinearItemsLayout Orientation="Vertical" ItemSpacing="10" />
+                        </CollectionView.ItemsLayout>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Border BackgroundColor="{StaticResource Surface}"
+                                        StrokeShape="RoundRectangle 10"
+                                        Stroke="{StaticResource Gray100}"
+                                        Padding="12">
+                                    <Grid ColumnDefinitions="60,*,Auto" ColumnSpacing="10">
+                                        <Image WidthRequest="60"
+                                               HeightRequest="60"
+                                               Aspect="AspectFit"
+                                               VerticalOptions="Center">
+                                            <Image.Source>
+                                                <UriImageSource Uri="{Binding Logo}" />
+                                            </Image.Source>
+                                        </Image>
+                                        <Label Grid.Column="1"
+                                               Text="{Binding Name}"
+                                               FontFamily="OpenSansSemibold"
+                                               VerticalOptions="Center" />
+                                        <Label Grid.Column="2"
+                                               Text="›"
+                                               FontSize="20"
+                                               TextColor="{StaticResource Primary}"
+                                               VerticalOptions="Center" />
+                                    </Grid>
+                                </Border>
+
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Selected Provider Confirmation -->
+            <Border Padding="16,12"
+                    BackgroundColor="{StaticResource Surface}"
+                    Stroke="{StaticResource Gray100}"
+                    IsVisible="{Binding IsPaymentProviderSelected}">
+                <VerticalStackLayout Spacing="8">
+                    <Label FontFamily="OpenSansSemibold" FontSize="14"
+                           HorizontalTextAlignment="Center">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="Seleccionado: " />
+                                <Span Text="{Binding SelectedPaymentProvider.Name}" />
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+                    <Button Text="{Binding PayButtonText}"
+                            Command="{Binding PayCommand}"
+                            Style="{StaticResource AccentButton}"
+                            HorizontalOptions="Fill" />
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Go Back Button -->
+            <Button Text="Volver"
+                    Command="{Binding GoBackCommand}"
+                    Style="{StaticResource OutlineButton}"
+                    HorizontalOptions="Fill" />
+
+        </VerticalStackLayout>
+    </Grid>
+</ContentPage>

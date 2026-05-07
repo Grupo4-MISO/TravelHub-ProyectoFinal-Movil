@@ -62,7 +62,7 @@ public class AccountLoginViewModel : BaseViewModel, IQueryAttributable
                 var errorMessage = await response.GetErrorMessageAsync();
                 await _navigationService.DisplayAlert(
                     "Error",
-                    string.IsNullOrWhiteSpace(errorMessage) ? "No fue posible iniciar sesion." : errorMessage,
+                    string.IsNullOrWhiteSpace(errorMessage) ? "No fue posible iniciar sesion." : "Usuario o Contraseña no son correctos",
                     "OK");
                 return;
             }

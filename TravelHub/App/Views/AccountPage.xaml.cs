@@ -7,42 +7,55 @@ namespace App.Views;
 public partial class AccountPage : ContentPage
 {
     private readonly ILocalizationService _localizationService;
+    private bool _isUpdatingLanguage;
     
     public AccountPage()
     {
         InitializeComponent();
         BindingContext = IPlatformApplication.Current?.Services.GetRequiredService<AccountViewModel>();
         _localizationService = IPlatformApplication.Current?.Services.GetRequiredService<ILocalizationService>();
-        
-        // Set picker items with localized strings
-        if (_localizationService != null)
+        UpdateLanguagePickerFromService();
+    }
+    
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        UpdateLanguagePickerFromService();
+    }
+    
+    private void UpdateLanguagePickerFromService()
+    {
+        if (_localizationService == null)
         {
+            return;
+        }
+        
+        _isUpdatingLanguage = true;
+        try
+        {
+            LanguagePicker.SelectedIndexChanged -= OnLanguageChanged;
             LanguagePicker.Items.Clear();
             LanguagePicker.Items.Add(_localizationService.GetString("Language_Espanol"));
             LanguagePicker.Items.Add(_localizationService.GetString("Language_English"));
             LanguagePicker.SelectedIndex = _localizationService.CurrentCulture.Name == "en" ? 1 : 0;
-            
-            // Update picker items when language changes
-            _localizationService.LanguageChanged += (s, e) =>
-            {
-                MainThread.BeginInvokeOnMainThread(() =>
-                {
-                    var currentIndex = LanguagePicker.SelectedIndex;
-                    LanguagePicker.Items.Clear();
-                    LanguagePicker.Items.Add(_localizationService.GetString("Language_Espanol"));
-                    LanguagePicker.Items.Add(_localizationService.GetString("Language_English"));
-                    LanguagePicker.SelectedIndex = currentIndex;
-                });
-            };
+        }
+        finally
+        {
+            LanguagePicker.SelectedIndexChanged += OnLanguageChanged;
+            _isUpdatingLanguage = false;
         }
     }
     
     private void OnLanguageChanged(object sender, EventArgs e)
     {
-        if (LanguagePicker.SelectedIndex == -1 || _localizationService == null)
+        if (_isUpdatingLanguage || LanguagePicker.SelectedIndex == -1 || _localizationService == null)
             return;
             
         var cultureCode = LanguagePicker.SelectedIndex == 0 ? "es" : "en";
+        if (_localizationService.CurrentCulture.Name == cultureCode)
+        {
+            return;
+        }
         _localizationService.SetLanguage(cultureCode);
     }
 }

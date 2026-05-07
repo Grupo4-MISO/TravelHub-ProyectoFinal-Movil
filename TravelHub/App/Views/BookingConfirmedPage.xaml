@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:vm="clr-namespace:App.ViewModels"
              xmlns:local="clr-namespace:App.MarkupExtensions"
              x:Class="App.Views.BookingConfirmedPage"
+             x:Name="RootPage"
              Title="{Binding Title}"
              Shell.NavBarIsVisible="False">
-
-    <ContentPage.BindingContext>
-        <vm:BookingConfirmedViewModel />
-    </ContentPage.BindingContext>
 
     <ScrollView BackgroundColor="{StaticResource Background}">
         <VerticalStackLayout Padding="24" Spacing="16"
@@ -43,11 +39,11 @@
                     Stroke="Transparent"
                     HorizontalOptions="Center">
                 <VerticalStackLayout Spacing="4" HorizontalOptions="Center">
-<Label Text="{local:Translate Confirmed_Codigo}"
-       Style="{StaticResource Caption}"
-       HorizontalTextAlignment="Center"
-       TextColor="{StaticResource PrimaryDark}" />
-                    <Label Text="{Binding Reservation.BookingCode}"
+                <Label Text="{local:Translate Confirmed_Codigo}"
+                       Style="{StaticResource Caption}"
+                       HorizontalTextAlignment="Center"
+                       TextColor="{StaticResource PrimaryDark}" />
+                    <Label Text="{Binding Reservation.Booking.BookingCode}"
                            FontFamily="OpenSansSemibold"
                            FontSize="24"
                            HorizontalTextAlignment="Center"
@@ -65,11 +61,11 @@
 
                     <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="6">
                         <Label Text="{local:Translate Confirmed_Hotel}" Style="{StaticResource Caption}" />
-                        <!--<Label Grid.Column="1" Text="{Binding Reservation.Property.Name}"
-                               FontFamily="OpenSansSemibold" FontSize="13" />-->
+                        <Label Grid.Column="1" Text="{Binding Reservation.Property.Name}"
+                               FontFamily="OpenSansSemibold" FontSize="13" />
 
                         <Label Grid.Row="1" Text="{local:Translate Confirmed_Habitacion}" Style="{StaticResource Caption}" />
-                        <Label Grid.Row="1" Grid.Column="1" Text="{Binding Reservation.Room.Name}"
+                        <Label Grid.Row="1" Grid.Column="1" Text="{Binding Reservation.Room.Description}"
                                FontSize="13" />
 
                         <Label Grid.Row="2" Text="{local:Translate Confirmed_CheckIn}" Style="{StaticResource Caption}" />
@@ -93,6 +89,12 @@
                     </Grid>
                 </VerticalStackLayout>
             </Border>
+
+            <!-- Pay Button -->
+            <Button Text="Realizar Pago"
+                    Command="{Binding PayCommand}"
+                    Style="{StaticResource AccentButton}"
+                    HorizontalOptions="Fill" />
 
             <!-- Botones -->
 <Button Text="{local:Translate Confirmed_IrInicio}"
