@@ -4,14 +4,15 @@
              xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.MAUI.Controls"
              xmlns:zx="clr-namespace:ZXing.Net.Maui;assembly=ZXing.Net.MAUI"
              x:Class="App.Views.QrScannerPage"
+             x:Name="qrScannerPage"
              Title="Escanear QR"
              Shell.NavBarIsVisible="False">
 
     <Grid RowDefinitions="*,Auto" BackgroundColor="Black">
 
         <zxing:CameraBarcodeReaderView x:Name="cameraView"
-                                       Grid.Row="0"
-                                       BarcodesDetected="OnBarcodesDetected">
+                                        Grid.Row="0"
+                                        BarcodesDetected="OnBarcodesDetected">
 
             <zxing:CameraBarcodeReaderView.Options>
                 <zx:BarcodeReaderOptions
@@ -39,7 +40,7 @@
             <Button Text="Cancelar"
                     BackgroundColor="Red"
                     TextColor="White"
-                    Command="{Binding CancelCommand}" />
+                    Clicked="Cancel_Clicked" />
         </Grid>
 
     </Grid>

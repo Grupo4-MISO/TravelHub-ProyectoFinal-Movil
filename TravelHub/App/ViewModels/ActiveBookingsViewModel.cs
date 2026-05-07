@@ -159,13 +159,15 @@ public class ActiveBookingsViewModel : BaseViewModel
                 return;
             }
         }
+        try
+        {
 
-        _qrScanResultService.Clear();
-        _tcs = new TaskCompletionSource<string?>();
+            _qrScanResultService.Clear();
+            _tcs = new TaskCompletionSource<string?>();
 
-        Shell.Current.Navigated += OnShellNavigated;
+            Shell.Current.Navigated += OnShellNavigated;
 
-        await Shell.Current.GoToAsync("QrScannerPage");
+            await Shell.Current.GoToAsync("QrScannerPage");
 
             var scannedUrl = await _tcs.Task;
 
@@ -178,7 +180,7 @@ public class ActiveBookingsViewModel : BaseViewModel
         }
         catch (Exception ex)
         {
-                        await Shell.Current.DisplayAlertAsync("Error", $"Ocurrió un error: {ex.Message}", "OK");
+            await Shell.Current.DisplayAlertAsync("Error", $"Ocurrió un error: {ex.Message}", "OK");
         }
     }
 
