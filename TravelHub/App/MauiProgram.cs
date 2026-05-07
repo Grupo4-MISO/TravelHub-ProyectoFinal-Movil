@@ -4,6 +4,7 @@ using App.ViewModels;
 using App.Views;
 using App.MarkupExtensions;
 using CommunityToolkit.Maui;
+using ZXing.Net.Maui;
 using Microsoft.Extensions.Logging;
 using App.Repositories.Interfaces;
 using App.Repositories.Implementations;
@@ -11,6 +12,7 @@ using App.Providers.Interfaces;
 using App.Providers.Implementations;
 using Microsoft.Maui.Controls.Hosting;
 using Microsoft.Maui.Hosting;
+using ZXing.Net.Maui.Controls;
 
 namespace App;
 
@@ -22,6 +24,7 @@ public static class MauiProgram
         builder
             .UseMauiApp<App>()
             .UseMauiCommunityToolkit()
+            .UseBarcodeReader()
             .UseMauiMaps()
             .ConfigureFonts(fonts =>
             {
@@ -51,6 +54,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<ITravelerProfileService, TravelerProfileService>();
         builder.Services.AddSingleton<INavigationService, ShellNavigationService>();
         builder.Services.AddSingleton<IBookingService, BookingService>();
+        builder.Services.AddSingleton<IQrScanResultService, QrScanResultService>();
         builder.Services.AddSingleton<IPreferencesService, PreferencesService>();
         builder.Services.AddSingleton<ILocalizationService>(sp => 
             new LocalizationService(sp.GetRequiredService<IPreferencesService>()));

@@ -11,6 +11,7 @@ public class ActiveBookingsViewModel : BaseViewModel
 {
     private readonly IBookingService _bookingService;
     private readonly IUserSessionService _userSessionService;
+    private readonly IQrScanResultService _qrScanResultService;
 
     public ObservableCollection<Reservation> Reservations { get; } = new ObservableCollection<Reservation>();
 
@@ -40,11 +41,12 @@ public class ActiveBookingsViewModel : BaseViewModel
 
     public bool HasError => !string.IsNullOrWhiteSpace(ErrorMessage);
 
-    public ActiveBookingsViewModel(IBookingService bookingService, IUserSessionService userSessionService)
+    public ActiveBookingsViewModel(IBookingService bookingService, IUserSessionService userSessionService, IQrScanResultService qrScanResultService)
     {
         Title = "Mis Reservas";
         _bookingService = bookingService;
         _userSessionService = userSessionService;
+        _qrScanResultService = qrScanResultService;
 
         RefreshCommand = new Command(async () => await LoadReservationsAsync());
         CheckInCommand = new Command<Reservation>(OnCheckIn);
@@ -141,10 +143,90 @@ public class ActiveBookingsViewModel : BaseViewModel
         return reservation;
     }
 
+    private TaskCompletionSource<string?>? _tcs;
+
     private async void OnCheckIn(Reservation? reservation)
     {
         if (reservation == null) return;
-        await Shell.Current.DisplayAlert("Check-in", $"Aquí va abrir la cámara y leer el QR generado para reserva {reservation.BookingCode}", "OK");
+
+        var status = await Permissions.CheckStatusAsync<Permissions.Camera>();
+        if (status != PermissionStatus.Granted)
+        {
+            status = await Permissions.RequestAsync<Permissions.Camera>();
+            if (status != PermissionStatus.Granted)
+            {
+                await Shell.Current.DisplayAlert("Permiso requerido", "Se requiere acceso a la cámara para escanear el código QR", "OK");
+                return;
+            }
+        }
+
+        _qrScanResultService.Clear();
+        _tcs = new TaskCompletionSource<string?>();
+
+        Shell.Current.Navigated += OnShellNavigated;
+
+        await Shell.Current.GoToAsync("QrScannerPage");
+
+            var scannedUrl = await _tcs.Task;
+
+            Shell.Current.Navigated -= OnShellNavigated;
+
+            if (!string.IsNullOrEmpty(scannedUrl))
+            {
+                await ProcessCheckInAsync(reservation, scannedUrl);
+            }
+        }
+        catch (Exception ex)
+        {
+                        await Shell.Current.DisplayAlertAsync("Error", $"Ocurrió un error: {ex.Message}", "OK");
+        }
+    }
+
+    private void OnShellNavigated(object? sender, ShellNavigatedEventArgs e)
+    {
+        var location = e.Current?.Location?.OriginalString ?? "";
+        if (location.Contains("QrScannerPage", StringComparison.OrdinalIgnoreCase))
+            return;
+
+        if (_tcs != null && !_tcs.Task.IsCompleted)
+        {
+            _tcs.TrySetResult(_qrScanResultService.ScannedUrl);
+        }
+    }
+
+    private async Task ProcessCheckInAsync(Reservation reservation, string url)
+    {
+        try
+        {
+            IsBusy = true;
+
+            var backEndService = Shell.Current.Handler.MauiContext?.Services.GetRequiredService<IBackEndService>();
+            if (backEndService == null)
+            {
+                await Shell.Current.DisplayAlertAsync("Error", "No se pudo acceder al servicio", "OK");
+                return;
+            }
+
+            var response = await backEndService.GetAsync(url);
+
+            if (response.Error)
+            {
+                var errorMsg = await response.GetErrorMessageAsync();
+                await Shell.Current.DisplayAlertAsync("Error", $"No se pudo completar el check-in: {errorMsg}", "OK");
+                return;
+            }
+
+            await Shell.Current.DisplayAlertAsync("Check-in exitoso", "La reserva ha sido completada", "OK");
+            await LoadReservationsAsync();
+        }
+        catch (Exception ex)
+        {
+            await Shell.Current.DisplayAlertAsync("Error", $"Ocurrió un error: {ex.Message}", "OK");
+        }
+        finally
+        {
+            IsBusy = false;
+        }
     }
 
     private async void OnBookingSelected(Reservation? reservation)
