@@ -111,7 +111,7 @@ public class AccountViewModel : BaseViewModel
                 var errorMessage = await response.GetErrorMessageAsync();
                 await Shell.Current.DisplayAlert(
                     "Error",
-                    string.IsNullOrWhiteSpace(errorMessage) ? "No fue posible iniciar sesión." : errorMessage,
+                    string.IsNullOrWhiteSpace(errorMessage) ? "No fue posible iniciar sesión." : "Usuario o Contraseña no son correctos",
                     "OK");
                 return;
             }

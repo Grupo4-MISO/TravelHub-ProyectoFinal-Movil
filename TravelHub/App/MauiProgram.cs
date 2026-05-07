@@ -69,6 +69,7 @@ public static class MauiProgram
         builder.Services.AddTransient<TravelerDataViewModel>();
         builder.Services.AddTransient<BookingSummaryViewModel>();
         builder.Services.AddTransient<BookingConfirmedViewModel>();
+        builder.Services.AddTransient<PaymentViewModel>();
         builder.Services.AddTransient<BookingDetailsViewModel>();
         builder.Services.AddTransient<AccountLoginViewModel>();
         builder.Services.AddTransient<AccountRegisterViewModel>();
@@ -85,6 +86,7 @@ public static class MauiProgram
         builder.Services.AddTransient<TravelerDataPage>();
         builder.Services.AddTransient<BookingSummaryPage>();
         builder.Services.AddTransient<BookingConfirmedPage>();
+        builder.Services.AddTransient<PaymentPage>();
         builder.Services.AddTransient<BookingDetailsPage>();
         builder.Services.AddTransient<AccountLoginPage>();
         builder.Services.AddTransient<AccountRegisterPage>();
