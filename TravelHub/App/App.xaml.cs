@@ -4,6 +4,7 @@ using App.Services.Interfaces;
 using Microsoft.Extensions.Logging;
 using OneSignalSDK.DotNet;
 using System.Threading.Tasks;
+using System;
 
 namespace App
 {
@@ -13,7 +14,9 @@ namespace App
             IAppInitializationService appInitializationService,
             IAppConfigurationService appConfigurationService,
             ILocalizationService localizationService,
-            IAccessibilityService accessibilityService)
+            IAccessibilityService accessibilityService,
+            IBackEndService backEndService,
+            IUserSessionService userSessionService)
         {
             if (appConfigurationService == null)
             {
@@ -23,11 +26,32 @@ namespace App
             {
                 throw new ArgumentNullException(nameof(appInitializationService));
             }
+            if (backEndService == null)
+            {
+                throw new ArgumentNullException(nameof(backEndService));
+            }
+            if (userSessionService == null)
+            {
+                throw new ArgumentNullException(nameof(userSessionService));
+            }
 
             InitializeComponent();
             TranslateExtension.Initialize(localizationService);
 
             _ = InitializeApplicationAsync(appInitializationService, appConfigurationService, accessibilityService);
+
+            // Suscribirse al evento de token expirado
+            if (backEndService is BackEndService bes)
+            {
+                bes.OnUnauthorizedResponse += async () =>
+                {
+                    await userSessionService.ClearSession();
+                    await MainThread.InvokeOnMainThreadAsync(async () =>
+                    {
+                        await Shell.Current.GoToAsync("//account");
+                    });
+                };
+            }
 
             // Iniciar el servicio de OneSignal
             InitializeOneSignal();

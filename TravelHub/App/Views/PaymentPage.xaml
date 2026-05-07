@@ -7,9 +7,8 @@
              Title="{Binding Title}"
              Shell.NavBarIsVisible="True">
 
-    <ScrollView BackgroundColor="{StaticResource Background}">
-        <VerticalStackLayout Padding="24" Spacing="16"
-                             VerticalOptions="Center">
+    <Grid BackgroundColor="{StaticResource Background}" RowDefinitions="*">
+        <VerticalStackLayout Padding="24" Spacing="16">
 
             <!-- Payment Info -->
             <Border Padding="20"
@@ -40,42 +39,39 @@
                     Stroke="{StaticResource Gray100}">
                 <VerticalStackLayout Spacing="10">
                     <Label Text="Selecciona un medio de pago" Style="{StaticResource Title}" />
-                    <CollectionView ItemsSource="{Binding PaymentProviders}">
+                    <CollectionView ItemsSource="{Binding PaymentProviders}"
+                                    SelectionMode="Single"
+                                    SelectedItem="{Binding SelectedPaymentProvider, Mode=TwoWay}">
                         <CollectionView.ItemsLayout>
                             <LinearItemsLayout Orientation="Vertical" ItemSpacing="10" />
                         </CollectionView.ItemsLayout>
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
-                                <RadioButton GroupName="PaymentProviders"
-                                            Command="{Binding Source={x:Reference RootPage}, Path=BindingContext.SelectPaymentProviderCommand}"
-                                            CommandParameter="{Binding .}">
-                                    <RadioButton.ControlTemplate>
-                                        <ControlTemplate>
-                                            <Border BackgroundColor="{StaticResource Surface}"
-                                                    StrokeShape="RoundRectangle 10"
-                                                    Stroke="{StaticResource Gray100}"
-                                                    Padding="12">
-                                                <Grid ColumnDefinitions="60,*,Auto" ColumnSpacing="10">
-                                                    <Image WidthRequest="60" HeightRequest="60" Aspect="AspectFit" VerticalOptions="Center">
-                                                        <Image.Source>
-                                                            <UriImageSource Uri="{Binding BindingContext.Logo, RelativeSource={RelativeSource TemplatedParent}}" />
-                                                        </Image.Source>
-                                                    </Image>
-                                                    <Label Grid.Column="1"
-                                                           Text="{Binding BindingContext.Name, RelativeSource={RelativeSource TemplatedParent}}"
-                                                           FontFamily="OpenSansSemibold"
-                                                           VerticalOptions="Center" />
-                                                    <Label Grid.Column="2"
-                                                           Text="✓"
-                                                           FontSize="24"
-                                                           TextColor="{StaticResource Primary}"
-                                                           VerticalOptions="Center"
-                                                           IsVisible="{TemplateBinding IsChecked}" />
-                                                </Grid>
-                                            </Border>
-                                        </ControlTemplate>
-                                    </RadioButton.ControlTemplate>
-                                </RadioButton>
+                                <Border BackgroundColor="{StaticResource Surface}"
+                                        StrokeShape="RoundRectangle 10"
+                                        Stroke="{StaticResource Gray100}"
+                                        Padding="12">
+                                    <Grid ColumnDefinitions="60,*,Auto" ColumnSpacing="10">
+                                        <Image WidthRequest="60"
+                                               HeightRequest="60"
+                                               Aspect="AspectFit"
+                                               VerticalOptions="Center">
+                                            <Image.Source>
+                                                <UriImageSource Uri="{Binding Logo}" />
+                                            </Image.Source>
+                                        </Image>
+                                        <Label Grid.Column="1"
+                                               Text="{Binding Name}"
+                                               FontFamily="OpenSansSemibold"
+                                               VerticalOptions="Center" />
+                                        <Label Grid.Column="2"
+                                               Text="›"
+                                               FontSize="20"
+                                               TextColor="{StaticResource Primary}"
+                                               VerticalOptions="Center" />
+                                    </Grid>
+                                </Border>
+
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
                     </CollectionView>
@@ -111,5 +107,5 @@
                     HorizontalOptions="Fill" />
 
         </VerticalStackLayout>
-    </ScrollView>
+    </Grid>
 </ContentPage>

@@ -1,5 +1,6 @@
 using App.Models;
 using App.Services.Interfaces;
+using App.Utils;
 using Microsoft.Maui.Storage;
 using OneSignalSDK.DotNet;
 
@@ -17,7 +18,9 @@ public class UserSessionService : IUserSessionService
     public string Token { get; private set; } = string.Empty;
     public AuthUserDto User { get; private set; } = new();
 
-    public bool IsAuthenticated => !string.IsNullOrWhiteSpace(Token) && !string.IsNullOrWhiteSpace(User.Id);
+    public bool IsAuthenticated => !string.IsNullOrWhiteSpace(Token) && !string.IsNullOrWhiteSpace(User.Id) && !IsTokenExpired;
+
+    public bool IsTokenExpired => JwtDecoder.IsTokenExpired(Token);
 
     public UserSessionService(IBackEndService backEndService)
     {
@@ -91,5 +94,13 @@ public class UserSessionService : IUserSessionService
     private static void UnregisterUserFromNotifications()
     {
         OneSignal.Logout();
+    }
+
+    public async Task ValidateSessionAsync()
+    {
+        if (IsTokenExpired)
+        {
+            await ClearSession();
+        }
     }
 }

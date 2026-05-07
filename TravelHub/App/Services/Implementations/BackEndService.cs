@@ -10,6 +10,8 @@ namespace App.Services.Implementations
 {
     public class BackEndService : IBackEndService
     {
+        public event Action? OnUnauthorizedResponse;
+
         private readonly HttpClient _httpClient;
         private readonly HttpClientHandler _httpClientHandler;
 
@@ -74,6 +76,11 @@ namespace App.Services.Implementations
             {
                 var responseHTTP = await _httpClient.GetAsync(url);
 
+                if (responseHTTP.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                {
+                    OnUnauthorizedResponse?.Invoke();
+                }
+
                 return new HttpResponseWrapper<object>(
                     null!,
                     !responseHTTP.IsSuccessStatusCode,
@@ -108,6 +115,11 @@ namespace App.Services.Implementations
             {
                 var responseHttp = await _httpClient.GetAsync(url);
 
+                if (responseHttp.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                {
+                    OnUnauthorizedResponse?.Invoke();
+                }
+
                 if (responseHttp.IsSuccessStatusCode)
                 {
                     var response = await UnserializeAnswer<T>(responseHttp);
@@ -133,6 +145,11 @@ namespace App.Services.Implementations
                 var messageContent = new StringContent(messageJSON, Encoding.UTF8, "application/json");
 
                 var responseHttp = await _httpClient.PostAsync(url, messageContent);
+
+                if (responseHttp.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                {
+                    OnUnauthorizedResponse?.Invoke();
+                }
 
                 return new HttpResponseWrapper<object>(
                     null,
@@ -181,6 +198,11 @@ namespace App.Services.Implementations
                 var messageContent = new StringContent(messageJSON, Encoding.UTF8, "application/json");
 
                 var responseHttp = await _httpClient.PostAsync(url, messageContent);
+
+                if (responseHttp.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                {
+                    OnUnauthorizedResponse?.Invoke();
+                }
 
                 if (responseHttp.IsSuccessStatusCode)
                 {
@@ -235,6 +257,11 @@ namespace App.Services.Implementations
             {
                 var responseHttp = await _httpClient.DeleteAsync(url);
 
+                if (responseHttp.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                {
+                    OnUnauthorizedResponse?.Invoke();
+                }
+
                 return new HttpResponseWrapper<object>(
                     null,
                     !responseHttp.IsSuccessStatusCode,
@@ -283,6 +310,11 @@ namespace App.Services.Implementations
 
                 var responseHttp = await _httpClient.PutAsync(url, messageContent);
 
+                if (responseHttp.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                {
+                    OnUnauthorizedResponse?.Invoke();
+                }
+
                 return new HttpResponseWrapper<object>(
                     null,
                     !responseHttp.IsSuccessStatusCode,
@@ -330,6 +362,11 @@ namespace App.Services.Implementations
                 var messageContent = new StringContent(messageJSON, Encoding.UTF8, "application/json");
 
                 var responseHttp = await _httpClient.PutAsync(url, messageContent);
+
+                if (responseHttp.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                {
+                    OnUnauthorizedResponse?.Invoke();
+                }
 
                 if (responseHttp.IsSuccessStatusCode)
                 {
