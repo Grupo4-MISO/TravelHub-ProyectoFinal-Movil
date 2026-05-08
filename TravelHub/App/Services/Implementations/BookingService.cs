@@ -28,6 +28,12 @@ public class BookingService : IBookingService
         return await _backEndService.GetAsync<BookingResponseDto>(url);
     }
 
+    public async Task<HttpResponseWrapper<object>> RevokeBookingByReservationIdAsync(string bookingId)
+    {
+        var url = _backendUrlProvider.Build($"/api/v1/reservas/revocar/{bookingId}");
+        return await _backEndService.PostAsync(url, true);
+    }
+
     public async Task<HttpResponseWrapper<Dictionary<string, HotelInventoryDto>>> GetHotelsByRoomIdsAsync(List<string> roomIds)
     {
         var url = _backendUrlProvider.Build("/api/v1/inventarios/hoteles");

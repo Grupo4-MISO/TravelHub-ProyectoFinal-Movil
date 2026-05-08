@@ -13,6 +13,7 @@ public partial class BookingDetailsViewModel : BaseViewModel, IQueryAttributable
 {
     private readonly IBookingService _bookingService;
     private readonly IPropertyDetailService _propertyDetailService;
+    private readonly IAppSettingsService _appSettingsService;
 
     private string _reservationId;
     public string ReservationId
@@ -32,7 +33,13 @@ public partial class BookingDetailsViewModel : BaseViewModel, IQueryAttributable
     public BookingResponseDto Booking
     {
         get => _booking;
-        set => SetProperty(ref _booking, value);
+        set
+        {
+            if (SetProperty(ref _booking, value))
+            {
+                OnPropertyChanged(nameof(CanCancel));
+            }
+        }
     }
 
     private AccommodationInfoDto _property = new();
@@ -110,6 +117,10 @@ public partial class BookingDetailsViewModel : BaseViewModel, IQueryAttributable
         set => SetProperty(ref _paymentInfo, value);
     }
 
+    public bool CanCancel => Booking != null &&
+        (string.Equals(Booking.Estado, "pendiente", StringComparison.OrdinalIgnoreCase) ||
+         string.Equals(Booking.Estado, "confirmada", StringComparison.OrdinalIgnoreCase));
+
     public ICommand DownloadVoucherCommand { get; }
     public ICommand DownloadConfirmationCommand { get; }
     public ICommand DownloadInvoiceCommand { get; }
@@ -118,11 +129,12 @@ public partial class BookingDetailsViewModel : BaseViewModel, IQueryAttributable
     public ICommand ModifyBookingCommand { get; }
     public ICommand CancelBookingCommand { get; }
 
-    public BookingDetailsViewModel(IBookingService bookingService, IPropertyDetailService propertyDetailService)
+    public BookingDetailsViewModel(IBookingService bookingService, IPropertyDetailService propertyDetailService, IAppSettingsService appSettingsService)
     {
         Title = "Detalle de Reserva";
         _bookingService = bookingService ?? throw new ArgumentNullException(nameof(bookingService));
         _propertyDetailService = propertyDetailService ?? throw new ArgumentNullException(nameof(propertyDetailService));
+        _appSettingsService = appSettingsService ?? throw new ArgumentNullException(nameof(appSettingsService));
         DownloadVoucherCommand = new Command(async () => await DownloadVoucher());
         DownloadConfirmationCommand = new Command(async () => await DownloadConfirmation());
         DownloadInvoiceCommand = new Command(async () => await DownloadInvoice());
@@ -147,7 +159,8 @@ public partial class BookingDetailsViewModel : BaseViewModel, IQueryAttributable
         if (result == null || result.Response == null) return;
         Booking = result.Response;
         // Cargar datos de la propiedad desde el servicio
-        var hospedajeResult = await _propertyDetailService.GetPropertyDetailByRoomIdAsync(Booking.HabitacionId, "COP");
+        var currencyCode = _appSettingsService.CurrentCurrencyCode;
+        var hospedajeResult = await _propertyDetailService.GetPropertyDetailByRoomIdAsync(Booking.HabitacionId, currencyCode);
         if (hospedajeResult == null || hospedajeResult.Response == null) return;
 
         Property = hospedajeResult.Response;
@@ -176,7 +189,7 @@ public partial class BookingDetailsViewModel : BaseViewModel, IQueryAttributable
 
         if (paymentResult.Error || paymentResult.Response == null || paymentResult.Response.Count == 0)
         {
-            PaymentInfo = "Sin informaci�n de pago";
+            PaymentInfo = "Sin información de pago";
             return;
         }
 
@@ -192,7 +205,7 @@ public partial class BookingDetailsViewModel : BaseViewModel, IQueryAttributable
         };
 
         PaymentInfo = $"{statusDisplay} - {payment.Amount:N2} {payment.Currency}";
-        Currency = $"{payment.Currency}";
+        Currency = $"{_appSettingsService.CurrentCurrencyCode}";
 
         if (Room != null)
         {
@@ -211,7 +224,7 @@ public partial class BookingDetailsViewModel : BaseViewModel, IQueryAttributable
     }
     private async Task DownloadConfirmation()
     {
-        await Shell.Current.DisplayAlertAsync("Descarga", "Descargando confirmaci�n...", "OK");
+        await Shell.Current.DisplayAlertAsync("Descarga", "Descargando confirmación...", "OK");
         // Implementar l�gica de descarga
     }
     private async Task DownloadInvoice()
@@ -258,8 +271,8 @@ public partial class BookingDetailsViewModel : BaseViewModel, IQueryAttributable
 
     private async Task ModifyBooking()
     {
-        await Shell.Current.DisplayAlertAsync("Modificar", "Funcionalidad de modificaci�n en desarrollo", "OK");
-        // Navegar a p�gina de modificaci�n
+        await Shell.Current.DisplayAlertAsync("Modificar", "Funcionalidad de modificación en desarrollo", "OK");
+        // Navegar a página de modificación
     }
 
 
@@ -267,15 +280,39 @@ public partial class BookingDetailsViewModel : BaseViewModel, IQueryAttributable
     {
         bool confirm = await Shell.Current.DisplayAlertAsync(
             "Cancelar Reserva",
-            "�Est� seguro que desea cancelar esta reserva? Esta acci�n puede tener penalizaciones seg�n las pol�ticas del hotel.",
-            "S�, cancelar",
+            "¿Está seguro que desea cancelar esta reserva? Esta acción puede tener penalizaciones según las políticas del hotel.",
+            "Sí, cancelar",
             "No");
 
-        if (confirm)
+        if (!confirm) return;
+
+        try
         {
-            // Implementar l�gica de cancelaci�n
-            await Shell.Current.DisplayAlertAsync("Cancelaci�n", "Procesando cancelaci�n...", "OK");
-            await Shell.Current.GoToAsync("..");
+            IsBusy = true;
+
+            var result = await _bookingService.RevokeBookingByReservationIdAsync(ReservationId);
+
+            if (!result.Error)
+            {
+                await Shell.Current.DisplayAlertAsync("Reserva Cancelada",
+                    "La reserva ha sido cancelada exitosamente.", "OK");
+                await Shell.Current.GoToAsync("..");
+            }
+            else
+            {
+                var errorMsg = await result.GetErrorMessageAsync();
+                await Shell.Current.DisplayAlertAsync("Error",
+                    $"No se pudo cancelar la reserva: {errorMsg}", "OK");
+            }
+        }
+        catch (Exception ex)
+        {
+            await Shell.Current.DisplayAlertAsync("Error",
+                $"Ocurrió un error inesperado: {ex.Message}", "OK");
+        }
+        finally
+        {
+            IsBusy = false;
         }
     }
 }

@@ -11,7 +11,6 @@ public partial class TopBar : ContentView
     {
         InitializeComponent();
 
-        // ✅ Esperar a que el Handler esté disponible
         HandlerChanged += OnHandlerChanged;
     }
 
@@ -25,8 +24,8 @@ public partial class TopBar : ContentView
 
         UpdateCountryDisplay();
         _appSettingsService.CountryChanged += OnCountryChanged;
+        _appSettingsService.CurrencyChanged += OnCurrencyChanged;
 
-        // Desuscribirse para no duplicar
         HandlerChanged -= OnHandlerChanged;
     }
 
@@ -37,7 +36,7 @@ public partial class TopBar : ContentView
         var country = _appSettingsService.CurrentCountry;
         CountryFlag.Text = country?.FlagEmoji ?? string.Empty;
         CountryButton.Text = country?.Code ?? string.Empty;
-        CurrencyCodeButton.Text = country?.CurrencyCode ?? string.Empty;
+        CurrencyCodeButton.Text = _appSettingsService.CurrentCurrencyCode;
     }
 
     private void OnCountryChanged(object? sender, string e)
@@ -45,13 +44,21 @@ public partial class TopBar : ContentView
         UpdateCountryDisplay();
     }
 
+    private void OnCurrencyChanged(object? sender, string e)
+    {
+        MainThread.BeginInvokeOnMainThread(() =>
+        {
+            CurrencyCodeButton.Text = _appSettingsService.CurrentCurrencyCode;
+        });
+    }
+
     private async void OnCountryButtonClicked(object sender, EventArgs e)
     {
         await Shell.Current.GoToAsync(nameof(CountryPage));
     }
 
-    private void OnCurrencyButtonClicked(object sender, EventArgs e)
+    private async void OnCurrencyButtonClicked(object sender, EventArgs e)
     {
-
+        await Shell.Current.GoToAsync(nameof(CurrencyPage));
     }
 }

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:App.ViewModels"
+             xmlns:models="clr-namespace:App.ViewModels"
+             xmlns:icons="clr-namespace:App.Resources.Styles"
+             xmlns:local="clr-namespace:App.MarkupExtensions"
+             x:Class="App.Views.CurrencyPage"
+             Title="{local:Translate Currency_Titulo}">
+
+    <Grid RowDefinitions="Auto,*" BackgroundColor="{StaticResource Background}">
+
+        <!-- Header -->
+        <VerticalStackLayout Grid.Row="0"
+                            Padding="16"
+                            BackgroundColor="{StaticResource Surface}">
+            <Label Text="{local:Translate Currency_Descripcion}"
+                   Style="{StaticResource Subtitle}"
+                   Margin="0,4,0,0" />
+        </VerticalStackLayout>
+
+        <!-- Loading Indicator -->
+        <Grid Grid.Row="1"
+              IsVisible="{Binding IsLoading}"
+              RowDefinitions="*,Auto,*"
+              Padding="16"
+              BackgroundColor="{StaticResource Background}">
+            <ActivityIndicator Grid.Row="1"
+                              IsRunning="{Binding IsLoading}"
+                              IsVisible="{Binding IsLoading}"
+                              Color="{StaticResource Primary}" />
+        </Grid>
+
+        <!-- Error Message -->
+        <VerticalStackLayout Grid.Row="1"
+                            x:Name="ErrorLayout"
+                            Padding="16"
+                            Spacing="12"
+                            VerticalOptions="CenterAndExpand"
+                            IsVisible="False">
+            <Label Text="{Binding ErrorMessage}"
+                   TextColor="{StaticResource Danger}"
+                   HorizontalTextAlignment="Center"
+                   FontSize="14" />
+            <Button Text="{local:Translate Currency_Reintentar}"
+                    Command="{Binding RetryLoadCommand}"
+                    BackgroundColor="{StaticResource Primary}" />
+        </VerticalStackLayout>
+
+        <!-- Lista de monedas -->
+        <CollectionView Grid.Row="1"
+                       ItemsSource="{Binding Currencies}"
+                       SelectionMode="None"
+                       Margin="16">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:CurrencyItem">
+                    <Border Padding="16"
+                            Margin="0,0,0,12"
+                            BackgroundColor="{StaticResource Surface}"
+                            StrokeShape="RoundRectangle 12"
+                            Stroke="{StaticResource Gray100}">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CurrencyViewModel}}, Path=SelectCurrencyCommand}"
+                                CommandParameter="{Binding .}" />
+                        </Border.GestureRecognizers>
+
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                            <!-- Símbolo de moneda -->
+                            <Label Grid.Column="0"
+                                   Text="{Binding CurrencySymbol}"
+                                   FontSize="24"
+                                   FontFamily="OpenSansSemibold"
+                                   TextColor="{StaticResource Primary}"
+                                   VerticalOptions="Center" />
+
+                            <!-- Información de la moneda -->
+                            <VerticalStackLayout Grid.Column="1"
+                                                Spacing="2"
+                                                VerticalOptions="Center">
+                                <Label Text="{Binding CurrencyCode}"
+                                       FontFamily="OpenSansSemibold"
+                                       FontSize="16" />
+                                <Label Text="{Binding CurrencySymbol}"
+                                       Style="{StaticResource Caption}"
+                                       FontSize="12" />
+                            </VerticalStackLayout>
+
+                            <!-- Indicador de selección -->
+                            <Image Grid.Column="2"
+                                   WidthRequest="28"
+                                   HeightRequest="28"
+                                   IsVisible="{Binding IsSelected}"
+                                   VerticalOptions="Center">
+                                <Image.Source>
+                                    <FontImageSource
+                                        Glyph="{x:Static icons:Icons.Check}"
+                                        FontFamily="MaterialSymbols"
+                                        Size="28"
+                                        Color="{StaticResource Primary}" />
+                                </Image.Source>
+                            </Image>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>

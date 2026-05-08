@@ -7,6 +7,7 @@ public interface IBookingService
 {
     Task<HttpResponseWrapper<List<BookingHoldResponseDto>>> GetUserBookingsAsync(string userId);
     Task<HttpResponseWrapper<BookingResponseDto>> GetBookingByReservationIdAsync(string bookingId);
+    Task<HttpResponseWrapper<object>> RevokeBookingByReservationIdAsync(string bookingId);
     Task<HttpResponseWrapper<Dictionary<string, HotelInventoryDto>>> GetHotelsByRoomIdsAsync(List<string> roomIds);
     Task<HttpResponseWrapper<object>> CreateReservationHoldAsync(ReservationHoldRequestDto payload);
     Task<HttpResponseWrapper<CreateReservationRequest>> CreateReservationAsync(ReservationHoldRequestDto payload);

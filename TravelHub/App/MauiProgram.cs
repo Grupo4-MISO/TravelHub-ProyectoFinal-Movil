@@ -79,6 +79,7 @@ public static class MauiProgram
         builder.Services.AddScoped<ActiveBookingsViewModel>();
         builder.Services.AddScoped<AccountViewModel>();
         builder.Services.AddScoped<CountryViewModel>();
+        builder.Services.AddTransient<CurrencyViewModel>();
         builder.Services.AddTransient<SettingsViewModel>();
 
         // Register pages
@@ -96,6 +97,7 @@ public static class MauiProgram
         builder.Services.AddTransient<ActiveBookingsPage>();
         builder.Services.AddTransient<AccountPage>();
         builder.Services.AddTransient<CountryPage>();
+        builder.Services.AddTransient<CurrencyPage>();
         builder.Services.AddTransient<SettingsPage>();
 
 #if DEBUG
