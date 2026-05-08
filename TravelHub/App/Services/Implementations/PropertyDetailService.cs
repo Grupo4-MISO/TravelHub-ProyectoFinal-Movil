@@ -38,7 +38,24 @@ public class PropertyDetailService : IPropertyDetailService
 
         return new HttpResponseWrapper<AccommodationDetailDto>(response.Response, false, response.HttpResponseMessage);
     }
+    public async Task<HttpResponseWrapper<AccommodationInfoDto>> GetPropertyDetailByRoomIdAsync(string roomId, string currencyCode)
+    {
+        if (string.IsNullOrWhiteSpace(roomId))
+        {
+            return new HttpResponseWrapper<AccommodationInfoDto>(default!, true, new HttpResponseMessage(HttpStatusCode.BadRequest));
+        }
 
+        var normalizedCurrency = string.IsNullOrWhiteSpace(currencyCode) ? "COP" : currencyCode.Trim().ToUpperInvariant();
+        var detailUrl = BuildPropertyDetailByRoomIdUrl(roomId, normalizedCurrency);
+
+        var response = await _backEndService.GetAsync<AccommodationInfoDto>(detailUrl);
+        if (response.Error || response.Response == null)
+        {
+            return new HttpResponseWrapper<AccommodationInfoDto>(default!, true, response.HttpResponseMessage);
+        }
+
+        return new HttpResponseWrapper<AccommodationInfoDto>(response.Response, false, response.HttpResponseMessage);
+    }
     public async Task<HttpResponseWrapper<List<AccommodationReviewDto>>> GetPropertyReviewsAsync(string propertyId)
     {
         if (string.IsNullOrWhiteSpace(propertyId))
@@ -72,6 +89,12 @@ public class PropertyDetailService : IPropertyDetailService
         return _backendUrlProvider.Build($"/api/v1/inventarios/hospedajes/{normalizedPropertyId}/{normalizedCurrency}");
     }
 
+    private string BuildPropertyDetailByRoomIdUrl(string roomId, string currencyCode)
+    {
+        var normalizedRoomId = Uri.EscapeDataString(roomId.Trim());
+        var normalizedCurrency = Uri.EscapeDataString(currencyCode.Trim().ToUpperInvariant());
+        return _backendUrlProvider.Build($"/api/v1/inventarios/habitacion/{normalizedRoomId}/{normalizedCurrency}");
+    }
     private string BuildPropertyReviewsUrl(string propertyId)
     {
         var normalizedPropertyId = Uri.EscapeDataString(propertyId.Trim());

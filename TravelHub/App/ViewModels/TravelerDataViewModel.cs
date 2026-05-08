@@ -231,7 +231,7 @@ public class TravelerDataViewModel : BaseViewModel, IQueryAttributable
         var userId = _userSessionService.User.Id;
         if (string.IsNullOrWhiteSpace(userId))
         {
-            await Shell.Current.DisplayAlert("Error", "No se encontró un usuario autenticado.", "OK");
+            await Shell.Current.DisplayAlertAsync("Error", "No se encontró un usuario autenticado.", "OK");
             return;
         }
 
@@ -242,7 +242,7 @@ public class TravelerDataViewModel : BaseViewModel, IQueryAttributable
             if (response.Error || response.Response == null)
             {
                 var message = await response.GetErrorMessageAsync();
-                await Shell.Current.DisplayAlert(
+                await Shell.Current.DisplayAlertAsync(
                     "Error",
                     string.IsNullOrWhiteSpace(message) ? "No fue posible cargar los datos del viajero." : message,
                     "OK");
@@ -284,20 +284,20 @@ public class TravelerDataViewModel : BaseViewModel, IQueryAttributable
             string.IsNullOrWhiteSpace(PhoneNumber) ||
             string.IsNullOrWhiteSpace(DocumentNumber))
         {
-            await Shell.Current.DisplayAlert("Error", "Completa los datos requeridos para actualizar.", "OK");
+            await Shell.Current.DisplayAlertAsync("Error", "Completa los datos requeridos para actualizar.", "OK");
             return;
         }
 
         var userId = _userSessionService.User.Id;
         if (string.IsNullOrWhiteSpace(userId))
         {
-            await Shell.Current.DisplayAlert("Error", "No se encontró el usuario autenticado.", "OK");
+            await Shell.Current.DisplayAlertAsync("Error", "No se encontró el usuario autenticado.", "OK");
             return;
         }
 
         if (string.IsNullOrWhiteSpace(TravelerId))
         {
-            await Shell.Current.DisplayAlert("Error", "No se encontró el perfil del cliente.", "OK");
+            await Shell.Current.DisplayAlertAsync("Error", "No se encontró el perfil del cliente.", "OK");
             return;
         }
 
@@ -317,7 +317,7 @@ public class TravelerDataViewModel : BaseViewModel, IQueryAttributable
             if (response.Error)
             {
                 var message = await response.GetErrorMessageAsync();
-                await Shell.Current.DisplayAlert(
+                await Shell.Current.DisplayAlertAsync(
                     "Error",
                     string.IsNullOrWhiteSpace(message) ? "No fue posible actualizar los datos." : message,
                     "OK");
@@ -349,13 +349,13 @@ public class TravelerDataViewModel : BaseViewModel, IQueryAttributable
             string.IsNullOrWhiteSpace(PhoneNumber) ||
             string.IsNullOrWhiteSpace(DocumentNumber))
         {
-            await Shell.Current.DisplayAlert("Error", "Por favor completa todos los campos", "OK");
+            await Shell.Current.DisplayAlertAsync("Error", "Por favor completa todos los campos", "OK");
             return;
         }
 
         if (!IsValidEmail(Email))
         {
-            await Shell.Current.DisplayAlert("Error", "Por favor ingresa un email válido", "OK");
+            await Shell.Current.DisplayAlertAsync("Error", "Por favor ingresa un email válido", "OK");
             return;
         }
 

@@ -2,16 +2,13 @@ using Newtonsoft.Json;
 
 namespace App.DTOs;
 
-public class BookingResponseDto
+public class BookingHoldResponseDto
 {
     [JsonProperty("id")]
     public string Id { get; set; } = string.Empty;
 
     [JsonProperty("public_id")]
     public string PublicId { get; set; } = string.Empty;
-
-    [JsonProperty("user_id")]
-    public string UserId { get; set; } = string.Empty;
 
     [JsonProperty("habitacion_id")]
     public string HabitacionId { get; set; } = string.Empty;
@@ -30,10 +27,4 @@ public class BookingResponseDto
 
     [JsonProperty("updated_at")]
     public DateTime? UpdatedAt { get; set; }
-
-    [JsonProperty("fecha_creacion")]
-    public DateTime FechaCreacion { get; set; }
-
-    [JsonProperty("fecha_actualizacion")]
-    public DateTime? FechaActualizacion { get; set; }
 }

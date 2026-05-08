@@ -8,11 +8,14 @@ public class AppSettingsService : IAppSettingsService
     private const string CurrentVersionKey = "CurrentVersion";
     private const string CountryCodeKey = "SelectedCountryCode";
     private readonly IPreferencesService _preferences;
+    private readonly ICountryService _countryService;
     private string _currentCountryCode;
+    private Country? _cachedCountry;
 
-    public AppSettingsService(IPreferencesService preferences)
+    public AppSettingsService(IPreferencesService preferences, ICountryService countryService)
     {
         _preferences = preferences ?? throw new ArgumentNullException(nameof(preferences));
+        _countryService = countryService ?? throw new ArgumentNullException(nameof(countryService));
         _currentCountryCode = _preferences.Get(CountryCodeKey, "CO"); // Colombia por defecto
     }
 
@@ -32,11 +35,22 @@ public class AppSettingsService : IAppSettingsService
         }
     }
 
-    public Country? CurrentCountry => MockDataService.GetCountryByCode(CurrentCountryCode);
+    public Country? CurrentCountry
+    {
+        get
+        {
+            if (_cachedCountry != null && string.Equals(_cachedCountry.Code, _currentCountryCode, StringComparison.OrdinalIgnoreCase))
+                return _cachedCountry;
+
+            _cachedCountry = _countryService.GetCountryByCode(_currentCountryCode);
+            return _cachedCountry;
+        }
+    }
 
     public void SetCountry(string countryCode)
     {
         CurrentCountryCode = countryCode;
+        _cachedCountry = null;
     }
 
     public string CurrentVersion

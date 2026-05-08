@@ -39,8 +39,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<IBackendUrlProvider, BackendUrlProvider>();
 
         // AppSettingsService with dependencies
-        builder.Services.AddSingleton<IAppSettingsService, AppSettingsService>(sp =>
-            new AppSettingsService(sp.GetRequiredService<IPreferencesService>()));
+        builder.Services.AddSingleton<IAppSettingsService, AppSettingsService>();
 
         builder.Services.AddSingleton<IAppInitializationService, AppInitializationService>();
         builder.Services.AddSingleton<IAppConfigurationService, AppConfigurationService>();
@@ -68,7 +67,7 @@ public static class MauiProgram
         // Register ViewModels
         builder.Services.AddScoped<HomeViewModel>();
         builder.Services.AddScoped<SearchResultsViewModel>();
-        builder.Services.AddTransient<PropertyDetailViewModel>();
+        builder.Services.AddScoped<PropertyDetailViewModel>();
         builder.Services.AddTransient<RoomSelectionViewModel>();
         builder.Services.AddTransient<TravelerDataViewModel>();
         builder.Services.AddTransient<BookingSummaryViewModel>();

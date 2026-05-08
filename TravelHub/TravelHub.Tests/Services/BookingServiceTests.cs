@@ -31,9 +31,9 @@ public class BookingServiceTests
     {
         // Arrange
         var userId = "user-123";
-        var expectedBookings = new List<BookingResponseDto>
+        var expectedBookings = new List<BookingHoldResponseDto>
         {
-            new BookingResponseDto
+            new BookingHoldResponseDto
             {
                 Id = "booking-1",
                 PublicId = "RSV-12345",
@@ -50,8 +50,8 @@ public class BookingServiceTests
         _backendUrlProviderMock.Setup(x => x.Build(It.IsAny<string>())).Returns(url);
 
         _backEndServiceMock
-            .Setup(x => x.GetAsync<List<BookingResponseDto>>(url))
-            .ReturnsAsync(new HttpResponseWrapper<List<BookingResponseDto>>(expectedBookings, false, new HttpResponseMessage(HttpStatusCode.OK)));
+            .Setup(x => x.GetAsync<List<BookingHoldResponseDto>>(url))
+            .ReturnsAsync(new HttpResponseWrapper<List<BookingHoldResponseDto>>(expectedBookings, false, new HttpResponseMessage(HttpStatusCode.OK)));
 
         // Act
         var result = await _bookingService.GetUserBookingsAsync(userId);
@@ -74,8 +74,8 @@ public class BookingServiceTests
         _backendUrlProviderMock.Setup(x => x.Build(It.IsAny<string>())).Returns(url);
 
         _backEndServiceMock
-            .Setup(x => x.GetAsync<List<BookingResponseDto>>(url))
-            .ReturnsAsync(new HttpResponseWrapper<List<BookingResponseDto>>(null, true, new HttpResponseMessage(HttpStatusCode.InternalServerError)));
+            .Setup(x => x.GetAsync<List<BookingHoldResponseDto>>(url))
+            .ReturnsAsync(new HttpResponseWrapper<List<BookingHoldResponseDto>>(null, true, new HttpResponseMessage(HttpStatusCode.InternalServerError)));
 
         // Act
         var result = await _bookingService.GetUserBookingsAsync(userId);
@@ -97,9 +97,9 @@ public class BookingServiceTests
             .Returns((string path) => $"https://api.test.com{path}");
 
         _backEndServiceMock
-            .Setup(x => x.GetAsync<List<BookingResponseDto>>(It.IsAny<string>()))
+            .Setup(x => x.GetAsync<List<BookingHoldResponseDto>>(It.IsAny<string>()))
             .Callback<string>(url => capturedUrl = url)
-            .ReturnsAsync(new HttpResponseWrapper<List<BookingResponseDto>>(new List<BookingResponseDto>(), false, new HttpResponseMessage(HttpStatusCode.OK)));
+            .ReturnsAsync(new HttpResponseWrapper<List<BookingHoldResponseDto>>(new List<BookingHoldResponseDto>(), false, new HttpResponseMessage(HttpStatusCode.OK)));
 
         // Act
         await _bookingService.GetUserBookingsAsync(userId);
@@ -292,7 +292,7 @@ public class BookingServiceTests
             .Returns(url);
 
         _backEndServiceMock
-            .Setup(x => x.PostAsync<object, List<PaymentProviderDto>>(url, It.IsAny<object>()))
+            .Setup(x => x.GetAsync<List<PaymentProviderDto>>(url))
             .ReturnsAsync(new HttpResponseWrapper<List<PaymentProviderDto>>(expectedProviders, false, new HttpResponseMessage(HttpStatusCode.OK)));
 
         // Act
@@ -316,7 +316,7 @@ public class BookingServiceTests
             .Returns(url);
 
         _backEndServiceMock
-            .Setup(x => x.PostAsync<object, List<PaymentProviderDto>>(url, It.IsAny<object>()))
+            .Setup(x => x.GetAsync<List<PaymentProviderDto>>(url))
             .ReturnsAsync(new HttpResponseWrapper<List<PaymentProviderDto>>(null, true, new HttpResponseMessage(HttpStatusCode.BadRequest)));
 
         // Act
@@ -324,5 +324,91 @@ public class BookingServiceTests
 
         // Assert
         Assert.True(result.Error);
+    }
+
+    [Fact]
+    public async Task GetPaymentsByReservationAsync_Should_Return_Payments_When_Api_Succeeds()
+    {
+        // Arrange
+        var reservaId = "d4915cc4-bb74-4a15-b5a1-bb3c174f94ff";
+        var expectedPayments = new List<PaymentReservationDTO>
+        {
+            new PaymentReservationDTO
+            {
+                Id = "73933606-ccd0-4f1d-894d-6c3be12d99b2",
+                ReservaId = reservaId,
+                ProviderId = "7f93f279-130f-4231-9458-b976925d40eb",
+                Amount = 1035639.0m,
+                Currency = "ARS",
+                Status = "authorized",
+                Description = "Pago por reserva del hotel"
+            }
+        };
+
+        var url = $"https://dpyrs6tuvj15e.cloudfront.net/api/v1/api/v1/Transactions/payments/reserva/{reservaId}";
+        _backendUrlProviderMock
+            .Setup(x => x.Build(It.IsAny<string>()))
+            .Returns(url);
+
+        _backEndServiceMock
+            .Setup(x => x.GetAsync<List<PaymentReservationDTO>>(url))
+            .ReturnsAsync(new HttpResponseWrapper<List<PaymentReservationDTO>>(expectedPayments, false, new HttpResponseMessage(HttpStatusCode.OK)));
+
+        // Act
+        var result = await _bookingService.GetPaymentsByReservationAsync(reservaId);
+
+        // Assert
+        Assert.False(result.Error);
+        Assert.NotNull(result.Response);
+        Assert.Single(result.Response);
+        Assert.Equal("73933606-ccd0-4f1d-894d-6c3be12d99b2", result.Response[0].Id);
+        Assert.Equal(1035639.0m, result.Response[0].Amount);
+        Assert.Equal("ARS", result.Response[0].Currency);
+        Assert.Equal("authorized", result.Response[0].Status);
+    }
+
+    [Fact]
+    public async Task GetPaymentsByReservationAsync_Should_Return_Error_When_Api_Fails()
+    {
+        // Arrange
+        var reservaId = "d4915cc4-bb74-4a15-b5a1-bb3c174f94ff";
+        var url = $"https://dpyrs6tuvj15e.cloudfront.net/api/v1/api/v1/Transactions/payments/reserva/{reservaId}";
+        _backendUrlProviderMock
+            .Setup(x => x.Build(It.IsAny<string>()))
+            .Returns(url);
+
+        _backEndServiceMock
+            .Setup(x => x.GetAsync<List<PaymentReservationDTO>>(url))
+            .ReturnsAsync(new HttpResponseWrapper<List<PaymentReservationDTO>>(null, true, new HttpResponseMessage(HttpStatusCode.InternalServerError)));
+
+        // Act
+        var result = await _bookingService.GetPaymentsByReservationAsync(reservaId);
+
+        // Assert
+        Assert.True(result.Error);
+        Assert.Null(result.Response);
+    }
+
+    [Fact]
+    public async Task GetPaymentsByReservationAsync_Should_Use_Correct_Endpoint_With_ReservaId()
+    {
+        // Arrange
+        var reservaId = "d4915cc4-bb74-4a15-b5a1-bb3c174f94ff";
+        string? capturedUrl = null;
+
+        _backendUrlProviderMock
+            .Setup(x => x.Build(It.IsAny<string>()))
+            .Returns((string path) => $"https://api.test.com{path}");
+
+        _backEndServiceMock
+            .Setup(x => x.GetAsync<List<PaymentReservationDTO>>(It.IsAny<string>()))
+            .Callback<string>(url => capturedUrl = url)
+            .ReturnsAsync(new HttpResponseWrapper<List<PaymentReservationDTO>>(new List<PaymentReservationDTO>(), false, new HttpResponseMessage(HttpStatusCode.OK)));
+
+        // Act
+        await _bookingService.GetPaymentsByReservationAsync(reservaId);
+
+        // Assert
+        Assert.Contains("/api/v1/Transactions/payments/reserva/d4915cc4-bb74-4a15-b5a1-bb3c174f94ff", capturedUrl);
     }
 }

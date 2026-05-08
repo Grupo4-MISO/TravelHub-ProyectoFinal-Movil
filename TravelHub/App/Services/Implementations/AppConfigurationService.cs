@@ -27,4 +27,22 @@ public class AppConfigurationService : IAppConfigurationService
 
         _backendUrlProvider.TryUpdateBaseUrl(response.Response.AppBackEnd);
     }
+
+    public async Task<List<string>> GetPromotionalImagesAsync()
+    {
+        var url = _backendUrlProvider.Build("/api/v1/inventarios/promotional-images");
+        var response = await _backEndService.GetAsync<List<string>>(url);
+
+        if (response.Error || response.Response == null || response.Response.Count == 0)
+        {
+            return
+            [
+                "https://www.centraldevacaciones.com/blog/wp-content/uploads/2015/07/EspecialWamos2FB.jpg",
+                "https://www.viajesexito.com/wp-content/uploads/2025/07/banner-principal-mobile-2.webp",
+                "https://www.latamairlines.com/content/dam/latamxp/sites/sh-ofertas/paquetes-promov3.png"
+            ];
+        }
+
+        return response.Response;
+    }
 }
