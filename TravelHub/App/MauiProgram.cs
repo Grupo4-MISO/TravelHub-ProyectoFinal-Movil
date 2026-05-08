@@ -39,8 +39,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<IBackendUrlProvider, BackendUrlProvider>();
 
         // AppSettingsService with dependencies
-        builder.Services.AddSingleton<IAppSettingsService, AppSettingsService>(sp =>
-            new AppSettingsService(sp.GetRequiredService<IPreferencesService>()));
+        builder.Services.AddSingleton<IAppSettingsService, AppSettingsService>();
 
         builder.Services.AddSingleton<IAppInitializationService, AppInitializationService>();
         builder.Services.AddSingleton<IAppConfigurationService, AppConfigurationService>();

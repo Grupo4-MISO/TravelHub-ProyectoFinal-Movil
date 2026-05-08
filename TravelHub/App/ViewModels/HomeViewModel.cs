@@ -23,6 +23,7 @@ public class HomeViewModel : BaseViewModel
     private readonly ICityService _cityService;
     private readonly IBackendUrlProvider _backendUrlProvider;
     private readonly IAppSettingsService _appSettingsService;
+    private readonly IAppConfigurationService _appConfigurationService;
 
     public ObservableCollection<string> PromotionalImages { get; } = [];
     public ObservableCollection<SearchAccommodationDto> FeaturedProperties { get; } = [];
@@ -132,12 +133,13 @@ public class HomeViewModel : BaseViewModel
     public ICommand IncrementRoomsCommand { get; }
     public ICommand DecrementRoomsCommand { get; }
 
-    public HomeViewModel(ICountryService countryService, ICityService cityService, IBackendUrlProvider backendUrlProvider, IAppSettingsService appSettingsService)
+    public HomeViewModel(ICountryService countryService, ICityService cityService, IBackendUrlProvider backendUrlProvider, IAppSettingsService appSettingsService, IAppConfigurationService appConfigurationService)
     {
         _countryService = countryService ?? throw new ArgumentNullException(nameof(countryService));
         _cityService = cityService ?? throw new ArgumentNullException(nameof(cityService));
         _backendUrlProvider = backendUrlProvider ?? throw new ArgumentNullException(nameof(backendUrlProvider));
         _appSettingsService = appSettingsService ?? throw new ArgumentNullException(nameof(appSettingsService));
+        _appConfigurationService = appConfigurationService ?? throw new ArgumentNullException(nameof(appConfigurationService));
         Title = "TravelHub";
 
         SearchCommand = new Command(OnSearch);
@@ -159,7 +161,8 @@ public class HomeViewModel : BaseViewModel
         var currentCountryCode = _appSettingsService.CurrentCountryCode;
 
         PromotionalImages.Clear();
-        foreach (var img in MockDataService.GetPromotionalImages())
+        var images = await _appConfigurationService.GetPromotionalImagesAsync();
+        foreach (var img in images)
         {
             PromotionalImages.Add(img);
         }

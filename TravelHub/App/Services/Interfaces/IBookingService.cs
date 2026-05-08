@@ -12,4 +12,5 @@ public interface IBookingService
     Task<HttpResponseWrapper<CreateReservationRequest>> CreateReservationAsync(ReservationHoldRequestDto payload);
     Task<HttpResponseWrapper<List<PaymentProviderDto>>> GetPaymentProvidersAsync();
     Task<HttpResponseWrapper<PaymentResponseDTO>> CreatePaymentAsync(PaymentRequestDTO payload);
+    Task<HttpResponseWrapper<List<PaymentReservationDTO>>> GetPaymentsByReservationAsync(string reservaId);
 }

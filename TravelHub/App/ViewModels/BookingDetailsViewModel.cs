@@ -136,7 +136,7 @@ public partial class BookingDetailsViewModel : BaseViewModel, IQueryAttributable
     {
         if (query.TryGetValue("ReservationId", out var obj) && obj is string value)
             ReservationId = value;
-        LoadReservationDetails(ReservationId);
+        _ = LoadReservationDetails(ReservationId);
     }
 
     private async Task LoadReservationDetails(string reservationId)
@@ -158,10 +158,48 @@ public partial class BookingDetailsViewModel : BaseViewModel, IQueryAttributable
         CheckOut = DateTime.TryParse(Booking.CheckOut, out var checkOut) ? checkOut : DateTime.MinValue;
         
 
-        // Información económica
+        // Informaciï¿½n econï¿½mica
 
-        PaymentInfo = "Pagado - Tarjeta •••• 4567";
+        await LoadPaymentInfoAsync(reservationId);
 
+    }
+
+    private async Task LoadPaymentInfoAsync(string reservationId)
+    {
+        if (!string.Equals(Booking.Estado, "confirmada", StringComparison.OrdinalIgnoreCase))
+        {
+            PaymentInfo = "Pago pendiente";
+            return;
+        }
+
+        var paymentResult = await _bookingService.GetPaymentsByReservationAsync(reservationId);
+
+        if (paymentResult.Error || paymentResult.Response == null || paymentResult.Response.Count == 0)
+        {
+            PaymentInfo = "Sin informaciï¿½n de pago";
+            return;
+        }
+
+        var payment = paymentResult.Response[0];
+        var statusDisplay = payment.Status switch
+        {
+            "authorized" => "Autorizado",
+            "completed" => "Completado",
+            "pending" => "Pendiente",
+            "failed" => "Fallido",
+            "refunded" => "Reembolsado",
+            _ => payment.Status
+        };
+
+        PaymentInfo = $"{statusDisplay} - {payment.Amount:N2} {payment.Currency}";
+        Currency = $"{payment.Currency}";
+
+        if (Room != null)
+        {
+            OnPropertyChanged(nameof(SubTotal));
+            OnPropertyChanged(nameof(Taxes));
+            OnPropertyChanged(nameof(TotalPrice));
+        }
     }
 
     // CA6: Descarga de Documentos
@@ -169,17 +207,17 @@ public partial class BookingDetailsViewModel : BaseViewModel, IQueryAttributable
     private async Task DownloadVoucher()
     {
         await Shell.Current.DisplayAlertAsync("Descarga", "Descargando voucher...", "OK");
-        // Implementar lógica de descarga
+        // Implementar lï¿½gica de descarga
     }
     private async Task DownloadConfirmation()
     {
-        await Shell.Current.DisplayAlertAsync("Descarga", "Descargando confirmación...", "OK");
-        // Implementar lógica de descarga
+        await Shell.Current.DisplayAlertAsync("Descarga", "Descargando confirmaciï¿½n...", "OK");
+        // Implementar lï¿½gica de descarga
     }
     private async Task DownloadInvoice()
     {
         await Shell.Current.DisplayAlertAsync("Descarga", "Descargando factura...", "OK");
-        // Implementar lógica de descarga
+        // Implementar lï¿½gica de descarga
     }
 
     // CA8: Contacto
@@ -216,12 +254,12 @@ public partial class BookingDetailsViewModel : BaseViewModel, IQueryAttributable
         }
     }
 
-    // CA7: Gestión
+    // CA7: Gestiï¿½n
 
     private async Task ModifyBooking()
     {
-        await Shell.Current.DisplayAlertAsync("Modificar", "Funcionalidad de modificación en desarrollo", "OK");
-        // Navegar a página de modificación
+        await Shell.Current.DisplayAlertAsync("Modificar", "Funcionalidad de modificaciï¿½n en desarrollo", "OK");
+        // Navegar a pï¿½gina de modificaciï¿½n
     }
 
 
@@ -229,14 +267,14 @@ public partial class BookingDetailsViewModel : BaseViewModel, IQueryAttributable
     {
         bool confirm = await Shell.Current.DisplayAlertAsync(
             "Cancelar Reserva",
-            "¿Está seguro que desea cancelar esta reserva? Esta acción puede tener penalizaciones según las políticas del hotel.",
-            "Sí, cancelar",
+            "ï¿½Estï¿½ seguro que desea cancelar esta reserva? Esta acciï¿½n puede tener penalizaciones segï¿½n las polï¿½ticas del hotel.",
+            "Sï¿½, cancelar",
             "No");
 
         if (confirm)
         {
-            // Implementar lógica de cancelación
-            await Shell.Current.DisplayAlertAsync("Cancelación", "Procesando cancelación...", "OK");
+            // Implementar lï¿½gica de cancelaciï¿½n
+            await Shell.Current.DisplayAlertAsync("Cancelaciï¿½n", "Procesando cancelaciï¿½n...", "OK");
             await Shell.Current.GoToAsync("..");
         }
     }

@@ -1,0 +1,32 @@
+Refactorizar la aplicación para no usar datos mock sino reales, Usa buenas practicas en MAUI, utiliza patrones de diseño necesarios,
+crea las clases correspondientes que permitan, Implementa ahora la lógica de consultar los pagos registrados de una reserva en BookingDetailsPage, actualiza la PaymentInfo con la información del estado, valor y moneda. esto solo es cuando la reserva esta en estado confirmada. realizando la siguiente llamada GET https://dpyrs6tuvj15e.cloudfront.net/api/v1/api/v1/Transactions/payments/reserva/d4915cc4-bb74-4a15-b5a1-bb3c174f94ff
+
+Respuesta:
+[
+    {
+        "id": "73933606-ccd0-4f1d-894d-6c3be12d99b2",
+        "reserva_id": "d4915cc4-bb74-4a15-b5a1-bb3c174f94ff",
+        "provider_id": "7f93f279-130f-4231-9458-b976925d40eb",
+        "amount": 1035639.0,
+        "currency": "ARS",
+        "status": "authorized",
+        "provider_payment_id": "73933606-ccd0-4f1d-894d-6c3be12d99b2",
+        "url": "https://external-payment-provider.onrender.com/checkout/ps_6669911e41c04cb2",
+        "description": "Pago por reserva del hotel Casa Colonial Bariloche",
+        "metadata": {
+            "check_in": "2026-05-08",
+            "check_out": "2026-05-11",
+            "habitacion": "Suite Familiar",
+            "habitacion_id": "8c312da0-578c-5ad7-b442-0ab89c49b26b",
+            "payment_session_response": {
+                "status": "created",
+                "created_at": "2026-05-06T01:54:22.170298+00:00",
+                "payment_id": "73933606-ccd0-4f1d-894d-6c3be12d99b2",
+                "session_id": "ps_6669911e41c04cb2",
+                "checkout_url": "https://external-payment-provider.onrender.com/checkout/ps_6669911e41c04cb2"
+            }
+        },
+        "created_at": "2026-05-06T01:54:22.210377",
+        "updated_at": "2026-05-06T01:54:52.669009"
+    }
+]
