@@ -121,8 +121,8 @@ public partial class BookingDetailsViewModel : BaseViewModel, IQueryAttributable
     public BookingDetailsViewModel(IBookingService bookingService, IPropertyDetailService propertyDetailService)
     {
         Title = "Detalle de Reserva";
-        _bookingService = bookingService;
-        _propertyDetailService = propertyDetailService;
+        _bookingService = bookingService ?? throw new ArgumentNullException(nameof(bookingService));
+        _propertyDetailService = propertyDetailService ?? throw new ArgumentNullException(nameof(propertyDetailService));
         DownloadVoucherCommand = new Command(async () => await DownloadVoucher());
         DownloadConfirmationCommand = new Command(async () => await DownloadConfirmation());
         DownloadInvoiceCommand = new Command(async () => await DownloadInvoice());

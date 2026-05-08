@@ -1,3 +1,4 @@
+using App.Responses;
 using App.Services.Interfaces;
 using App.Providers.Interfaces;
 using App.ViewModels;
@@ -13,6 +14,7 @@ public class HomeViewModelTests
     private readonly Mock<ICityService> _cityServiceMock;
     private readonly Mock<IBackendUrlProvider> _backendUrlProviderMock;
     private readonly Mock<IAppSettingsService> _appSettingsServiceMock;
+    private readonly Mock<IAppConfigurationService> _appConfigurationServiceMock;
     private readonly HomeViewModel _viewModel;
 
     public HomeViewModelTests()
@@ -21,14 +23,24 @@ public class HomeViewModelTests
         _cityServiceMock = new Mock<ICityService>();
         _backendUrlProviderMock = new Mock<IBackendUrlProvider>();
         _appSettingsServiceMock = new Mock<IAppSettingsService>();
+        _appConfigurationServiceMock = new Mock<IAppConfigurationService>();
 
         _appSettingsServiceMock.Setup(x => x.CurrentCountryCode).Returns("CO");
+
+        _cityServiceMock
+            .Setup(x => x.GetPopularCitiesByCountryAsync(It.IsAny<string>()))
+            .ReturnsAsync(new HttpResponseWrapper<List<string>>(new List<string> { "Bogotá" }, false, new HttpResponseMessage(System.Net.HttpStatusCode.OK)));
+
+        _appConfigurationServiceMock
+            .Setup(x => x.GetPromotionalImagesAsync())
+            .ReturnsAsync(new List<string> { "https://images.test/banner1.webp" });
 
         _viewModel = new HomeViewModel(
             _countryServiceMock.Object,
             _cityServiceMock.Object,
             _backendUrlProviderMock.Object,
-            _appSettingsServiceMock.Object);
+            _appSettingsServiceMock.Object,
+            _appConfigurationServiceMock.Object);
     }
 
     [Fact]
@@ -41,21 +53,28 @@ public class HomeViewModelTests
     public void Constructor_Throws_WhenCountryServiceNull()
     {
         Assert.Throws<ArgumentNullException>(() =>
-            new HomeViewModel(null!, _cityServiceMock.Object, _backendUrlProviderMock.Object, _appSettingsServiceMock.Object));
+            new HomeViewModel(null!, _cityServiceMock.Object, _backendUrlProviderMock.Object, _appSettingsServiceMock.Object, _appConfigurationServiceMock.Object));
     }
 
     [Fact]
     public void Constructor_Throws_WhenCityServiceNull()
     {
         Assert.Throws<ArgumentNullException>(() =>
-            new HomeViewModel(_countryServiceMock.Object, null!, _backendUrlProviderMock.Object, _appSettingsServiceMock.Object));
+            new HomeViewModel(_countryServiceMock.Object, null!, _backendUrlProviderMock.Object, _appSettingsServiceMock.Object, _appConfigurationServiceMock.Object));
     }
 
     [Fact]
     public void Constructor_Throws_WhenBackendUrlProviderNull()
     {
         Assert.Throws<ArgumentNullException>(() =>
-            new HomeViewModel(_countryServiceMock.Object, _cityServiceMock.Object, null!, _appSettingsServiceMock.Object));
+            new HomeViewModel(_countryServiceMock.Object, _cityServiceMock.Object, null!, _appSettingsServiceMock.Object, _appConfigurationServiceMock.Object));
+    }
+
+    [Fact]
+    public void Constructor_Throws_WhenAppConfigurationServiceNull()
+    {
+        Assert.Throws<ArgumentNullException>(() =>
+            new HomeViewModel(_countryServiceMock.Object, _cityServiceMock.Object, _backendUrlProviderMock.Object, _appSettingsServiceMock.Object, null!));
     }
 
     [Fact]
@@ -219,6 +238,37 @@ public class HomeViewModelTests
         _viewModel.ToggleGuestConfigCommand.Execute(null);
 
         Assert.Equal(!initial, _viewModel.IsGuestConfigVisible);
+    }
+
+    [Fact]
+    public void PromotionalImages_Collection_IsInitialized()
+    {
+        Assert.NotNull(_viewModel.PromotionalImages);
+        Assert.NotEmpty(_viewModel.PromotionalImages);
+    }
+
+    [Fact]
+    public async Task LoadDataAsync_LoadsPromotionalImages_FromAppConfiguration()
+    {
+        var expectedImages = new List<string>
+        {
+            "https://images.test/banner1.webp",
+            "https://images.test/banner2.webp"
+        };
+
+        _appConfigurationServiceMock
+            .Setup(x => x.GetPromotionalImagesAsync())
+            .ReturnsAsync(expectedImages);
+
+        var method = typeof(HomeViewModel).GetMethod("LoadDataAsync",
+            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+
+        var task = (Task)method?.Invoke(_viewModel, null)!;
+        await task;
+
+        Assert.Equal(2, _viewModel.PromotionalImages.Count);
+        Assert.Contains("https://images.test/banner1.webp", _viewModel.PromotionalImages);
+        Assert.Contains("https://images.test/banner2.webp", _viewModel.PromotionalImages);
     }
 
     [Fact]
