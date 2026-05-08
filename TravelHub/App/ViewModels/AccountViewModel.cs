@@ -67,17 +67,17 @@ public class AccountViewModel : BaseViewModel
 
     private async void OnEditProfile()
     {
-        await Shell.Current.DisplayAlert("Editar Perfil", "Funcion disponible proximamente.", "OK");
+        await Shell.Current.DisplayAlertAsync("Editar Perfil", "Funcion disponible proximamente.", "OK");
     }
 
     private async void OnViewHistory()
     {
-        await Shell.Current.DisplayAlert("Historial", "Funcion disponible proximamente.", "OK");
+        await Shell.Current.DisplayAlertAsync("Historial", "Funcion disponible proximamente.", "OK");
     }
 
     private async void OnLogout()
     {
-        //bool confirm = await Shell.Current.DisplayAlert("Cerrar Sesion", "Deseas cerrar tu sesion?", "Si", "No");
+        //bool confirm = await Shell.Current.DisplayAlertAsync("Cerrar Sesion", "Deseas cerrar tu sesion?", "Si", "No");
         //if (confirm)
         //{
             await _userSessionService.ClearSession();
@@ -92,7 +92,7 @@ public class AccountViewModel : BaseViewModel
     {
         if (string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(Password))
         {
-            await Shell.Current.DisplayAlert("Error", "Ingresa tu email y contrasena.", "OK");
+            await Shell.Current.DisplayAlertAsync("Error", "Ingresa tu email y contrasena.", "OK");
             return;
         }
 
@@ -109,7 +109,7 @@ public class AccountViewModel : BaseViewModel
             if (response.Error || response.Response == null || string.IsNullOrWhiteSpace(response.Response.Token))
             {
                 var errorMessage = await response.GetErrorMessageAsync();
-                await Shell.Current.DisplayAlert(
+                await Shell.Current.DisplayAlertAsync(
                     "Error",
                     string.IsNullOrWhiteSpace(errorMessage) ? "No fue posible iniciar sesión." : "Usuario o Contraseña no son correctos",
                     "OK");

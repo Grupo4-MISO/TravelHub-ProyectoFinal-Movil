@@ -68,7 +68,7 @@ public static class MauiProgram
         // Register ViewModels
         builder.Services.AddScoped<HomeViewModel>();
         builder.Services.AddScoped<SearchResultsViewModel>();
-        builder.Services.AddTransient<PropertyDetailViewModel>();
+        builder.Services.AddScoped<PropertyDetailViewModel>();
         builder.Services.AddTransient<RoomSelectionViewModel>();
         builder.Services.AddTransient<TravelerDataViewModel>();
         builder.Services.AddTransient<BookingSummaryViewModel>();

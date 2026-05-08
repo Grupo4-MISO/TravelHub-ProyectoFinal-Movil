@@ -4,9 +4,9 @@ namespace App.Views;
 
 public partial class BookingDetailsPage : ContentPage
 {
-    public BookingDetailsPage()
+    public BookingDetailsPage(BookingDetailsViewModel viewModel)
     {
         InitializeComponent();
-        BindingContext = new BookingDetailsViewModel();
+        BindingContext = viewModel ?? throw new ArgumentNullException(nameof(viewModel));
     }
 }

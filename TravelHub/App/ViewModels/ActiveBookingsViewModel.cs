@@ -117,7 +117,7 @@ public class ActiveBookingsViewModel : BaseViewModel
         }
     }
 
-    private Reservation MapToReservation(BookingResponseDto dto, Dictionary<string, HotelInventoryDto>? hotels)
+    private Reservation MapToReservation(BookingHoldResponseDto dto, Dictionary<string, HotelInventoryDto>? hotels)
     {
         var reservation = new Reservation
         {
@@ -155,7 +155,7 @@ public class ActiveBookingsViewModel : BaseViewModel
             status = await Permissions.RequestAsync<Permissions.Camera>();
             if (status != PermissionStatus.Granted)
             {
-                await Shell.Current.DisplayAlert("Permiso requerido", "Se requiere acceso a la cámara para escanear el código QR", "OK");
+                await Shell.Current.DisplayAlertAsync("Permiso requerido", "Se requiere acceso a la cámara para escanear el código QR", "OK");
                 return;
             }
         }

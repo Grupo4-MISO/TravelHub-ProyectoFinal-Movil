@@ -1,6 +1,8 @@
 using App.DTOs;
 using App.Models;
 using App.Services;
+using App.Services.Implementations;
+using App.Services.Interfaces;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
@@ -9,132 +11,89 @@ namespace App.ViewModels;
 [QueryProperty(nameof(ReservationId), "ReservationId")]
 public partial class BookingDetailsViewModel : BaseViewModel, IQueryAttributable
 {
-    private int _reservationId;
-    public int ReservationId
+    private readonly IBookingService _bookingService;
+    private readonly IPropertyDetailService _propertyDetailService;
+
+    private string _reservationId;
+    public string ReservationId
     {
         get => _reservationId;
         set => SetProperty(ref _reservationId, value);
     }
 
-    // CA2: Información General
-    
-    private string _bookingNumber = string.Empty;
-    public string BookingNumber
+    private string _imageUrl = string.Empty;
+    public string ImageUrl
     {
-        get => _bookingNumber;
-        set => SetProperty(ref _bookingNumber, value);
+        get => _imageUrl;
+        set => SetProperty(ref _imageUrl, value);
     }
 
-    private string _bookingStatus = string.Empty;
-    public string BookingStatus
-        {
-        get => _bookingStatus;
-        set => SetProperty(ref _bookingStatus, value);
-    }
-
-
-    private Color _statusColor = Colors.Transparent;
-
-    public Color StatusColor
+    private BookingResponseDto _booking = new();
+    public BookingResponseDto Booking
     {
-        get => _statusColor;
-        set => SetProperty(ref _statusColor, value);
+        get => _booking;
+        set => SetProperty(ref _booking, value);
     }
 
-    private DateTime _checkIn;
+    private AccommodationInfoDto _property = new();
+    public AccommodationInfoDto Property
+    {
+        get => _property;
+        set => SetProperty(ref _property, value);
+    }
+
+    private AccommodationDetailRoomDto? _room = new();
+    public AccommodationDetailRoomDto? Room
+    {
+        get => _room;
+        set => SetProperty(ref _room, value);
+    }
+
+    private DateTime _checkIn = DateTime.Today.AddDays(7);
     public DateTime CheckIn
     {
         get => _checkIn;
-        set => SetProperty(ref _checkIn, value);
+        set
+        {
+            if (SetProperty(ref _checkIn, value))
+            {
+                OnPropertyChanged(nameof(Nights));
+                OnPropertyChanged(nameof(TotalPrice));
+            }
+        }
     }
 
-
-    private DateTime _checkOut;
+    private DateTime _checkOut = DateTime.Today.AddDays(9);
     public DateTime CheckOut
     {
         get => _checkOut;
-        set => SetProperty(ref _checkOut, value);
+        set
+        {
+            if (SetProperty(ref _checkOut, value))
+            {
+                OnPropertyChanged(nameof(Nights));
+                OnPropertyChanged(nameof(TotalPrice));
+            }
+        }
     }
 
-
-    private int _guestsCount;
+    private int _guestsCount = 0;
     public int GuestsCount
     {
         get => _guestsCount;
         set => SetProperty(ref _guestsCount, value);
     }
 
+    public int Nights => (CheckOut - CheckIn).Days;
+    public decimal SubTotal => (Room.Price * Nights) / decimal.Parse("1.19");
+    public decimal Taxes => SubTotal * 0.19m;
 
-    private string _roomType = string.Empty;
-    public string RoomType
-    {
-        get => _roomType;
-        set => SetProperty(ref _roomType, value);
-    }
-
-
-    private int _nights;
-    public int Nights
-    {
-        get => _nights;
-        set => SetProperty(ref _nights, value);
-    }
-
-    // CA3: Información del Hotel
-
-    private HotelInfo _hotel = new();
-    public HotelInfo Hotel
-    {
-        get => _hotel;
-        set => SetProperty(ref _hotel, value);
-    }
-
-    // CA4: Servicios Incluidos
-
-    private ObservableCollection<AccommodationDetailAmenityDto> _includedServices = new();
-    public ObservableCollection<AccommodationDetailAmenityDto> IncludedServices
-    {
-        get => _includedServices;
-        set => SetProperty(ref _includedServices, value);
-    }
-
-    // CA5: Información Económica
-
-    private decimal _pricePerNight;
-    public decimal PricePerNight
-    {
-        get => _pricePerNight;
-        set => SetProperty(ref _pricePerNight, value);
-    }
-
-
-    private decimal _subTotal;
-    public decimal SubTotal
-    {
-        get => _subTotal;
-        set => SetProperty(ref _subTotal, value);
-    }
-
-
-    private decimal _taxes;
-    public decimal Taxes
-    {
-        get => _taxes;
-        set => SetProperty(ref _taxes, value);
-    }
-
-
-    private decimal _totalPrice;
-    public decimal TotalPrice
-    {
-        get => _totalPrice;
-        set => SetProperty(ref _totalPrice, value);
-    }
+    public decimal TotalPrice => Room.Price * Nights;
 
 
     private string _currency = "COP - Peso Colombiano";
     public string Currency
-        {
+    {
         get => _currency;
         set => SetProperty(ref _currency, value);
     }
@@ -147,32 +106,6 @@ public partial class BookingDetailsViewModel : BaseViewModel, IQueryAttributable
         set => SetProperty(ref _paymentInfo, value);
     }
 
-    // CA6: Documentos
-
-    private bool _hasInvoice = true;
-    public bool HasInvoice
-    {
-        get => _hasInvoice;
-        set => SetProperty(ref _hasInvoice, value);
-    }
-
-    // CA7: Gestión de Reserva
-
-    private bool _canModify = true;
-    public bool CanModify
-    {
-        get => _canModify;
-        set => SetProperty(ref _canModify, value);
-    }
-
-
-    private bool _canCancel = true;
-    public bool CanCancel
-    {
-        get => _canCancel;
-        set => SetProperty(ref _canCancel, value);
-    }
-
     public ICommand DownloadVoucherCommand { get; }
     public ICommand DownloadConfirmationCommand { get; }
     public ICommand DownloadInvoiceCommand { get; }
@@ -181,9 +114,11 @@ public partial class BookingDetailsViewModel : BaseViewModel, IQueryAttributable
     public ICommand ModifyBookingCommand { get; }
     public ICommand CancelBookingCommand { get; }
 
-    public BookingDetailsViewModel()
+    public BookingDetailsViewModel(IBookingService bookingService, IPropertyDetailService propertyDetailService)
     {
         Title = "Detalle de Reserva";
+        _bookingService = bookingService;
+        _propertyDetailService = propertyDetailService;
         DownloadVoucherCommand = new Command(async () => await DownloadVoucher());
         DownloadConfirmationCommand = new Command(async () => await DownloadConfirmation());
         DownloadInvoiceCommand = new Command(async () => await DownloadInvoice());
@@ -195,80 +130,51 @@ public partial class BookingDetailsViewModel : BaseViewModel, IQueryAttributable
 
     public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
-        if (query.TryGetValue("ReservationId", out var obj) && obj is int value)
+        if (query.TryGetValue("ReservationId", out var obj) && obj is string value)
             ReservationId = value;
         LoadReservationDetails(ReservationId);
     }
 
-    private void LoadReservationDetails(int reservationId)
+    private async Task LoadReservationDetails(string reservationId)
     {
-        //// Cargar datos de la reserva desde el servicio
-        //var reservation = MockDataService.GetActiveReservations()
-        //    .FirstOrDefault(r => r.Id == reservationId);
+        // Cargar datos de la reserva desde el servicio
+        var result = await _bookingService.GetBookingByReservationIdAsync(reservationId);
 
-        //if (reservation == null) return;
+        if (result == null || result.Response == null) return;
+        Booking = result.Response;
+        // Cargar datos de la propiedad desde el servicio
+        var hospedajeResult = await _propertyDetailService.GetPropertyDetailByRoomIdAsync(reservationId, "COP");
+        if (hospedajeResult == null || hospedajeResult.Response == null) return;
 
-        //// Mapear datos de la reserva al ViewModel
-        //BookingNumber = reservation.BookingCode;
-        //BookingStatus = reservation.Status;
-        //StatusColor = reservation.Status.ToLower() switch
-        //{
-        //    "confirmada" => Color.FromArgb("#4CAF50"),
-        //    "pendiente" => Color.FromArgb("#FFC107"),
-        //    "cancelada" => Color.FromArgb("#F44336"),
-        //    _ => Color.FromArgb("#757575")
-        //};
+        Property = hospedajeResult.Response;
+        ImageUrl = Property.Images != null && Property.Images.Count > 0 ? Property.Images[0].Url : string.Empty;
+        Room = Property.Room;
 
-        //CheckIn = reservation.CheckIn;
-        //CheckOut = reservation.CheckOut;
-        //GuestsCount = reservation.Adults + reservation.Children;
-        //RoomType = reservation.Room.Name;
-        //Nights = reservation.Nights;
+        CheckIn = DateTime.TryParse(Booking.CheckIn, out var checkIn) ? checkIn : DateTime.MinValue;
+        CheckOut = DateTime.TryParse(Booking.CheckOut, out var checkOut) ? checkOut : DateTime.MinValue;
+        
 
-        //// Información del hotel
-        //Hotel = new HotelInfo
-        //{
-        //    Name = reservation.Property.Name,
-        //    Address = reservation.Property.Address,
-        //    City = reservation.Property.City,
-        //    Phone = "+57 300 123 4567", // Mock - debería venir del modelo
-        //    Email = "reservas@" + reservation.Property.Name.ToLower().Replace(" ", "") + ".com",
-        //    FullAddress = $"{reservation.Property.Address}, {reservation.Property.City}",
-        //    ImageUrl = reservation.Property.ImageUrl
-        //};
+        // Información económica
 
-        //// Servicios incluidos
-        //IncludedServices = new ObservableCollection<Amenity>(reservation.Property.Amenities);
+        PaymentInfo = "Pagado - Tarjeta •••• 4567";
 
-        //// Información económica
-        //PricePerNight = reservation.Room.PricePerNight;
-        //SubTotal = reservation.Room.PricePerNight * reservation.Nights;
-        //Taxes = SubTotal * 0.19m; // IVA 19%
-        //TotalPrice = reservation.TotalPrice;
-        //PaymentInfo = "Pagado - Tarjeta •••• 4567";
-
-        //// Gestión de reserva
-        //CanModify = reservation.Status.ToLower() == "confirmada" && 
-        //            reservation.CheckIn > DateTime.Now.AddDays(2);
-        //CanCancel = reservation.Status.ToLower() == "confirmada" && 
-        //            reservation.CheckIn > DateTime.Now.AddDays(1);
     }
 
     // CA6: Descarga de Documentos
 
     private async Task DownloadVoucher()
     {
-        await Shell.Current.DisplayAlert("Descarga", "Descargando voucher...", "OK");
+        await Shell.Current.DisplayAlertAsync("Descarga", "Descargando voucher...", "OK");
         // Implementar lógica de descarga
     }
     private async Task DownloadConfirmation()
     {
-        await Shell.Current.DisplayAlert("Descarga", "Descargando confirmación...", "OK");
+        await Shell.Current.DisplayAlertAsync("Descarga", "Descargando confirmación...", "OK");
         // Implementar lógica de descarga
     }
     private async Task DownloadInvoice()
     {
-        await Shell.Current.DisplayAlert("Descarga", "Descargando factura...", "OK");
+        await Shell.Current.DisplayAlertAsync("Descarga", "Descargando factura...", "OK");
         // Implementar lógica de descarga
     }
 
@@ -278,12 +184,12 @@ public partial class BookingDetailsViewModel : BaseViewModel, IQueryAttributable
     {
         try
         {
-            if (PhoneDialer.Default.IsSupported)
-                PhoneDialer.Default.Open(Hotel.Phone);
+            //if (PhoneDialer.Default.IsSupported)
+            //    PhoneDialer.Default.Open(Hotel.Phone);
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlert("Error", $"No se pudo realizar la llamada: {ex.Message}", "OK");
+            await Shell.Current.DisplayAlertAsync("Error", $"No se pudo realizar la llamada: {ex.Message}", "OK");
         }
     }
 
@@ -292,17 +198,17 @@ public partial class BookingDetailsViewModel : BaseViewModel, IQueryAttributable
     {
         try
         {
-            var message = new EmailMessage
-            {
-                Subject = $"Consulta - Reserva {BookingNumber}",
-                To = new List<string> { Hotel.Email },
-                Body = $"Hola, tengo una consulta sobre mi reserva {BookingNumber}..."
-            };
-            await Email.Default.ComposeAsync(message);
+            //var message = new EmailMessage
+            //{
+            //    Subject = $"Consulta - Reserva {BookingNumber}",
+            //    To = new List<string> { Hotel.Email },
+            //    Body = $"Hola, tengo una consulta sobre mi reserva {BookingNumber}..."
+            //};
+            //await Email.Default.ComposeAsync(message);
         }
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlert("Error", $"No se pudo abrir el email: {ex.Message}", "OK");
+            await Shell.Current.DisplayAlertAsync("Error", $"No se pudo abrir el email: {ex.Message}", "OK");
         }
     }
 
@@ -310,14 +216,14 @@ public partial class BookingDetailsViewModel : BaseViewModel, IQueryAttributable
 
     private async Task ModifyBooking()
     {
-        await Shell.Current.DisplayAlert("Modificar", "Funcionalidad de modificación en desarrollo", "OK");
+        await Shell.Current.DisplayAlertAsync("Modificar", "Funcionalidad de modificación en desarrollo", "OK");
         // Navegar a página de modificación
     }
 
 
     private async Task CancelBooking()
     {
-        bool confirm = await Shell.Current.DisplayAlert(
+        bool confirm = await Shell.Current.DisplayAlertAsync(
             "Cancelar Reserva",
             "¿Está seguro que desea cancelar esta reserva? Esta acción puede tener penalizaciones según las políticas del hotel.",
             "Sí, cancelar",
@@ -326,22 +232,22 @@ public partial class BookingDetailsViewModel : BaseViewModel, IQueryAttributable
         if (confirm)
         {
             // Implementar lógica de cancelación
-            await Shell.Current.DisplayAlert("Cancelación", "Procesando cancelación...", "OK");
+            await Shell.Current.DisplayAlertAsync("Cancelación", "Procesando cancelación...", "OK");
             await Shell.Current.GoToAsync("..");
         }
     }
 }
 
 
-// Clases auxiliares
-public class HotelInfo
-{
-    public string Name { get; set; } = string.Empty;
-    public string Address { get; set; } = string.Empty;
-    public string City { get; set; } = string.Empty;
-    public string Phone { get; set; } = string.Empty;
-    public string Email { get; set; } = string.Empty;
-    public string FullAddress { get; set; } = string.Empty;
-    public string ImageUrl { get; set; } = string.Empty;
-}
+//// Clases auxiliares
+//public class HotelInfo
+//{
+//    public string Name { get; set; } = string.Empty;
+//    public string Address { get; set; } = string.Empty;
+//    public string City { get; set; } = string.Empty;
+//    public string Phone { get; set; } = string.Empty;
+//    public string Email { get; set; } = string.Empty;
+//    public string FullAddress { get; set; } = string.Empty;
+//    public string ImageUrl { get; set; } = string.Empty;
+//}
 

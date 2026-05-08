@@ -16,10 +16,16 @@ public class BookingService : IBookingService
         _backendUrlProvider = backendUrlProvider;
     }
 
-    public async Task<HttpResponseWrapper<List<BookingResponseDto>>> GetUserBookingsAsync(string userId)
+    public async Task<HttpResponseWrapper<List<BookingHoldResponseDto>>> GetUserBookingsAsync(string userId)
     {
         var url = _backendUrlProvider.Build($"/api/v1/reservas/usuario/{userId}");
-        return await _backEndService.GetAsync<List<BookingResponseDto>>(url);
+        return await _backEndService.GetAsync<List<BookingHoldResponseDto>>(url);
+    }
+
+    public async Task<HttpResponseWrapper<BookingResponseDto>> GetBookingByReservationIdAsync(string bookingId)
+    {
+        var url = _backendUrlProvider.Build($"/api/v1/reservas/{bookingId}");
+        return await _backEndService.GetAsync<BookingResponseDto>(url);
     }
 
     public async Task<HttpResponseWrapper<Dictionary<string, HotelInventoryDto>>> GetHotelsByRoomIdsAsync(List<string> roomIds)

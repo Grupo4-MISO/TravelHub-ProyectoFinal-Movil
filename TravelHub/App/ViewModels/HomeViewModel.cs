@@ -200,7 +200,7 @@ public class HomeViewModel : BaseViewModel
     {
         if (string.IsNullOrWhiteSpace(SelectedCity))
         {
-            await Shell.Current.DisplayAlert("Error", "Por favor, seleccione una ciudad.", "OK");
+            await Shell.Current.DisplayAlertAsync("Error", "Por favor, seleccione una ciudad.", "OK");
             return;
         }
 

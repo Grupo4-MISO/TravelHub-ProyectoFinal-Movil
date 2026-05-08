@@ -23,6 +23,12 @@ namespace App.DTOs
         public decimal Price { get; set; }
 
         [JsonProperty("imageUrl")]
-        public string ImageUrl { get; set; } = string.Empty;
+        public string? ImageUrl { get; set; }
+
+        [JsonProperty("imagen_url")]
+        private string? ImagenUrlSetter
+        {
+            set => ImageUrl = value;
+        }
     }
 }

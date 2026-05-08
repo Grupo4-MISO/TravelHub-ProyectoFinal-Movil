@@ -31,9 +31,9 @@ public class BookingServiceTests
     {
         // Arrange
         var userId = "user-123";
-        var expectedBookings = new List<BookingResponseDto>
+        var expectedBookings = new List<BookingHoldResponseDto>
         {
-            new BookingResponseDto
+            new BookingHoldResponseDto
             {
                 Id = "booking-1",
                 PublicId = "RSV-12345",
@@ -50,8 +50,8 @@ public class BookingServiceTests
         _backendUrlProviderMock.Setup(x => x.Build(It.IsAny<string>())).Returns(url);
 
         _backEndServiceMock
-            .Setup(x => x.GetAsync<List<BookingResponseDto>>(url))
-            .ReturnsAsync(new HttpResponseWrapper<List<BookingResponseDto>>(expectedBookings, false, new HttpResponseMessage(HttpStatusCode.OK)));
+            .Setup(x => x.GetAsync<List<BookingHoldResponseDto>>(url))
+            .ReturnsAsync(new HttpResponseWrapper<List<BookingHoldResponseDto>>(expectedBookings, false, new HttpResponseMessage(HttpStatusCode.OK)));
 
         // Act
         var result = await _bookingService.GetUserBookingsAsync(userId);
@@ -74,8 +74,8 @@ public class BookingServiceTests
         _backendUrlProviderMock.Setup(x => x.Build(It.IsAny<string>())).Returns(url);
 
         _backEndServiceMock
-            .Setup(x => x.GetAsync<List<BookingResponseDto>>(url))
-            .ReturnsAsync(new HttpResponseWrapper<List<BookingResponseDto>>(null, true, new HttpResponseMessage(HttpStatusCode.InternalServerError)));
+            .Setup(x => x.GetAsync<List<BookingHoldResponseDto>>(url))
+            .ReturnsAsync(new HttpResponseWrapper<List<BookingHoldResponseDto>>(null, true, new HttpResponseMessage(HttpStatusCode.InternalServerError)));
 
         // Act
         var result = await _bookingService.GetUserBookingsAsync(userId);
@@ -97,9 +97,9 @@ public class BookingServiceTests
             .Returns((string path) => $"https://api.test.com{path}");
 
         _backEndServiceMock
-            .Setup(x => x.GetAsync<List<BookingResponseDto>>(It.IsAny<string>()))
+            .Setup(x => x.GetAsync<List<BookingHoldResponseDto>>(It.IsAny<string>()))
             .Callback<string>(url => capturedUrl = url)
-            .ReturnsAsync(new HttpResponseWrapper<List<BookingResponseDto>>(new List<BookingResponseDto>(), false, new HttpResponseMessage(HttpStatusCode.OK)));
+            .ReturnsAsync(new HttpResponseWrapper<List<BookingHoldResponseDto>>(new List<BookingHoldResponseDto>(), false, new HttpResponseMessage(HttpStatusCode.OK)));
 
         // Act
         await _bookingService.GetUserBookingsAsync(userId);
