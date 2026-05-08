@@ -58,6 +58,8 @@ public partial class BookingDetailsViewModel : BaseViewModel, IQueryAttributable
             if (SetProperty(ref _checkIn, value))
             {
                 OnPropertyChanged(nameof(Nights));
+                OnPropertyChanged(nameof(SubTotal));
+                OnPropertyChanged(nameof(Taxes));
                 OnPropertyChanged(nameof(TotalPrice));
             }
         }
@@ -72,6 +74,8 @@ public partial class BookingDetailsViewModel : BaseViewModel, IQueryAttributable
             if (SetProperty(ref _checkOut, value))
             {
                 OnPropertyChanged(nameof(Nights));
+                OnPropertyChanged(nameof(SubTotal));
+                OnPropertyChanged(nameof(Taxes));
                 OnPropertyChanged(nameof(TotalPrice));
             }
         }
@@ -85,7 +89,7 @@ public partial class BookingDetailsViewModel : BaseViewModel, IQueryAttributable
     }
 
     public int Nights => (CheckOut - CheckIn).Days;
-    public decimal SubTotal => (Room.Price * Nights) / decimal.Parse("1.19");
+    public decimal SubTotal => (Room.Price * Nights) / 1.19m;
     public decimal Taxes => SubTotal * 0.19m;
 
     public decimal TotalPrice => Room.Price * Nights;
@@ -143,7 +147,7 @@ public partial class BookingDetailsViewModel : BaseViewModel, IQueryAttributable
         if (result == null || result.Response == null) return;
         Booking = result.Response;
         // Cargar datos de la propiedad desde el servicio
-        var hospedajeResult = await _propertyDetailService.GetPropertyDetailByRoomIdAsync(reservationId, "COP");
+        var hospedajeResult = await _propertyDetailService.GetPropertyDetailByRoomIdAsync(Booking.HabitacionId, "COP");
         if (hospedajeResult == null || hospedajeResult.Response == null) return;
 
         Property = hospedajeResult.Response;

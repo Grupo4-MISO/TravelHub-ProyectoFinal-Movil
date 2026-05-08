@@ -225,14 +225,14 @@
                 </Border>
 
                 <!-- CA6: Descarga de Documentos -->
-                <Border Padding="16"
+                <!--<Border Padding="16"
                         BackgroundColor="{StaticResource Surface}"
                         StrokeShape="RoundRectangle 12"
                         Stroke="{StaticResource Gray100}">
                     <VerticalStackLayout Spacing="10">
                         <Label Text="{local:Translate Details_Documentos}" Style="{StaticResource Title}" />
 
-                        <!--<Button Command="{Binding DownloadVoucherCommand}"
+                        <Button Command="{Binding DownloadVoucherCommand}"
                                 Style="{StaticResource OutlineButton}"
                                 HorizontalOptions="Fill">
                             <Button.ImageSource>
@@ -243,7 +243,7 @@
                                     Color="{StaticResource Primary}" />
                             </Button.ImageSource>
                             <Button.Text>Descargar Voucher</Button.Text>
-                        </Button>-->
+                        </Button>
 
                         <Button Command="{Binding DownloadConfirmationCommand}"
                                 Style="{StaticResource OutlineButton}"
@@ -272,9 +272,9 @@
                             <Button.Text>{local:Translate Details_DescargarFactura}</Button.Text>
                         </Button>
                     </VerticalStackLayout>
-                </Border>
+                </Border>-->
 
-                <!-- CA8: Contacto con el Hotel -->
+                <!-- Contacto con el Hotel -->
                 <Border Padding="16"
                         BackgroundColor="{StaticResource Surface}"
                         StrokeShape="RoundRectangle 12"
@@ -282,7 +282,7 @@
                     <VerticalStackLayout Spacing="10">
                         <Label Text="{local:Translate Details_ContactarHotel}" Style="{StaticResource Title}" />
 
-                        <Button Command="{Binding CallHotelCommand}"
+                        <!--<Button Command="{Binding CallHotelCommand}"
                                 Style="{StaticResource OutlineButton}"
                                 HorizontalOptions="Fill">
                             <Button.ImageSource>
@@ -295,9 +295,9 @@
                             <Button.Text>
                                 <Binding Path="Hotel.Phone" StringFormat="{local:Translate Details_Llamar}" />
                             </Button.Text>
-                        </Button>
+                        </Button>-->
 
-                        <Button Command="{Binding EmailHotelCommand}"
+                        <!--<Button Command="{Binding EmailHotelCommand}"
                                 Style="{StaticResource OutlineButton}"
                                 HorizontalOptions="Fill">
                             <Button.ImageSource>
@@ -312,7 +312,7 @@
                                     <Binding Path="Hotel.Email" Converter="{StaticResource TruncateText}" ConverterParameter="15" />
                                 </MultiBinding>
                             </Button.Text>
-                        </Button>
+                        </Button>-->
 
                         <Border Padding="12"
                                 BackgroundColor="{StaticResource Background}"
@@ -332,7 +332,7 @@
                                 <Label Text="{local:Translate Details_Direccion}"
                                        FontFamily="OpenSansSemibold"
                                        FontSize="14" />
-                                    <Label Text="{Binding Hotel.FullAddress}"
+                                    <Label Text="{Binding Property.Address}"
                                            Style="{StaticResource Subtitle}" />
                                 </VerticalStackLayout>
                             </HorizontalStackLayout>
@@ -348,22 +348,22 @@
                 Padding="16,12"
                 BackgroundColor="{StaticResource Surface}"
                 Stroke="{StaticResource Gray100}">
-            <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
-<Button Grid.Column="0"
-        Text="{local:Translate Details_Modificar}"
-        Command="{Binding ModifyBookingCommand}"
-        Style="{StaticResource OutlineButton}"
-        IsVisible="{Binding CanModify}"
-        HorizontalOptions="Fill" />
-<Button Grid.Column="1"
-        Text="{local:Translate Details_Cancelar}"
-        Command="{Binding CancelBookingCommand}"
-        Style="{StaticResource OutlineButton}"
-        TextColor="{StaticResource Error}"
-        BorderColor="{StaticResource Error}"
-        IsVisible="{Binding CanCancel}"
-        HorizontalOptions="Fill" />
-            </Grid>
+            <!--<Grid ColumnDefinitions="*,*" ColumnSpacing="12">-->
+            <!--<Button Grid.Column="0"
+                    Text="{local:Translate Details_Modificar}"
+                    Command="{Binding ModifyBookingCommand}"
+                    Style="{StaticResource OutlineButton}"
+                    IsVisible="{Binding CanModify}"
+                    HorizontalOptions="Fill" />-->
+            <Button Grid.Column="1"
+                    Text="{local:Translate Details_Cancelar}"
+                    Command="{Binding CancelBookingCommand}"
+                    Style="{StaticResource OutlineButton}"
+                    TextColor="{StaticResource Error}"
+                    BorderColor="{StaticResource Error}"
+                    IsVisible="{Binding CanCancel}"
+                    HorizontalOptions="Fill" />
+            <!--</Grid>-->
         </Border>
     </Grid>
 </ContentPage>
