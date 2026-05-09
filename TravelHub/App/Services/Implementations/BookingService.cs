@@ -27,7 +27,11 @@ public class BookingService : IBookingService
         var url = _backendUrlProvider.Build($"/api/v1/reservas/{bookingId}");
         return await _backEndService.GetAsync<BookingResponseDto>(url);
     }
-
+    public async Task<HttpResponseWrapper<object>> CheckInBookingByReservationIdAsync(string bookingId)
+    {
+        var url = _backendUrlProvider.Build($"/api/v1/reservas/completar/{bookingId}");
+        return await _backEndService.GetAsync(url);
+    }
     public async Task<HttpResponseWrapper<object>> RevokeBookingByReservationIdAsync(string bookingId)
     {
         var url = _backendUrlProvider.Build($"/api/v1/reservas/revocar/{bookingId}");

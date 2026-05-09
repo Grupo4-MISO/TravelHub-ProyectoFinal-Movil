@@ -170,12 +170,13 @@ public class ActiveBookingsViewModel : BaseViewModel
             await Shell.Current.GoToAsync("QrScannerPage");
 
             var scannedUrl = await _tcs.Task;
+            var bookingId = scannedUrl?.Split('/').LastOrDefault();
 
             Shell.Current.Navigated -= OnShellNavigated;
 
-            if (!string.IsNullOrEmpty(scannedUrl))
+            if (!string.IsNullOrEmpty(bookingId))
             {
-                await ProcessCheckInAsync(reservation, scannedUrl);
+                await ProcessCheckInAsync(reservation, bookingId);
             }
         }
         catch (Exception ex)
@@ -196,24 +197,16 @@ public class ActiveBookingsViewModel : BaseViewModel
         }
     }
 
-    private async Task ProcessCheckInAsync(Reservation reservation, string url)
+    private async Task ProcessCheckInAsync(Reservation reservation, string bookingId)
     {
         try
         {
             IsBusy = true;
 
-            var backEndService = Shell.Current.Handler.MauiContext?.Services.GetRequiredService<IBackEndService>();
-            if (backEndService == null)
+            var bookingsResponse = await _bookingService.CheckInBookingByReservationIdAsync(bookingId);
+            if (bookingsResponse.Error )
             {
-                await Shell.Current.DisplayAlertAsync("Error", "No se pudo acceder al servicio", "OK");
-                return;
-            }
-
-            var response = await backEndService.GetAsync(url);
-
-            if (response.Error)
-            {
-                var errorMsg = await response.GetErrorMessageAsync();
+                var errorMsg = await bookingsResponse.GetErrorMessageAsync();
                 await Shell.Current.DisplayAlertAsync("Error", $"No se pudo completar el check-in: {errorMsg}", "OK");
                 return;
             }
