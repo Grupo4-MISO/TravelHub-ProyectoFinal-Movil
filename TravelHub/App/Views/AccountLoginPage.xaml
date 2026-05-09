@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:App.MarkupExtensions"
              x:Class="App.Views.AccountLoginPage"
+             AutomationId="Login_Page"
              Title="{Binding Title}"
              Shell.NavBarIsVisible="False">
 
@@ -37,6 +38,7 @@
                                 StrokeShape="RoundRectangle 10"
                                 Stroke="{StaticResource Gray200}">
 <Entry Placeholder="{local:Translate Login_EmailPlaceholder}"
+       AutomationId="Login_EmailEntry"
        Text="{Binding Email}"
        Keyboard="Email" />
                         </Border>
@@ -49,12 +51,14 @@
                                 StrokeShape="RoundRectangle 10"
                                 Stroke="{StaticResource Gray200}">
 <Entry Placeholder="{local:Translate Login_PasswordPlaceholder}"
+       AutomationId="Login_PasswordEntry"
        Text="{Binding Password}"
        IsPassword="True" />
                         </Border>
                     </VerticalStackLayout>
 
 <Button Text="{local:Translate Login_IniciarSesion}"
+        AutomationId="Login_LoginButton"
         Command="{Binding LoginCommand}"
         HorizontalOptions="Fill" />
 
@@ -63,6 +67,7 @@
        Style="{StaticResource Caption}"
        VerticalTextAlignment="Center" />
 <Label Text="{local:Translate Login_Registrate}"
+       AutomationId="Login_RegisterLink"
        TextColor="{StaticResource Primary}"
        FontFamily="OpenSansSemibold"
        FontSize="13"

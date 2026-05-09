@@ -4,6 +4,7 @@
              xmlns:local="clr-namespace:App.MarkupExtensions"
              x:Class="App.Views.BookingConfirmedPage"
              x:Name="RootPage"
+             AutomationId="BookingConfirmed_Page"
              Title="{Binding Title}"
              Shell.NavBarIsVisible="False">
 
@@ -44,6 +45,7 @@
                        HorizontalTextAlignment="Center"
                        TextColor="{StaticResource PrimaryDark}" />
                     <Label Text="{Binding Reservation.Booking.BookingCode}"
+                           AutomationId="BookingConfirmed_ConfirmationCode"
                            FontFamily="OpenSansSemibold"
                            FontSize="24"
                            HorizontalTextAlignment="Center"
@@ -92,16 +94,19 @@
 
             <!-- Pay Button -->
             <Button Text="Realizar Pago"
+                    AutomationId="BookingConfirmed_PaymentButton"
                     Command="{Binding PayCommand}"
                     Style="{StaticResource AccentButton}"
                     HorizontalOptions="Fill" />
 
             <!-- Botones -->
 <Button Text="{local:Translate Confirmed_IrInicio}"
+        AutomationId="BookingConfirmed_GoHomeButton"
         Command="{Binding GoHomeCommand}"
         HorizontalOptions="Fill" />
 
 <Button Text="{local:Translate Confirmed_VerReservas}"
+        AutomationId="BookingConfirmed_ViewBookingsButton"
         Command="{Binding ViewBookingsCommand}"
         Style="{StaticResource OutlineButton}"
         HorizontalOptions="Fill" />

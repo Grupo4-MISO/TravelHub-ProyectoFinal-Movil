@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:viewmodels="clr-namespace:App.ViewModels"
     x:Class="App.Views.SettingsPage"
+    AutomationId="Settings_Page"
     Title="Configuración">
 
 
@@ -23,6 +24,7 @@
                            Style="{DynamicResource Title}" 
                            HorizontalOptions="StartAndExpand" />
                     <Switch IsToggled="{Binding DarkModeEnabled}" 
+                            AutomationId="Settings_DarkModeSwitch"
                             OnColor="{DynamicResource Primary}" />
                 </HorizontalStackLayout>
             </Frame>
@@ -32,6 +34,7 @@
                 <VerticalStackLayout Spacing="10">
                     <Label Text="Modo Daltonismo" Style="{DynamicResource Title}" />
                     <Picker Title="Seleccionar modo"
+                            AutomationId="Settings_ColorBlindnessPicker"
                             ItemsSource="{Binding ColorBlindnessOptions}"
                             SelectedItem="{Binding ColorBlindnessMode}" />
                 </VerticalStackLayout>
@@ -42,6 +45,7 @@
                 <VerticalStackLayout Spacing="10">
                     <Label Text="Tamaño de Texto" Style="{DynamicResource Title}" />
                     <Picker Title="Seleccionar tamaño"
+                            AutomationId="Settings_TextSizePicker"
                             ItemsSource="{Binding TextSizeOptions}"
                             SelectedItem="{Binding TextSizeScale}" />
                 </VerticalStackLayout>
@@ -49,6 +53,7 @@
             
             <!-- Restore Defaults Button -->
             <Button Text="Restaurar Valores Predeterminados" 
+                    AutomationId="Settings_RestoreDefaultsButton"
                     Command="{Binding RestoreDefaultsCommand}" 
                     Style="{DynamicResource OutlineButton}"
                     Margin="0,20,0,0" />

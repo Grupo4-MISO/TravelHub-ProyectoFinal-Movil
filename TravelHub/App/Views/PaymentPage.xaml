@@ -4,6 +4,7 @@
              xmlns:local="clr-namespace:App.MarkupExtensions"
              x:Class="App.Views.PaymentPage"
              x:Name="RootPage"
+             AutomationId="Payment_Page"
              Title="{Binding Title}"
              Shell.NavBarIsVisible="True">
 
@@ -39,7 +40,8 @@
                     Stroke="{StaticResource Gray100}">
                 <VerticalStackLayout Spacing="10">
                     <Label Text="Selecciona un medio de pago" Style="{StaticResource Title}" />
-                    <CollectionView ItemsSource="{Binding PaymentProviders}"
+                    <CollectionView AutomationId="Payment_ProvidersList"
+                                    ItemsSource="{Binding PaymentProviders}"
                                     SelectionMode="Single"
                                     SelectedItem="{Binding SelectedPaymentProvider, Mode=TwoWay}">
                         <CollectionView.ItemsLayout>
@@ -94,6 +96,7 @@
                         </Label.FormattedText>
                     </Label>
                     <Button Text="{Binding PayButtonText}"
+                            AutomationId="Payment_PayButton"
                             Command="{Binding PayCommand}"
                             Style="{StaticResource AccentButton}"
                             HorizontalOptions="Fill" />

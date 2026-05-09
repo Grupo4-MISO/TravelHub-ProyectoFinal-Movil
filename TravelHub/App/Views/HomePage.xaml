@@ -6,6 +6,7 @@
              xmlns:converters="clr-namespace:App.Converters"
              xmlns:local="clr-namespace:App.MarkupExtensions"
              x:Class="App.Views.HomePage"
+             AutomationId="Home_Page"
              IconImageSource="ic_search.png"
              Shell.NavBarIsVisible="False">
 
@@ -22,6 +23,7 @@
                 
                 <!-- Carousel Promocional -->
                 <CarouselView ItemsSource="{Binding PromotionalImages}"
+                              AutomationId="Home_PromoCarousel"
                               HeightRequest="200"
                               Loop="True"
                               IndicatorView="promoIndicator">
@@ -67,6 +69,7 @@
                                 StrokeShape="RoundRectangle 10"
                                 Stroke="{StaticResource Gray200}">
                             <Picker Title="{local:Translate Home_CiudadDestino}"
+                                     AutomationId="Home_CityPicker"
                                      SelectedIndex="0"
                                     ItemsSource="{Binding PopularCities}"
                                     SelectedItem="{Binding SelectedCity}" />
@@ -81,6 +84,7 @@
                                 <VerticalStackLayout>
                                     <Label Text="{local:Translate Home_CheckIn}" Style="{StaticResource Caption}" />
                                     <DatePicker Date="{Binding CheckInDate}"
+                                                AutomationId="Home_CheckInDate"
                                                 MinimumDate="{Binding MinDate}"
                                                 Format="dd/MM/yyyy" />
                                 </VerticalStackLayout>
@@ -92,6 +96,7 @@
                                 <VerticalStackLayout>
                                     <Label Text="{local:Translate Home_CheckOut}" Style="{StaticResource Caption}" />
                                     <DatePicker Date="{Binding CheckOutDate}"
+                                                AutomationId="Home_CheckOutDate"
                                                 MinimumDate="{Binding CheckInDate}"
                                                 Format="dd/MM/yyyy" />
                                 </VerticalStackLayout>
@@ -100,6 +105,7 @@
 
                         <!-- Resumen Personas y habitaciones -->
                         <Border Padding="12,4"
+                                AutomationId="Home_GuestConfigToggle"
                                 BackgroundColor="{StaticResource Background}"
                                 StrokeShape="RoundRectangle 10"
                                 Stroke="{StaticResource Gray200}">
@@ -126,6 +132,7 @@
                                        HorizontalTextAlignment="Start" VerticalTextAlignment="Center" />
                                 <Grid Grid.Column="1" ColumnDefinitions="Auto,*,Auto" HorizontalOptions="Center">
                                     <Button Text="-" Command="{Binding DecrementAdultsCommand}"
+                                            AutomationId="Home_AdultsDecrement"
                                             WidthRequest="36" HeightRequest="36"
                                             MaximumWidthRequest="36"
                                             MaximumHeightRequest="36"
@@ -133,10 +140,12 @@
                                             TextColor="Black"
                                             Padding="0" CornerRadius="18" FontSize="18" />
                                     <Label Grid.Column="1" Text="{Binding Adults}"
+                                           AutomationId="Home_AdultsValue"
                                            HorizontalTextAlignment="Center" VerticalTextAlignment="Center"
                                            FontSize="16" FontFamily="OpenSansSemibold"
                                            WidthRequest="36" />
                                     <Button Grid.Column="2" Text="+" Command="{Binding IncrementAdultsCommand}"
+                                            AutomationId="Home_AdultsIncrement"
                                             WidthRequest="36" HeightRequest="36"
                                             MaximumWidthRequest="36"
                                             MaximumHeightRequest="36"
@@ -152,6 +161,7 @@
                                          HorizontalTextAlignment="Start" VerticalTextAlignment="Center" />
                                 <Grid Grid.Column="1" ColumnDefinitions="Auto,*,Auto" HorizontalOptions="Center">
                                     <Button Text="-" Command="{Binding DecrementChildrenCommand}"
+                                            AutomationId="Home_ChildrenDecrement"
                                             WidthRequest="36" HeightRequest="36"
                                             MaximumWidthRequest="36"
                                             MaximumHeightRequest="36"
@@ -159,10 +169,12 @@
                                             TextColor="Black"
                                             Padding="0" CornerRadius="18" FontSize="18" />
                                     <Label Grid.Column="1" Text="{Binding Children}"
+                                           AutomationId="Home_ChildrenValue"
                                            HorizontalTextAlignment="Center" VerticalTextAlignment="Center"
                                            FontSize="16" FontFamily="OpenSansSemibold"
                                            WidthRequest="36" />
                                     <Button Grid.Column="2" Text="+" Command="{Binding IncrementChildrenCommand}"
+                                            AutomationId="Home_ChildrenIncrement"
                                             WidthRequest="36" HeightRequest="36"
                                             MaximumWidthRequest="36"
                                             MaximumHeightRequest="36"
@@ -178,6 +190,7 @@
                                          HorizontalTextAlignment="Start" VerticalTextAlignment="Center" />
                                 <Grid Grid.Column="1" ColumnDefinitions="Auto,*,Auto" HorizontalOptions="Center">
                                     <Button Text="-" Command="{Binding DecrementRoomsCommand}"
+                                            AutomationId="Home_RoomsDecrement"
                                             WidthRequest="36" HeightRequest="36"
                                             MaximumWidthRequest="36"
                                             MaximumHeightRequest="36"
@@ -185,10 +198,12 @@
                                             TextColor="Black"
                                             Padding="0" CornerRadius="18" FontSize="18" />
                                     <Label Grid.Column="1" Text="{Binding Rooms}"
+                                           AutomationId="Home_RoomsValue"
                                            HorizontalTextAlignment="Center" VerticalTextAlignment="Center"
                                            FontSize="16" FontFamily="OpenSansSemibold"
                                            WidthRequest="36" />
                                     <Button Grid.Column="2" Text="+" Command="{Binding IncrementRoomsCommand}"
+                                            AutomationId="Home_RoomsIncrement"
                                             WidthRequest="36" HeightRequest="36"
                                             MaximumWidthRequest="36"
                                             MaximumHeightRequest="36"
@@ -201,6 +216,7 @@
 
                         <!-- Boton Buscar -->
                         <Button Text="{local:Translate Home_Buscar}"
+                                AutomationId="Home_SearchButton"
                                 Command="{Binding SearchCommand}"
                                 Style="{StaticResource AccentButton}"
                                 HorizontalOptions="Fill" />

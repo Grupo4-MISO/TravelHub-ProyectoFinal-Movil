@@ -6,6 +6,7 @@
              xmlns:maps="clr-namespace:Microsoft.Maui.Controls.Maps;assembly=Microsoft.Maui.Controls.Maps"
              xmlns:local="clr-namespace:App.MarkupExtensions"
              x:Class="App.Views.PropertyDetailPage"
+             AutomationId="PropertyDetail_Page"
              Title="{Binding Title}">
 
     <ContentPage.Resources>
@@ -42,6 +43,7 @@
                 <VerticalStackLayout Padding="16,12" Spacing="8"
                                      BackgroundColor="{StaticResource Surface}">
                     <Label Text="{Binding Property.Name}"
+                           AutomationId="PropertyDetail_PropertyName"
                            Style="{StaticResource Headline}"
                            FontSize="24" />
                     <Label Text="{Binding Property.Address}"
@@ -57,6 +59,7 @@
                     </HorizontalStackLayout>
 
                     <Label Text="{Binding PriceforNight, StringFormat='Desde ${0:F0} / noche'}"
+                           AutomationId="PropertyDetail_PropertyPrice"
                            Style="{StaticResource Price}" />
                 </VerticalStackLayout>
 
@@ -173,6 +176,7 @@
                 BackgroundColor="{StaticResource Surface}"
                 Stroke="{StaticResource Gray100}">
             <Button Text="{local:Translate Detail_ElegirHabitacion}"
+                    AutomationId="PropertyDetail_ChooseRoomButton"
                     Command="{Binding ChooseRoomCommand}"
                     Style="{StaticResource AccentButton}"
                     HorizontalOptions="Fill" />

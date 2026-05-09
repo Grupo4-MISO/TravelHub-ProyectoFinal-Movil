@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:App.MarkupExtensions"
              x:Class="App.Views.AccountPage"
+             AutomationId="Account_Page"
              Title="{Binding Title}"
              IconImageSource="ic_account.png"
              Shell.NavBarIsVisible="False">
@@ -40,6 +41,7 @@
                                 <Image Source="{Binding User.photo}" Aspect="AspectFill" />
                             </Border>
                             <Label Text="{Binding User.first_name}"
+                                   AutomationId="Account_UserName"
                                    FontFamily="OpenSansSemibold" FontSize="20"
                                    HorizontalTextAlignment="Center" />
                         </VerticalStackLayout>
@@ -83,12 +85,14 @@
                                    FontSize="15" 
                                    FontFamily="OpenSansSemibold" />
                             <Picker x:Name="LanguagePicker"
+                                    AutomationId="Account_LanguagePicker"
                                     SelectedIndexChanged="OnLanguageChanged" />
                         </VerticalStackLayout>
                     </Border>
                     
                     <!-- Cerrar Sesion -->
 <Button Text="{local:Translate Account_CerrarSesion}"
+        AutomationId="Account_LogoutButton"
         Command="{Binding LogoutCommand}"
         BackgroundColor="{StaticResource Primary}"
         TextColor="{StaticResource White}"
@@ -128,6 +132,7 @@
                                     StrokeShape="RoundRectangle 10"
                                     Stroke="{StaticResource Gray200}">
 <Entry Placeholder="{local:Translate Account_EmailPlaceholder}"
+       AutomationId="Account_EmailEntry"
        Text="{Binding Email}"
        Keyboard="Email" />
                             </Border>
@@ -140,12 +145,14 @@
                                     StrokeShape="RoundRectangle 10"
                                     Stroke="{StaticResource Gray200}">
 <Entry Placeholder="{local:Translate Account_PasswordPlaceholder}"
+       AutomationId="Account_PasswordEntry"
        Text="{Binding Password}"
        IsPassword="True" />
                             </Border>
                         </VerticalStackLayout>
 
 <Button Text="{local:Translate Account_IniciarSesion}"
+        AutomationId="Account_LoginButton"
         Command="{Binding LoginCommand}"
         HorizontalOptions="Fill" />
 
@@ -154,6 +161,7 @@
        Style="{StaticResource Caption}"
        VerticalTextAlignment="Center" />
 <Label Text="{local:Translate Account_Registrate}"
+       AutomationId="Account_RegisterLink"
        TextColor="{StaticResource Primary}"
        FontFamily="OpenSansSemibold" FontSize="13"
        VerticalTextAlignment="Center">

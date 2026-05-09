@@ -5,6 +5,7 @@
              xmlns:behaviors="clr-namespace:App.Behaviors"
              xmlns:local="clr-namespace:App.MarkupExtensions"
              x:Class="App.Views.TravelerDataPage"
+             AutomationId="TravelerData_Page"
              Title="{Binding Title}">
 
     <Grid RowDefinitions="*,Auto" BackgroundColor="{StaticResource Background}">
@@ -49,7 +50,8 @@
                                     StrokeShape="RoundRectangle 10"
                                     Stroke="{StaticResource Gray200}">
 <Entry Placeholder="{local:Translate Traveler_NombrePlaceholder}"
-       Text="{Binding FirstName}" />
+        AutomationId="TravelerData_FirstNameEntry"
+        Text="{Binding FirstName}" />
                             </Border>
                         </VerticalStackLayout>
 
@@ -60,7 +62,8 @@
                                     StrokeShape="RoundRectangle 10"
                                     Stroke="{StaticResource Gray200}">
 <Entry Placeholder="{local:Translate Traveler_ApellidoPlaceholder}"
-       Text="{Binding LastName}" />
+        AutomationId="TravelerData_LastNameEntry"
+        Text="{Binding LastName}" />
                             </Border>
                         </VerticalStackLayout>
 
@@ -84,6 +87,7 @@
                                         </Image.Source>
                                     </Image>
 <Entry Grid.Column="1"
+       AutomationId="TravelerData_EmailEntry"
        Placeholder="{local:Translate Traveler_EmailPlaceholder}"
        Text="{Binding Email}"
        Keyboard="Email"
@@ -115,6 +119,7 @@
 
                                     <!-- Campo de entrada del número -->
 <Entry Grid.Column="2"
+       AutomationId="TravelerData_PhoneEntry"
        Placeholder="{local:Translate Traveler_TelefonoPlaceholder}"
        Text="{Binding PhoneNumber}"
        Keyboard="Telephone">
@@ -151,6 +156,7 @@
                                         </Image.Source>
                                     </Image>
 <Entry Grid.Column="1"
+       AutomationId="TravelerData_DocumentEntry"
        Placeholder="{local:Translate Traveler_DocumentoPlaceholder}"
        Text="{Binding DocumentNumber}"
        Keyboard="Numeric"
@@ -195,6 +201,7 @@
                 Stroke="{StaticResource Gray100}">
             <Grid>
 <Button Text="{local:Translate Traveler_Continuar}"
+        AutomationId="TravelerData_ContinueButton"
         IsVisible="{Binding ShowContinueButton}"
         Command="{Binding ContinueCommand}"
         Style="{StaticResource AccentButton}"

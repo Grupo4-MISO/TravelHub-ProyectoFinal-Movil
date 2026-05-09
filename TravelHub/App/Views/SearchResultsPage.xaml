@@ -5,6 +5,7 @@
              xmlns:converters="clr-namespace:App.Converters"
              xmlns:local="clr-namespace:App.MarkupExtensions"
              x:Class="App.Views.SearchResultsPage"
+             AutomationId="SearchResults_Page"
              Title="{Binding Title}">
 
     <ContentPage.Resources>
@@ -16,11 +17,12 @@
         <!-- Filtro Bar -->
         <Grid Grid.Row="0" Padding="16,8" ColumnDefinitions="*,Auto" BackgroundColor="{StaticResource Surface}">
             <HorizontalStackLayout Spacing="8">
-                <Button Text="{local:Translate Search_Filtros}" Command="{Binding ToggleFilterCommand}"
+                <Button Text="{local:Translate Search_Filtros}" AutomationId="SearchResults_FilterButton" Command="{Binding ToggleFilterCommand}"
                         Style="{StaticResource OutlineButton}"
                         Padding="12,6" FontSize="13" MinimumHeightRequest="36" />
             </HorizontalStackLayout>
             <Picker Grid.Column="1"
+                    AutomationId="SearchResults_SortPicker"
                     Title="{local:Translate Search_Ordenar}"
                     SelectedItem="{Binding SortBy}"
                     ItemsSource="{Binding SortOptions}"
@@ -61,6 +63,7 @@
 
         <!-- Lista de Resultados -->
         <CollectionView Grid.Row="2"
+                        AutomationId="SearchResults_ResultsList"
                         ItemsSource="{Binding Properties}"
                         Margin="16,8">
             <CollectionView.ItemsLayout>
@@ -87,6 +90,7 @@
                             <VerticalStackLayout Grid.Column="1" Padding="12" Spacing="4"
                                                  VerticalOptions="Center">
                                 <Label Text="{Binding Name}"
+                                       AutomationId="SearchResults_ResultItem"
                                        FontFamily="OpenSansSemibold"
                                        FontSize="16"
                                        LineBreakMode="TailTruncation"

@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:App.MarkupExtensions"
              x:Class="App.Views.BookingSummaryPage"
+             AutomationId="BookingSummary_Page"
              Title="{Binding Title}">
 
     <Grid RowDefinitions="*,Auto" BackgroundColor="{StaticResource Background}">
@@ -20,6 +21,7 @@
                                Aspect="AspectFill" />
                         <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
                             <Label Text="{Binding Property.Name}"
+                                   AutomationId="BookingSummary_HotelName"
                                    FontFamily="OpenSansSemibold" FontSize="16" />
                             <Label Text="{Binding Property.City}" Style="{StaticResource Caption}" />
                             <Label Text="{Binding Room.Description}" Style="{StaticResource Subtitle}" />
@@ -38,11 +40,13 @@
                             <VerticalStackLayout>
                                 <Label Text="{local:Translate Summary_CheckIn}" Style="{StaticResource Caption}" />
                                 <Label Text="{Binding CheckIn, StringFormat='{0:dd/MM/yyyy}'}"
+                                       AutomationId="BookingSummary_CheckInValue"
                                        FontFamily="OpenSansSemibold" FontSize="15" />
                             </VerticalStackLayout>
                             <VerticalStackLayout Grid.Column="1">
                                 <Label Text="{local:Translate Summary_CheckOut}" Style="{StaticResource Caption}" />
                                 <Label Text="{Binding CheckOut, StringFormat='{0:dd/MM/yyyy}'}"
+                                       AutomationId="BookingSummary_CheckOutValue"
                                        FontFamily="OpenSansSemibold" FontSize="15" />
                             </VerticalStackLayout>
                         </Grid>
@@ -88,6 +92,7 @@
 <Label Text="{local:Translate Summary_Total}"
        FontFamily="OpenSansSemibold" FontSize="18" />
                             <Label Grid.Column="1"
+                                   AutomationId="BookingSummary_TotalPrice"
                                    Text="{Binding TotalPrice, StringFormat='${0:F0}'}"
                                    Style="{StaticResource Price}" />
                         </Grid>
@@ -96,7 +101,7 @@
 
                 <!-- Terminos -->
                 <Grid ColumnDefinitions="auto, *">
-                    <CheckBox Grid.Column="0" IsChecked="{Binding AcceptTerms}" />
+                    <CheckBox Grid.Column="0" AutomationId="BookingSummary_TermsCheckBox" IsChecked="{Binding AcceptTerms}" />
 <Label Grid.Column="1" Text="{local:Translate Summary_Terminos}"
        Style="{StaticResource Caption}"
        VerticalTextAlignment="Center" />
@@ -110,6 +115,7 @@
                 BackgroundColor="{StaticResource Surface}"
                 Stroke="{StaticResource Gray100}">
 <Button Text="{local:Translate Summary_ReservarAhora}"
+        AutomationId="BookingSummary_ReserveButton"
         Command="{Binding ConfirmBookingCommand}"
         Style="{StaticResource AccentButton}"
         HorizontalOptions="Fill" />

@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:App.MarkupExtensions"
              x:Class="App.Views.ActiveBookingsPage"
              x:Name="activeBookingsPage"
+             AutomationId="ActiveBookings_Page"
              Title="{Binding Title}"
              IconImageSource="ic_reserve.png"
              Shell.NavBarIsVisible="False">
@@ -21,9 +22,11 @@
         </Grid>
 
         <RefreshView Grid.Row="1"
+                     AutomationId="ActiveBookings_RefreshView"
                      IsRefreshing="{Binding IsRefreshing}"
                      Command="{Binding RefreshCommand}">
-            <CollectionView ItemsSource="{Binding Reservations}"
+            <CollectionView AutomationId="ActiveBookings_BookingsList"
+                            ItemsSource="{Binding Reservations}"
                             Margin="20,12">
                 <CollectionView.ItemsLayout>
                     <LinearItemsLayout Orientation="Vertical" ItemSpacing="10" />

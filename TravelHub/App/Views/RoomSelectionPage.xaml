@@ -4,11 +4,13 @@
              xmlns:vm="clr-namespace:App.ViewModels"
              xmlns:local="clr-namespace:App.MarkupExtensions"
              x:Class="App.Views.RoomSelectionPage"
+             AutomationId="RoomSelection_Page"
              Title="{Binding Title}">
 
     <Grid RowDefinitions="*,Auto" BackgroundColor="{StaticResource Background}">
 
         <CollectionView Grid.Row="0"
+                        AutomationId="RoomSelection_RoomsList"
                         ItemsSource="{Binding Rooms}"
                         Margin="16,12">
             <CollectionView.Header>
@@ -51,6 +53,7 @@
                                            Style="{StaticResource Price}" FontSize="17" />
                                 </VerticalStackLayout>
                                 <Button Text="{local:Translate Room_Seleccionar}"
+                                        AutomationId="RoomSelection_SelectRoomButton"
                                         Command="{Binding Source={RelativeSource AncestorType={x:Type vm:RoomSelectionViewModel}}, Path=SelectRoomCommand}"
                                         CommandParameter="{Binding .}"
                                         BackgroundColor="{StaticResource Primary}"
@@ -81,6 +84,7 @@
                     </Label.FormattedText>
                 </Label>
                 <Button Text="{local:Translate Room_Reservar}"
+                        AutomationId="RoomSelection_ReserveButton"
                         Command="{Binding BookCommand}"
                         Style="{StaticResource AccentButton}"
                         HorizontalOptions="Fill" />
