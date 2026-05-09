@@ -49,6 +49,7 @@
                                        FontSize="11" />
                             </Border>
                         </Grid>
+                        
                         <BoxView HeightRequest="1" Color="{StaticResource Gray200}" Margin="0,4" />
 
                         <!-- Fechas -->

@@ -243,4 +243,106 @@ public class AppSettingsServiceTests
 
         _preferencesMock.Verify(x => x.Set("CurrentVersion", "4.0"), Times.Once);
     }
+
+    [Fact]
+    public void CurrencyChanged_Fires_WhenCurrencyCodeChanges()
+    {
+        var eventFired = false;
+        string? newCode = null;
+
+        _service.CurrencyChanged += (_, code) =>
+        {
+            eventFired = true;
+            newCode = code;
+        };
+
+        _service.CurrentCurrencyCode = "USD";
+
+        Assert.True(eventFired);
+        Assert.Equal("USD", newCode);
+    }
+
+    [Fact]
+    public void CurrencyChanged_DoesNotFire_WhenCurrencyCodeUnchanged()
+    {
+        var eventFired = false;
+
+        _service.CurrencyChanged += (_, _) => eventFired = true;
+
+        var current = _service.CurrentCurrencyCode;
+        _service.CurrentCurrencyCode = current;
+
+        Assert.False(eventFired);
+    }
+
+    [Fact]
+    public void SetCurrency_UpdatesCurrencyCode_AndFiresEvent()
+    {
+        var eventFired = false;
+        string? newCode = null;
+
+        _service.CurrencyChanged += (_, code) =>
+        {
+            eventFired = true;
+            newCode = code;
+        };
+
+        _service.SetCurrency("MXN");
+
+        Assert.True(eventFired);
+        Assert.Equal("MXN", newCode);
+    }
+
+    [Fact]
+    public void SetCurrency_DoesNotChangeCountryCode()
+    {
+        _service.SetCurrency("PEN");
+
+        Assert.Equal("CO", _service.CurrentCountryCode);
+    }
+
+    [Fact]
+    public void SetCountry_AlsoUpdatesCurrency_ToCountryCurrency()
+    {
+        var argentina = new Country
+        {
+            Id = "ar-1",
+            Code = "AR",
+            Name = "Argentina",
+            CurrencyCode = "ARS",
+            CurrencySymbol = "$",
+            PhoneCode = "+54"
+        };
+
+        _countryServiceMock
+            .Setup(x => x.GetCountryByCode("AR"))
+            .Returns(argentina);
+
+        _service.SetCountry("AR");
+
+        Assert.Equal("AR", _service.CurrentCountryCode);
+        Assert.Equal("ARS", _service.CurrentCurrencyCode);
+    }
+
+    [Fact]
+    public void CurrentCurrencySymbol_ReturnsSymbol_FromCurrentCountry()
+    {
+        var colombia = new Country
+        {
+            Id = "co-1",
+            Code = "CO",
+            Name = "Colombia",
+            CurrencyCode = "COP",
+            CurrencySymbol = "$",
+            PhoneCode = "+57"
+        };
+
+        _countryServiceMock
+            .Setup(x => x.GetCountryByCode("CO"))
+            .Returns(colombia);
+
+        var symbol = _service.CurrentCurrencySymbol;
+
+        Assert.Equal("$", symbol);
+    }
 }

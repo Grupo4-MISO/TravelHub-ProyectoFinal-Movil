@@ -509,6 +509,17 @@
     <value>Currency: {0}</value>
   </data>
 
+  <!-- CurrencyPage -->
+  <data name="Currency_Titulo" xml:space="preserve">
+    <value>Select Currency</value>
+  </data>
+  <data name="Currency_Descripcion" xml:space="preserve">
+    <value>Select the currency to view prices</value>
+  </data>
+  <data name="Currency_Reintentar" xml:space="preserve">
+    <value>Retry</value>
+  </data>
+
   <!-- Idioma / Language -->
   <data name="Language_Espanol" xml:space="preserve">
     <value>Spanish</value>

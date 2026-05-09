@@ -1,11 +1,13 @@
 using App.DTOs;
 using App.Models;
+using App.Services.Interfaces;
 using System.Windows.Input;
 
 namespace App.ViewModels;
 
 public class BookingConfirmedViewModel : BaseViewModel, IQueryAttributable
 {
+    private readonly IAppSettingsService _appSettingsService;
     private ReservationTemporalDTO _reservation = new();
     public ReservationTemporalDTO Reservation
     {
@@ -17,8 +19,9 @@ public class BookingConfirmedViewModel : BaseViewModel, IQueryAttributable
     public ICommand GoHomeCommand { get; }
     public ICommand ViewBookingsCommand { get; }
 
-    public BookingConfirmedViewModel()
+    public BookingConfirmedViewModel(IAppSettingsService appSettingsService)
     {
+        _appSettingsService = appSettingsService ?? throw new ArgumentNullException(nameof(appSettingsService));
         Title = "Reserva Confirmada";
         PayCommand = new Command(OnPay);
         GoHomeCommand = new Command(OnGoHome);
@@ -38,7 +41,7 @@ public class BookingConfirmedViewModel : BaseViewModel, IQueryAttributable
             { "amount", Reservation.TotalPrice },
             { "referenceId", Reservation.Booking.Id },
             { "description", $"Pago reserva {Reservation.Booking.BookingCode}" },
-            { "currency", "COP" },
+            { "currency", _appSettingsService.CurrentCurrencyCode },
             { "returnRoute", "//home" }
         };
         await Shell.Current.GoToAsync("PaymentPage", navParams);

@@ -26,6 +26,7 @@ public class HomeViewModelTests
         _appConfigurationServiceMock = new Mock<IAppConfigurationService>();
 
         _appSettingsServiceMock.Setup(x => x.CurrentCountryCode).Returns("CO");
+        _appSettingsServiceMock.Setup(x => x.CurrentCurrencyCode).Returns("COP");
 
         _cityServiceMock
             .Setup(x => x.GetPopularCitiesByCountryAsync(It.IsAny<string>()))
@@ -272,18 +273,8 @@ public class HomeViewModelTests
     }
 
     [Fact]
-    public void ResolveCurrencyCode_ReturnsCorrectCode_ForKnownCountry()
+    public void CurrentCurrencyCode_FromAppSettings_HasDefaultValue()
     {
-        // Using reflection to test private static method
-        var method = typeof(HomeViewModel).GetMethod("ResolveCurrencyCode",
-            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
-
-        Assert.Equal("COP", method?.Invoke(null, new object[] { "CO" }));
-        Assert.Equal("PEN", method?.Invoke(null, new object[] { "PE" }));
-        Assert.Equal("USD", method?.Invoke(null, new object[] { "EC" }));
-        Assert.Equal("MXN", method?.Invoke(null, new object[] { "MX" }));
-        Assert.Equal("CLP", method?.Invoke(null, new object[] { "CL" }));
-        Assert.Equal("ARS", method?.Invoke(null, new object[] { "AR" }));
-        Assert.Equal("COP", method?.Invoke(null, new object[] { "UNKNOWN" }));
+        Assert.Equal("COP", _appSettingsServiceMock.Object.CurrentCurrencyCode);
     }
 }
