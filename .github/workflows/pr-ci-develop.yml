@@ -29,4 +29,4 @@ jobs:
         run: dotnet restore TravelHub.Tests.csproj
 
       - name: Run unit tests
-        run: dotnet test TravelHub.Tests.csproj --no-restore --verbosity normal
+        run: dotnet test TravelHub.Tests.csproj --no-restore --verbosity normal 
