@@ -48,7 +48,7 @@ public class AccountPage : BasePage
                 {
                     var size = Driver.Manage().Window.Size;
                     var x = size.Width / 2;
-                    var y = (int)(size.Height * 0.6);
+                    var y = (int)(size.Height * 0.3);
                     Driver.ExecuteScript("mobile: clickGesture", new Dictionary<string, object>
                     {
                         ["x"] = x,
