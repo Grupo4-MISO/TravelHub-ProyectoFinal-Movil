@@ -48,54 +48,173 @@ TravelHub-ProyectoFinal-Movil/
    - Ajuste de tamaño de texto (1.0x, 1.25x, 1.5x, 2.0x)
    - Modo Oscuro para reducir fatiga visual
 
-## Pruebas
+## Documentación de Pruebas
 
-### Pruebas Unitarias
-Las pruebas unitarias validan la lógica de negocio en ViewModels y servicios.
+### Introducción
 
-**Ejecución:**
-```powershell
-# Desde la carpeta TravelHub (raíz del proyecto)
-dotnet test TravelHub.Tests\TravelHub.Tests.csproj
-```
+Este documento describe la estrategia de pruebas implementada en la aplicación móvil TravelHub, así como su integración dentro del ciclo de desarrollo. El objetivo de estas pruebas es garantizar la calidad del código, validar el comportamiento de los componentes y servicios, y prevenir errores antes del despliegue a producción.
 
-**Cobertura:**
-- ViewModels críticos (SearchViewModel, BookingViewModel, AuthViewModel)
-- Servicios de negocio (BookingService, LocalizationService)
-- Validaciones de datos y transformaciones
+Las pruebas se dividen en dos categorías principales:
+- **Pruebas Unitarias**: Validan la lógica de negocio en ViewModels y servicios
+- **Pruebas End-to-End (E2E)**: Validan flujos completos de usuario en Android
+
+### Herramientas y Tecnologías
+
+#### Pruebas Unitarias
+- **Framework**: xUnit (.NET)
+- **Mocking**: Moq para aislar dependencias
+- **Ejecución**: Dotnet CLI
+
+Las pruebas unitarias se ejecutan de manera automatizada en el entorno de desarrollo y pueden integrarse fácilmente en pipelines de CI/CD.
+
+#### Pruebas E2E
+- **Framework**: Appium + xUnit
+- **Patrón de Diseño**: Page Object Model (POM)
+- **Plataforma**: Android
+- **Servidor Appium**: Requerido en `http://localhost:4723`
+
+El patrón Page Object Model permite abstraer la lógica de interacción con la interfaz en objetos de página independientes, mejorando la reutilización de código y mantenimiento.
 
 ---
 
-### Pruebas E2E (End-to-End)
-Las pruebas E2E validan flujos completos en Android usando Appium.
+### Ejecución de Pruebas Unitarias
 
-**Estado:**
-- **Diseñadas**: 17 pruebas
-- **Funcionales**: 5 (SettingsTests) ✓
-- **En desarrollo**: 12 (AuthFlowTests, SearchFlowTests, BookingFlowTests)
+#### Comando de Ejecución
 
-**Requisitos:**
-- Android SDK configurado
-- Emulador de Android corriendo o dispositivo conectado
-- Appium server ejecutándose en `http://localhost:4723`
+Para ejecutar todas las pruebas unitarias desde la raíz del proyecto:
 
-**Ejecución:**
 ```powershell
-# Desde la carpeta TravelHub
-dotnet test TravelHub.E2E
-
-# Ejecutar solo pruebas específicas
-dotnet test TravelHub.E2E --filter "FullyQualifiedName~SettingsTests"
+# Desde TravelHub/ (raíz del proyecto)
+dotnet test TravelHub.Tests\TravelHub.Tests.csproj
 ```
 
-**Estructura:**
-- **SettingsTests** (5 pruebas): Modo oscuro, tamaño de texto, modo daltonismo, restaurar predeterminados
-- **SearchFlowTests** (4 pruebas - en desarrollo): Búsqueda con parámetros, resultados, selección
-- **BookingFlowTests** (3 pruebas - en desarrollo): Flujo de reserva, resumen, confirmación
-- **AuthFlowTests** (5 pruebas - en desarrollo): Login, registro, validación de credenciales
+#### Cobertura
 
-**Estrategia de ejecución:**
-Se utiliza una estrategia incremental: una suite se ejecuta completamente, valida que pase sin errores, y solo entonces se habilita la siguiente. Esto se controla mediante atributos `[Fact(Skip="...")]` en xUnit.
+Las pruebas unitarias validan los siguientes componentes críticos:
+
+- **ViewModels**: SearchViewModel, BookingViewModel, AuthViewModel, SettingsViewModel
+- **Servicios de Negocio**: BookingService, AuthService, LocalizationService, MockDataService
+- **Validaciones**: Transformación de datos, mapeo de DTOs, conversión de monedas
+
+#### Estado Actual
+
+Las pruebas unitarias cuentan con una cobertura integral que valida la lógica de negocio principal, permitiendo detectar errores en la capa de aplicación de manera temprana.
+
+---
+
+### Ejecución de Pruebas End-to-End (E2E)
+
+#### Introducción a Pruebas E2E
+
+Las pruebas End-to-End validan el comportamiento completo de la aplicación desde la perspectiva del usuario final. Simulan interacciones reales con la interfaz gráfica, verificando que todos los componentes funcionen correctamente de manera integrada.
+
+El objetivo de estas pruebas es:
+- Validar flujos completos de usuario (búsqueda, reserva, configuración)
+- Detectar errores de integración entre componentes UI
+- Garantizar la correcta interacción con controles y navegación
+- Asegurar la calidad desde la perspectiva del usuario final
+
+#### Requisitos Previos
+
+Para ejecutar las pruebas E2E, asegúrese de contar con:
+
+- **Android SDK** configurado y disponible en el PATH
+- **Emulador de Android** ejecutándose (API 30 o superior) o dispositivo Android conectado
+- **Appium Server** ejecutándose en `http://localhost:4723`
+- **.NET 10 SDK** instalado
+
+#### Comando de Ejecución
+
+```powershell
+# Desde TravelHub/ (raíz del proyecto)
+# Ejecutar todas las pruebas E2E
+dotnet test TravelHub.E2E
+
+# Ejecutar una suite de pruebas específica
+dotnet test TravelHub.E2E --filter "FullyQualifiedName~SettingsTests"
+
+# Ejecutar una prueba individual
+dotnet test TravelHub.E2E --filter "FullyQualifiedName~SettingsTests.SettingsPage_DisplaysAllControls"
+```
+
+#### Cobertura de Pruebas E2E
+
+Las pruebas E2E se organizan en cuatro suites funcionales:
+
+| Suite | Cantidad | Estado | Funcionalidades |
+|-------|----------|--------|-----------------|
+| **SettingsTests** | 5 | ✅ Funcional | Modo oscuro, tamaño de texto, daltonismo, restaurar predeterminados |
+| **SearchFlowTests** | 4 | 🔨 En desarrollo | Búsqueda con parámetros, resultados, selección de propiedad |
+| **BookingFlowTests** | 3 | 🔨 En desarrollo | Flujo de reserva, resumen, confirmación |
+| **AuthFlowTests** | 5 | 🔨 En desarrollo | Login, registro, validación de credenciales, navegación |
+| **TOTAL** | **17** | - | - |
+
+#### Estado Actual de Ejecución
+
+- **Pruebas Diseñadas**: 17
+- **Pruebas Funcionales**: 5 (SettingsTests) ✅
+- **Pruebas en Desarrollo**: 12 (AuthFlow, SearchFlow, BookingFlow) 🔨
+
+Las pruebas de SettingsTests están completamente operativas y se ejecutan exitosamente, validando la accesibilidad y configuración de la aplicación.
+
+#### Estrategia Incremental de Ejecución
+
+Se implementa una estrategia incremental para garantizar la estabilidad y calidad:
+
+1. **Una Suite Activa**: Solo una suite de pruebas se ejecuta en cada momento
+2. **Validación Completa**: Se requiere que todas las pruebas de la suite pasen antes de activar la siguiente
+3. **Control mediante Skip**: Utiliza atributos `[Fact(Skip="...")]` de xUnit para desactivar suites no preparadas
+4. **Progresión Ordenada**: SettingsTests → SearchFlowTests → BookingFlowTests → AuthFlowTests
+
+Ejemplo del atributo Skip:
+```csharp
+[Fact(Skip = "Paused until LoginPage passes")]
+public void Login_NavigatesToAccountPage()
+{
+    // Prueba desactivada hasta que dependa de otro paso
+}
+```
+
+#### Estructura del Proyecto E2E
+
+```
+TravelHub.E2E/
+├── Tests/
+│   ├── AuthFlowTests.cs
+│   ├── SearchFlowTests.cs
+│   ├── BookingFlowTests.cs
+│   └── SettingsTests.cs
+├── Pages/
+│   ├── BasePage.cs          # Clase base con métodos comunes
+│   ├── LoginPage.cs
+│   ├── AccountPage.cs
+│   ├── SettingsPage.cs
+│   ├── SearchResultsPage.cs
+│   └── PropertyDetailPage.cs
+├── Drivers/
+│   └── AndroidDriverFactory.cs  # Gestión de driver Appium
+├── Utilities/
+│   ├── AppiumFixture.cs
+│   └── TestDataFactory.cs
+└── appsettings.json
+```
+
+#### Patrones Implementados
+
+- **Page Object Model**: Separación de lógica de interacción en objetos de página
+- **Base Page**: Métodos comunes reutilizables (WaitForPageLoad, EnterText, TapElement)
+- **Test Fixture**: Inicialización y limpieza del driver Appium por prueba
+- **Aislamiento de Datos**: TestDataFactory proporciona datos consistentes
+
+#### Buenas Prácticas Implementadas
+
+- Separación de pruebas por flujo funcional
+- Uso de AutomationIds para identificación confiable de controles
+- Manejo explícito de esperas y asincronía
+- Captura de pantalla y PageSource en caso de fallos
+- Ejecución secuencial e independiente de suites
+- Logs en consola para trazabilidad de ejecución
+- Aislamiento y reproducibilidad de cada prueba
 
 ---
 
