@@ -96,16 +96,16 @@
                                         <Label Text="{Binding BookingCode}"
                                                Style="{StaticResource Caption}"
                                                VerticalTextAlignment="Center" />
-<!--<Button Grid.Column="1" Text="Hacer Check-in"
-                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ActiveBookingsViewModel}}, Path=CheckInCommand}"
-                CommandParameter="{Binding .}"
-                Padding="12,6" FontSize="12"
-                MinimumHeightRequest="36" />-->
-<Button Grid.Column="1" Text="{local:Translate Bookings_HacerCheckIn}"
-        Command="{Binding BindingContext.CheckInCommand, Source={x:Reference activeBookingsPage}}"
-        CommandParameter="{Binding .}"
-        Padding="12,6" FontSize="12"
-        MinimumHeightRequest="36" />
+                                    <!--<Button Grid.Column="1" Text="Hacer Check-in"
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ActiveBookingsViewModel}}, Path=CheckInCommand}"
+                                                    CommandParameter="{Binding .}"
+                                                    Padding="12,6" FontSize="12"
+                                                    MinimumHeightRequest="36" />-->
+                                    <Button Grid.Column="1" Text="{local:Translate Bookings_HacerCheckIn}"
+                                            Command="{Binding BindingContext.CheckInCommand, Source={x:Reference activeBookingsPage}}"
+                                            CommandParameter="{Binding .}"
+                                            Padding="12,6" FontSize="12"
+                                            MinimumHeightRequest="36" />
                                     </Grid>
                                 </VerticalStackLayout>
                             </VerticalStackLayout>

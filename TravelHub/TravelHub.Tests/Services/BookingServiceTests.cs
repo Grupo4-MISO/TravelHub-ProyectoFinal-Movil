@@ -75,7 +75,7 @@ public class BookingServiceTests
 
         _backEndServiceMock
             .Setup(x => x.GetAsync<List<BookingHoldResponseDto>>(url))
-            .ReturnsAsync(new HttpResponseWrapper<List<BookingHoldResponseDto>>(null, true, new HttpResponseMessage(HttpStatusCode.InternalServerError)));
+            .ReturnsAsync(new HttpResponseWrapper<List<BookingHoldResponseDto>>(null!, true, new HttpResponseMessage(HttpStatusCode.InternalServerError)));
 
         // Act
         var result = await _bookingService.GetUserBookingsAsync(userId);
@@ -178,7 +178,7 @@ public class BookingServiceTests
 
         _backEndServiceMock
             .Setup(x => x.PostAsync<object, Dictionary<string, HotelInventoryDto>>(url, It.IsAny<object>()))
-            .ReturnsAsync(new HttpResponseWrapper<Dictionary<string, HotelInventoryDto>>(null, true, new HttpResponseMessage(HttpStatusCode.BadRequest)));
+            .ReturnsAsync(new HttpResponseWrapper<Dictionary<string, HotelInventoryDto>>(null!, true, new HttpResponseMessage(HttpStatusCode.BadRequest)));
 
         // Act
         var result = await _bookingService.GetHotelsByRoomIdsAsync(roomIds);
@@ -228,7 +228,7 @@ public class BookingServiceTests
 
         _backEndServiceMock
             .Setup(x => x.PostAsync(url, It.IsAny<ReservationHoldRequestDto>()))
-            .ReturnsAsync(new HttpResponseWrapper<object>(null, false, new HttpResponseMessage(HttpStatusCode.Created)));
+            .ReturnsAsync(new HttpResponseWrapper<object>(null!, false, new HttpResponseMessage(HttpStatusCode.Created)));
 
         // Act
         var result = await _bookingService.CreateReservationHoldAsync(holdPayload);
@@ -262,7 +262,7 @@ public class BookingServiceTests
 
         _backEndServiceMock
             .Setup(x => x.PostAsync(url, It.IsAny<ReservationHoldRequestDto>()))
-            .ReturnsAsync(new HttpResponseWrapper<object>(null, true, new HttpResponseMessage(HttpStatusCode.BadRequest)));
+            .ReturnsAsync(new HttpResponseWrapper<object>(null!, true, new HttpResponseMessage(HttpStatusCode.BadRequest)));
 
         // Act
         var result = await _bookingService.CreateReservationHoldAsync(holdPayload);
@@ -317,7 +317,7 @@ public class BookingServiceTests
 
         _backEndServiceMock
             .Setup(x => x.GetAsync<List<PaymentProviderDto>>(url))
-            .ReturnsAsync(new HttpResponseWrapper<List<PaymentProviderDto>>(null, true, new HttpResponseMessage(HttpStatusCode.BadRequest)));
+            .ReturnsAsync(new HttpResponseWrapper<List<PaymentProviderDto>>(null!, true, new HttpResponseMessage(HttpStatusCode.BadRequest)));
 
         // Act
         var result = await _bookingService.GetPaymentProvidersAsync();
@@ -379,7 +379,7 @@ public class BookingServiceTests
 
         _backEndServiceMock
             .Setup(x => x.GetAsync<List<PaymentReservationDTO>>(url))
-            .ReturnsAsync(new HttpResponseWrapper<List<PaymentReservationDTO>>(null, true, new HttpResponseMessage(HttpStatusCode.InternalServerError)));
+            .ReturnsAsync(new HttpResponseWrapper<List<PaymentReservationDTO>>(null!, true, new HttpResponseMessage(HttpStatusCode.InternalServerError)));
 
         // Act
         var result = await _bookingService.GetPaymentsByReservationAsync(reservaId);

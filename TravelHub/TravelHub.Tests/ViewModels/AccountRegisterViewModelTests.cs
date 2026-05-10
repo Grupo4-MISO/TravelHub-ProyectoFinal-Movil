@@ -140,7 +140,7 @@ public class AccountRegisterViewModelTests
         _viewModel.AcceptTerms = true;
 
         _authServiceMock.Setup(a => a.RegisterAsync(It.IsAny<TravelerCreateRequestDTO>()))
-            .ReturnsAsync(new HttpResponseWrapper<object>(null, false, new HttpResponseMessage(System.Net.HttpStatusCode.OK)));
+            .ReturnsAsync(new HttpResponseWrapper<object>(null!, false, new HttpResponseMessage(System.Net.HttpStatusCode.OK)));
 
         _viewModel.RegisterCommand.Execute(null);
         await Task.Delay(2500);

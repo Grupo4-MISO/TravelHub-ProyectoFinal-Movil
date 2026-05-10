@@ -1,8 +1,5 @@
 using App.ViewModels;
 
-using App.ViewModels;
-using Microsoft.Extensions.DependencyInjection;
-
 namespace App.Views;
 
 public partial class AccountRegisterPage : ContentPage

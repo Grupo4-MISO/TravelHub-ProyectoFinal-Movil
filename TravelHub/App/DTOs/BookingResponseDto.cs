@@ -37,3 +37,21 @@ public class BookingResponseDto
     [JsonProperty("fecha_actualizacion")]
     public DateTime? FechaActualizacion { get; set; }
 }
+
+public class CheckInResponseDto
+{
+    [JsonProperty("reserva_id")]
+    public string BookingId { get; set; } = string.Empty;
+
+    [JsonProperty("check_in")]
+    public string CheckIn { get; set; } = string.Empty;
+
+    [JsonProperty("check_out")]
+    public string CheckOut { get; set; } = string.Empty;
+
+    [JsonProperty("nombre_hospedaje")]
+    public string NombreHospedaje { get; set; } = string.Empty;
+
+    [JsonProperty("tipo_habitacion")]
+    public string TipoHabitacion { get; set; } = string.Empty;
+}
