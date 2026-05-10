@@ -7,7 +7,7 @@ on:
 
 jobs:
   unit-tests:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
 
     defaults:
       run:
@@ -22,11 +22,8 @@ jobs:
         with:
           dotnet-version: '10.0.x'
 
-      - name: Install MAUI Workloads
-        run: |
-          dotnet workload install maui
-          dotnet workload install maui-android
-          dotnet workload install maui-tizen
+      - name: Install MAUI workloads
+        run: dotnet workload install maui
 
       - name: Restore dependencies
         run: dotnet restore TravelHub.Tests.csproj
