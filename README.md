@@ -48,6 +48,57 @@ TravelHub-ProyectoFinal-Movil/
    - Ajuste de tamaño de texto (1.0x, 1.25x, 1.5x, 2.0x)
    - Modo Oscuro para reducir fatiga visual
 
+## Pruebas
+
+### Pruebas Unitarias
+Las pruebas unitarias validan la lógica de negocio en ViewModels y servicios.
+
+**Ejecución:**
+```powershell
+# Desde la carpeta TravelHub (raíz del proyecto)
+dotnet test TravelHub.Tests\TravelHub.Tests.csproj
+```
+
+**Cobertura:**
+- ViewModels críticos (SearchViewModel, BookingViewModel, AuthViewModel)
+- Servicios de negocio (BookingService, LocalizationService)
+- Validaciones de datos y transformaciones
+
+---
+
+### Pruebas E2E (End-to-End)
+Las pruebas E2E validan flujos completos en Android usando Appium.
+
+**Estado:**
+- **Diseñadas**: 17 pruebas
+- **Funcionales**: 5 (SettingsTests) ✓
+- **En desarrollo**: 12 (AuthFlowTests, SearchFlowTests, BookingFlowTests)
+
+**Requisitos:**
+- Android SDK configurado
+- Emulador de Android corriendo o dispositivo conectado
+- Appium server ejecutándose en `http://localhost:4723`
+
+**Ejecución:**
+```powershell
+# Desde la carpeta TravelHub
+dotnet test TravelHub.E2E
+
+# Ejecutar solo pruebas específicas
+dotnet test TravelHub.E2E --filter "FullyQualifiedName~SettingsTests"
+```
+
+**Estructura:**
+- **SettingsTests** (5 pruebas): Modo oscuro, tamaño de texto, modo daltonismo, restaurar predeterminados
+- **SearchFlowTests** (4 pruebas - en desarrollo): Búsqueda con parámetros, resultados, selección
+- **BookingFlowTests** (3 pruebas - en desarrollo): Flujo de reserva, resumen, confirmación
+- **AuthFlowTests** (5 pruebas - en desarrollo): Login, registro, validación de credenciales
+
+**Estrategia de ejecución:**
+Se utiliza una estrategia incremental: una suite se ejecuta completamente, valida que pase sin errores, y solo entonces se habilita la siguiente. Esto se controla mediante atributos `[Fact(Skip="...")]` en xUnit.
+
+---
+
 ## Equipo de Desarrollo
 - Neider Fajardo
 - Juan Camilo Mora
