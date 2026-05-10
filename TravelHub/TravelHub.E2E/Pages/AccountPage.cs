@@ -25,18 +25,11 @@ public class AccountPage : BasePage
         }
         catch (WebDriverTimeoutException)
         {
-            // If the page didn't report loaded, try a gentle tap on center of screen to force focus/navigation and retry once.
+            // First attempt: click the page root element to ensure the view is focused and controls are accessible.
             try
             {
-                var size = Driver.Manage().Window.Size;
-                var x = size.Width / 2;
-                var y = size.Height / 2;
-                Driver.ExecuteScript("mobile: clickGesture", new Dictionary<string, object>
-                {
-                    ["x"] = x,
-                    ["y"] = y
-                });
-
+                var pageRoot = WaitForElement(Account.Page);
+                pageRoot.Click();
                 Thread.Sleep(500);
 
                 Wait.Until(d =>
@@ -46,11 +39,38 @@ public class AccountPage : BasePage
                         || IsDisplayed(Account.UserName)
                         || IsDisplayed(Account.LogoutButton);
                 });
+                return;
             }
             catch (WebDriverTimeoutException)
             {
-                // propagate original timeout if retry also fails
-                throw;
+                // If page root not found, tap above the tab bar to avoid re-selecting the tab item and retry once.
+                try
+                {
+                    var size = Driver.Manage().Window.Size;
+                    var x = size.Width / 2;
+                    var y = (int)(size.Height * 0.6);
+                    Driver.ExecuteScript("mobile: clickGesture", new Dictionary<string, object>
+                    {
+                        ["x"] = x,
+                        ["y"] = y
+                    });
+
+                    Thread.Sleep(500);
+
+                    Wait.Until(d =>
+                    {
+                        DismissAlertIfPresent();
+                        return IsDisplayed(Account.LoginButton)
+                            || IsDisplayed(Account.UserName)
+                            || IsDisplayed(Account.LogoutButton);
+                    });
+                    return;
+                }
+                catch (WebDriverTimeoutException)
+                {
+                    // propagate original timeout if retry also fails
+                    throw;
+                }
             }
         }
     }
