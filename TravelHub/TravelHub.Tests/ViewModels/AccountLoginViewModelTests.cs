@@ -59,7 +59,7 @@ public class AccountLoginViewModelTests
 
         await Task.Delay(200);
 
-        _navigationServiceMock.Verify(n => n.DisplayAlert("Error",
+        _navigationServiceMock.Verify(n => n.DisplayAlertAsync("Error",
             It.Is<string>(msg => msg.ToLower().Contains("email")),
             "OK"), Times.Once);
         _authServiceMock.Verify(a => a.LoginAsync(It.IsAny<AuthLoginRequest>()), Times.Never);
@@ -75,7 +75,7 @@ public class AccountLoginViewModelTests
 
         await Task.Delay(200);
 
-        _navigationServiceMock.Verify(n => n.DisplayAlert("Error",
+        _navigationServiceMock.Verify(n => n.DisplayAlertAsync("Error",
             It.Is<string>(msg => msg.ToLower().Contains("contrasena")),
             "OK"), Times.Once);
         _authServiceMock.Verify(a => a.LoginAsync(It.IsAny<AuthLoginRequest>()), Times.Never);
@@ -196,7 +196,7 @@ public class AccountLoginViewModelTests
 
         await Task.Delay(500);
 
-        _navigationServiceMock.Verify(n => n.DisplayAlert("Error",
+        _navigationServiceMock.Verify(n => n.DisplayAlertAsync("Error",
             It.IsAny<string>(), "OK"), Times.Once);
     }
 

@@ -9,7 +9,7 @@ namespace App.Models
     {
         [PrimaryKey]
         public string Id { get; set; } = Guid.NewGuid().ToString();
-        public string CountryCode { get; set; } // CO, PE, EC, MX, CL, AR
-        public string Name { get; set; } // Bogotá, Lima, Quito, Ciudad de México, Santiago, Buenos Aires
+        public string CountryCode { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
     }
 }

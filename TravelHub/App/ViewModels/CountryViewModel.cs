@@ -116,49 +116,49 @@ public partial class CountryViewModel : BaseViewModel
 
 public class CountryItem : BaseViewModel
 {
-    private string _id;
+    private string _id = string.Empty;
     public string Id
     {
         get => _id;
         init => SetProperty(ref _id, value);
     }
 
-    private string _name;
+    private string _name = string.Empty;
     public string Name
     {
         get => _name;
         init => SetProperty(ref _name, value);
     }
 
-    private string _code;
+    private string _code = string.Empty;
     public string Code
     {
         get => _code;
         init => SetProperty(ref _code, value);
     }
 
-    private string _currencyCode;
+    private string _currencyCode = string.Empty;
     public string CurrencyCode
     {
         get => _currencyCode;
         init => SetProperty(ref _currencyCode, value);
     }
 
-    private string _currencySymbol;
+    private string _currencySymbol = string.Empty;
     public string CurrencySymbol
     {
         get => _currencySymbol;
         init => SetProperty(ref _currencySymbol, value);
     }
 
-    private string _flagEmoji;
+    private string _flagEmoji = string.Empty;
     public string FlagEmoji
     {
         get => _flagEmoji;
         init => SetProperty(ref _flagEmoji, value);
     }
 
-    private string _phoneCode;
+    private string _phoneCode = string.Empty;
     public string PhoneCode
     {
         get => _phoneCode;

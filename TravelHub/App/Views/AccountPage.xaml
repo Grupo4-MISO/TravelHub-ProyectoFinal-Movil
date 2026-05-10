@@ -4,6 +4,8 @@
              xmlns:local="clr-namespace:App.MarkupExtensions"
              x:Class="App.Views.AccountPage"
              AutomationId="Account_Page"
+             SemanticProperties.Description="Account_Page"
+             AutomationProperties.Name="Account_Page"
              Title="{Binding Title}"
              IconImageSource="ic_account.png"
              Shell.NavBarIsVisible="False">

@@ -104,6 +104,32 @@ public static class MauiProgram
         builder.Logging.AddDebug();
 #endif
 
-        return builder.Build();
+        var app = builder.Build();
+
+        FixAutomationIdMappers();
+
+        return app;
+    }
+
+    static void FixAutomationIdMappers()
+    {
+        void Append<TView, THandler>(IPropertyMapper<TView, THandler> mapper)
+            where TView : IView
+            where THandler : IViewHandler
+        {
+            mapper.AppendToMapping(nameof(IView.AutomationId), (h, v) =>
+            {
+#if ANDROID
+                if (!string.IsNullOrEmpty(v.AutomationId) && h.PlatformView is Android.Views.View pv)
+                    pv.ContentDescription = v.AutomationId;
+#endif
+            });
+        }
+
+        Append(Microsoft.Maui.Handlers.ButtonHandler.Mapper);
+        Append(Microsoft.Maui.Handlers.SwitchHandler.Mapper);
+        Append(Microsoft.Maui.Handlers.PickerHandler.Mapper);
+        Append(Microsoft.Maui.Handlers.EntryHandler.Mapper);
+        Append(Microsoft.Maui.Handlers.LabelHandler.Mapper);
     }
 }

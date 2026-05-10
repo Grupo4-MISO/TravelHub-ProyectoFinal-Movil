@@ -146,11 +146,11 @@ public class AccountRegisterViewModel : BaseViewModel
                     if (!string.IsNullOrWhiteSpace(content))
                         errorMessage = content;
                 }
-                await _navigationService.DisplayAlert("Error", errorMessage, "OK");
+                await _navigationService.DisplayAlertAsync("Error", errorMessage, "OK");
                 return;
             }
 
-            await _navigationService.DisplayAlert(
+            await _navigationService.DisplayAlertAsync(
                 "Registro exitoso",
                 "Tu cuenta ha sido creada. Ahora puedes iniciar sesión.",
                 "OK");
@@ -159,7 +159,7 @@ public class AccountRegisterViewModel : BaseViewModel
         }
         catch (Exception ex)
         {
-            await _navigationService.DisplayAlert("Error", ex.Message, "OK");
+            await _navigationService.DisplayAlertAsync("Error", ex.Message, "OK");
         }
         finally
         {
@@ -176,61 +176,61 @@ public class AccountRegisterViewModel : BaseViewModel
     {
         if (string.IsNullOrWhiteSpace(FirstName))
         {
-            await _navigationService.DisplayAlert("Error", "Por favor ingresa tu nombre", "OK");
+            await _navigationService.DisplayAlertAsync("Error", "Por favor ingresa tu nombre", "OK");
             return false;
         }
 
         if (string.IsNullOrWhiteSpace(DocumentNumber))
         {
-            await _navigationService.DisplayAlert("Error", "Por favor ingresa tu numero de documento", "OK");
+            await _navigationService.DisplayAlertAsync("Error", "Por favor ingresa tu numero de documento", "OK");
             return false;
         }
 
         if (string.IsNullOrWhiteSpace(LastName))
         {
-            await _navigationService.DisplayAlert("Error", "Por favor ingresa tu apellido", "OK");
+            await _navigationService.DisplayAlertAsync("Error", "Por favor ingresa tu apellido", "OK");
             return false;
         }
 
         if (string.IsNullOrWhiteSpace(Email))
         {
-            await _navigationService.DisplayAlert("Error", "Por favor ingresa tu email", "OK");
+            await _navigationService.DisplayAlertAsync("Error", "Por favor ingresa tu email", "OK");
             return false;
         }
 
         if (!IsValidEmail(Email))
         {
-            await _navigationService.DisplayAlert("Error", "Por favor ingresa un email válido", "OK");
+            await _navigationService.DisplayAlertAsync("Error", "Por favor ingresa un email válido", "OK");
             return false;
         }
 
         if (string.IsNullOrWhiteSpace(PhoneNumber))
         {
-            await _navigationService.DisplayAlert("Error", "Por favor ingresa tu teléfono", "OK");
+            await _navigationService.DisplayAlertAsync("Error", "Por favor ingresa tu teléfono", "OK");
             return false;
         }
 
         if (string.IsNullOrWhiteSpace(Password))
         {
-            await _navigationService.DisplayAlert("Error", "Por favor ingresa una contraseña", "OK");
+            await _navigationService.DisplayAlertAsync("Error", "Por favor ingresa una contraseña", "OK");
             return false;
         }
 
         if (Password.Length < 6)
         {
-            await _navigationService.DisplayAlert("Error", "La contraseña debe tener al menos 6 caracteres", "OK");
+            await _navigationService.DisplayAlertAsync("Error", "La contraseña debe tener al menos 6 caracteres", "OK");
             return false;
         }
 
         if (Password != ConfirmPassword)
         {
-            await _navigationService.DisplayAlert("Error", "Las contraseñas no coinciden", "OK");
+            await _navigationService.DisplayAlertAsync("Error", "Las contraseñas no coinciden", "OK");
             return false;
         }
 
         if (!AcceptTerms)
         {
-            await _navigationService.DisplayAlert("Error", "Debes aceptar los términos y condiciones", "OK");
+            await _navigationService.DisplayAlertAsync("Error", "Debes aceptar los términos y condiciones", "OK");
             return false;
         }
 

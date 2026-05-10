@@ -92,7 +92,7 @@ namespace App.Services.Implementations
                 Console.WriteLine("Timeout o cancelado: " + ex.Message);
 
                 return new HttpResponseWrapper<object>(
-                    default,
+                    null!,
                     true,
                     new HttpResponseMessage(System.Net.HttpStatusCode.RequestTimeout)
                 );
@@ -102,7 +102,7 @@ namespace App.Services.Implementations
                 Console.WriteLine(ex);
 
                 return new HttpResponseWrapper<object>(
-                    default,
+                    null!,
                     true,
                     new HttpResponseMessage(System.Net.HttpStatusCode.InternalServerError)
                 );
@@ -217,7 +217,7 @@ namespace App.Services.Implementations
                 Console.WriteLine("Timeout o cancelación: " + ex.Message);
 
                 return new HttpResponseWrapper<TResponse>(
-                    default,
+                    default!,
                     true,
                     new HttpResponseMessage(System.Net.HttpStatusCode.RequestTimeout)
                 );
@@ -227,7 +227,7 @@ namespace App.Services.Implementations
                 Console.WriteLine("Error de red: " + ex.Message);
 
                 return new HttpResponseWrapper<TResponse>(
-                    default,
+                    default!,
                     true,
                     new HttpResponseMessage(System.Net.HttpStatusCode.ServiceUnavailable)
                 );
@@ -237,7 +237,7 @@ namespace App.Services.Implementations
                 Console.WriteLine(ex);
 
                 return new HttpResponseWrapper<TResponse>(
-                    default,
+                    default!,
                     true,
                     new HttpResponseMessage(System.Net.HttpStatusCode.InternalServerError)
                 );
@@ -247,8 +247,7 @@ namespace App.Services.Implementations
         private async Task<T> UnserializeAnswer<T>(HttpResponseMessage responseHttp)
         {
             var response = await responseHttp.Content.ReadAsStringAsync();
-            //return JsonSerializer.Deserialize<T>(response, _jsonDefaultOptions);
-            return JsonConvert.DeserializeObject<T>(response);
+            return JsonConvert.DeserializeObject<T>(response)!;
         }
 
         public async Task<HttpResponseWrapper<object>> DeleteAsync(string url)

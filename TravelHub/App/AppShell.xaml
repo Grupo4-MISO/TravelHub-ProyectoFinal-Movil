@@ -11,6 +11,9 @@
     <TabBar>
         <ShellContent
             Title="{local:Translate Shell_Buscar}"
+            AutomationId="Shell_SearchTab"
+            SemanticProperties.Description="Shell_SearchTab"
+            AutomationProperties.Name="Shell_SearchTab"
             ContentTemplate="{DataTemplate views:HomePage}"
             Route="home">
             <ShellContent.Icon>
@@ -23,6 +26,9 @@
 
         <ShellContent
             Title="{local:Translate Shell_Reservas}"
+            AutomationId="Shell_BookingsTab"
+            SemanticProperties.Description="Shell_BookingsTab"
+            AutomationProperties.Name="Shell_BookingsTab"
             ContentTemplate="{DataTemplate views:ActiveBookingsPage}"
             Route="bookings">
             <ShellContent.Icon>
@@ -35,6 +41,9 @@
 
         <ShellContent
             Title="{local:Translate Shell_MiCuenta}"
+            AutomationId="Shell_AccountTab"
+            SemanticProperties.Description="Shell_AccountTab"
+            AutomationProperties.Name="Shell_AccountTab"
             ContentTemplate="{DataTemplate views:AccountPage}"
             Route="account">
             <ShellContent.Icon>
@@ -47,6 +56,9 @@
 
         <ShellContent
             Title="Configuración"
+            AutomationId="Shell_SettingsTab"
+            SemanticProperties.Description="Shell_SettingsTab"
+            AutomationProperties.Name="Shell_SettingsTab"
             Route="settings">
             <ShellContent.Content>
                 <views:SettingsPage />

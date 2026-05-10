@@ -15,7 +15,8 @@
             <!-- Header -->
             <Label Text="Accesibilidad" 
                    Style="{DynamicResource Headline}" 
-                   HorizontalOptions="Center" />
+                   HorizontalOptions="Center"
+                   SemanticProperties.Description="Settings_Header" />
             
             <!-- Dark Mode -->
             <Frame Padding="15" CornerRadius="10" BackgroundColor="{DynamicResource Surface}">
@@ -24,8 +25,9 @@
                            Style="{DynamicResource Title}" 
                            HorizontalOptions="StartAndExpand" />
                     <Switch IsToggled="{Binding DarkModeEnabled}" 
-                            AutomationId="Settings_DarkModeSwitch"
-                            OnColor="{DynamicResource Primary}" />
+                             AutomationId="Settings_DarkModeSwitch"
+                             SemanticProperties.Description="Settings_DarkModeSwitch"
+                             OnColor="{DynamicResource Primary}" />
                 </HorizontalStackLayout>
             </Frame>
             
@@ -34,9 +36,10 @@
                 <VerticalStackLayout Spacing="10">
                     <Label Text="Modo Daltonismo" Style="{DynamicResource Title}" />
                     <Picker Title="Seleccionar modo"
-                            AutomationId="Settings_ColorBlindnessPicker"
-                            ItemsSource="{Binding ColorBlindnessOptions}"
-                            SelectedItem="{Binding ColorBlindnessMode}" />
+                             AutomationId="Settings_ColorBlindnessPicker"
+                             SemanticProperties.Description="Settings_ColorBlindnessPicker"
+                             ItemsSource="{Binding ColorBlindnessOptions}"
+                             SelectedItem="{Binding ColorBlindnessMode}" />
                 </VerticalStackLayout>
             </Frame>
             

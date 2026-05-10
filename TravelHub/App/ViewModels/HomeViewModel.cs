@@ -140,6 +140,7 @@ public class HomeViewModel : BaseViewModel
         DecrementChildrenCommand = new Command(() => { if (Children > 0) { Children--; } });
         IncrementRoomsCommand = new Command(() => Rooms++);
         DecrementRoomsCommand = new Command(() => { if (Rooms > 1) { Rooms--; } });
+        PropertySelectedCommand = new Command<object?>(_ => { });
 
         _ = LoadDataAsync();
         _appSettingsService.CountryChanged += OnCountryChanged;

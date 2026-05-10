@@ -43,7 +43,7 @@ public class AccountLoginViewModel : BaseViewModel, IQueryAttributable
     {
         if (string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(Password))
         {
-            await _navigationService.DisplayAlert("Error", "Ingresa tu email y contrasena.", "OK");
+            await _navigationService.DisplayAlertAsync("Error", "Ingresa tu email y contrasena.", "OK");
             return;
         }
 
@@ -60,7 +60,7 @@ public class AccountLoginViewModel : BaseViewModel, IQueryAttributable
             if (response.Error || response.Response == null || string.IsNullOrWhiteSpace(response.Response.Token))
             {
                 var errorMessage = await response.GetErrorMessageAsync();
-                await _navigationService.DisplayAlert(
+                await _navigationService.DisplayAlertAsync(
                     "Error",
                     string.IsNullOrWhiteSpace(errorMessage) ? "No fue posible iniciar sesion." : "Usuario o Contraseña no son correctos",
                     "OK");

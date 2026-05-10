@@ -7,6 +7,8 @@
              xmlns:local="clr-namespace:App.MarkupExtensions"
              x:Class="App.Views.HomePage"
              AutomationId="Home_Page"
+             SemanticProperties.Description="Home_Page"
+             AutomationProperties.Name="Home_Page"
              IconImageSource="ic_search.png"
              Shell.NavBarIsVisible="False">
 

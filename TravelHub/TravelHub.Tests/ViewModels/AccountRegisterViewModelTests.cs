@@ -59,7 +59,7 @@ public class AccountRegisterViewModelTests
         _viewModel.RegisterCommand.Execute(null);
         await Task.Delay(500);
 
-        _navigationServiceMock.Verify(n => n.DisplayAlert("Error",
+        _navigationServiceMock.Verify(n => n.DisplayAlertAsync("Error",
             It.Is<string>(msg => msg.ToLower().Contains("nombre")),
             "OK"), Times.Once);
     }
@@ -79,7 +79,7 @@ public class AccountRegisterViewModelTests
         _viewModel.RegisterCommand.Execute(null);
         await Task.Delay(500);
 
-        _navigationServiceMock.Verify(n => n.DisplayAlert("Error",
+        _navigationServiceMock.Verify(n => n.DisplayAlertAsync("Error",
             It.Is<string>(msg => msg.ToLower().Contains("documento")),
             "OK"), Times.Once);
     }
@@ -100,7 +100,7 @@ public class AccountRegisterViewModelTests
         _viewModel.RegisterCommand.Execute(null);
         await Task.Delay(500);
 
-        _navigationServiceMock.Verify(n => n.DisplayAlert("Error",
+        _navigationServiceMock.Verify(n => n.DisplayAlertAsync("Error",
             It.Is<string>(msg => msg.ToLower().Contains("email válido")),
             "OK"), Times.Once);
     }
@@ -121,7 +121,7 @@ public class AccountRegisterViewModelTests
         _viewModel.RegisterCommand.Execute(null);
         await Task.Delay(500);
 
-        _navigationServiceMock.Verify(n => n.DisplayAlert("Error",
+        _navigationServiceMock.Verify(n => n.DisplayAlertAsync("Error",
             It.Is<string>(msg => msg.ToLower().Contains("no coinciden")),
             "OK"), Times.Once);
     }
@@ -145,7 +145,7 @@ public class AccountRegisterViewModelTests
         _viewModel.RegisterCommand.Execute(null);
         await Task.Delay(2500);
 
-        _navigationServiceMock.Verify(n => n.DisplayAlert("Registro exitoso",
+        _navigationServiceMock.Verify(n => n.DisplayAlertAsync("Registro exitoso",
             It.IsAny<string>(), "OK"), Times.Once);
         _navigationServiceMock.Verify(n => n.GoToAsync(".."), Times.Once);
         _authServiceMock.Verify(a => a.RegisterAsync(It.IsAny<TravelerCreateRequestDTO>()), Times.Once);

@@ -15,7 +15,7 @@ public partial class BookingDetailsViewModel : BaseViewModel, IQueryAttributable
     private readonly IPropertyDetailService _propertyDetailService;
     private readonly IAppSettingsService _appSettingsService;
 
-    private string _reservationId;
+    private string _reservationId = string.Empty;
     public string ReservationId
     {
         get => _reservationId;
@@ -96,10 +96,10 @@ public partial class BookingDetailsViewModel : BaseViewModel, IQueryAttributable
     }
 
     public int Nights => (CheckOut - CheckIn).Days;
-    public decimal SubTotal => (Room.Price * Nights) / 1.19m;
+    public decimal SubTotal => Room != null ? (Room.Price * Nights) / 1.19m : 0;
     public decimal Taxes => SubTotal * 0.19m;
 
-    public decimal TotalPrice => Room.Price * Nights;
+    public decimal TotalPrice => Room?.Price * Nights ?? 0;
 
 
     private string _currency = "COP - Peso Colombiano";

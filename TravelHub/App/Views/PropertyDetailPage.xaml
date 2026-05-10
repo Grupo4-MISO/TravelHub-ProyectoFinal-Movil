@@ -23,7 +23,8 @@
                 </VerticalStackLayout>-->
 
                 <!-- Galeria de Fotos -->
-                <CarouselView ItemsSource="{Binding ImageUrls}"
+                <CarouselView AutomationId="PropertyDetail_GalleryCarousel"
+                              ItemsSource="{Binding ImageUrls}"
                               HeightRequest="260"
                               Loop="True"
                               IndicatorView="galleryIndicator">
@@ -123,6 +124,7 @@
                          Stroke="{StaticResource Gray200}"
                          HeightRequest="220">
                     <maps:Map x:Name="PropertyMap"
+                              AutomationId="PropertyDetail_PropertyMap"
                               IsShowingUser="False" />
                 </Border>
 

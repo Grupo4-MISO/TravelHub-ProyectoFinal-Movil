@@ -6,27 +6,27 @@ namespace App.Models
 {
     public class Address
     {
-        public string id { get; set; }
-        public string traveler_id { get; set; }
-        public string line1 { get; set; }
-        public string line2 { get; set; }
-        public string city { get; set; }
-        public string state { get; set; }
-        public string country { get; set; }
-        public string countryCode { get; set; }
-        public string postal_code { get; set; }
+        public string id { get; set; } = string.Empty;
+        public string traveler_id { get; set; } = string.Empty;
+        public string line1 { get; set; } = string.Empty;
+        public string line2 { get; set; } = string.Empty;
+        public string city { get; set; } = string.Empty;
+        public string state { get; set; } = string.Empty;
+        public string country { get; set; } = string.Empty;
+        public string countryCode { get; set; } = string.Empty;
+        public string postal_code { get; set; } = string.Empty;
         public DateTime created_at { get; set; }
         public DateTime updated_at { get; set; }
     }
     public class AddressCreateDTO
     {
-        public string line1 { get; set; }
-        public string line2 { get; set; }
-        public string city { get; set; }
-        public string state { get; set; }
-        public string country { get; set; }
-        public string countryCode { get; set; }
-        public string postal_code { get; set; }
+        public string line1 { get; set; } = string.Empty;
+        public string line2 { get; set; } = string.Empty;
+        public string city { get; set; } = string.Empty;
+        public string state { get; set; } = string.Empty;
+        public string country { get; set; } = string.Empty;
+        public string countryCode { get; set; } = string.Empty;
+        public string postal_code { get; set; } = string.Empty;
     }
 
 }

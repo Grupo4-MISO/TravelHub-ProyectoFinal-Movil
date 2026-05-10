@@ -5,7 +5,7 @@ namespace App.Controls;
 
 public partial class TopBar : ContentView
 {
-    private IAppSettingsService _appSettingsService;
+    private IAppSettingsService _appSettingsService = null!;
 
     public TopBar()
     {

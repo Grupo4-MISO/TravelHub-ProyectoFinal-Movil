@@ -49,6 +49,7 @@
                                                Style="{StaticResource Caption}" />
                                     </HorizontalStackLayout>
                                     <Label
+                                           AutomationId="RoomSelection_RoomPrice"
                                            Text="{Binding Price, StringFormat='${0:F0}/noche'}"
                                            Style="{StaticResource Price}" FontSize="17" />
                                 </VerticalStackLayout>

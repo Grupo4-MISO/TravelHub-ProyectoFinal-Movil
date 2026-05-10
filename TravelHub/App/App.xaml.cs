@@ -80,10 +80,6 @@ namespace App
             //OneSignal.Debug.LogLevel = LogLevel.VERBOSE;
 
             OneSignal.Initialize("4a46cf3a-a9ec-456b-b382-de8793e5f38b");
-
-            // RequestPermissionAsync will show the notification permission prompt.
-            // We recommend removing the following code and instead using an In-App Message to prompt for notification permission (See step 5)
-            OneSignal.Notifications.RequestPermissionAsync(true);
         }
     }
 

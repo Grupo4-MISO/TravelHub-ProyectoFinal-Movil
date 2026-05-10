@@ -4,7 +4,7 @@ namespace App.DTOs;
 
 public class CreateReservationRequest
 {
-    public ReservationCreateResponseDto Reserva { get; set; }
+    public ReservationCreateResponseDto? Reserva { get; set; }
 }
 
 public class ReservationCreateResponseDto

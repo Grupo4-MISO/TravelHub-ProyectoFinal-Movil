@@ -23,5 +23,38 @@ public partial class AppShell : Shell
         Routing.RegisterRoute(nameof(PaymentPage), typeof(PaymentPage));
         Routing.RegisterRoute(nameof(QrScannerPage), typeof(QrScannerPage));
         Routing.RegisterRoute(nameof(CurrencyPage), typeof(CurrencyPage));
+
+        Navigated += OnNavigated;
+    }
+
+    private static void OnNavigated(object? sender, ShellNavigatedEventArgs e)
+    {
+        if (Current?.CurrentPage is not { } page)
+            return;
+
+        SetContentDescriptions(page);
+    }
+
+    private static void SetContentDescriptions(IVisualTreeElement element)
+    {
+        foreach (var child in element.GetVisualChildren())
+        {
+            if (child is IView view)
+                ApplyContentDescription(view);
+
+            SetContentDescriptions(child);
+        }
+    }
+
+    private static void ApplyContentDescription(IView view)
+    {
+        var id = view.AutomationId;
+        if (string.IsNullOrEmpty(id))
+            return;
+
+#if ANDROID
+        if (view.Handler?.PlatformView is Android.Views.View platformView)
+            platformView.ContentDescription = id;
+#endif
     }
 }

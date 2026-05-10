@@ -6,7 +6,7 @@ namespace App.Views;
 
 public partial class AccountPage : ContentPage
 {
-    private readonly ILocalizationService _localizationService;
+    private readonly ILocalizationService? _localizationService;
     private bool _isUpdatingLanguage;
     
     public AccountPage()
@@ -33,24 +33,28 @@ public partial class AccountPage : ContentPage
         _isUpdatingLanguage = true;
         try
         {
-            LanguagePicker.SelectedIndexChanged -= OnLanguageChanged;
-            LanguagePicker.Items.Clear();
-            LanguagePicker.Items.Add(_localizationService.GetString("Language_Espanol"));
-            LanguagePicker.Items.Add(_localizationService.GetString("Language_English"));
-            LanguagePicker.SelectedIndex = _localizationService.CurrentCulture.Name == "en" ? 1 : 0;
+            if (_localizationService != null)
+            {
+                LanguagePicker.SelectedIndexChanged -= OnLanguageChanged;
+                LanguagePicker.Items.Clear();
+                LanguagePicker.Items.Add(_localizationService.GetString("Language_Espanol"));
+                LanguagePicker.Items.Add(_localizationService.GetString("Language_English"));
+                LanguagePicker.SelectedIndex = _localizationService.CurrentCulture.Name == "en" ? 1 : 0;
+            }
         }
         finally
         {
-            LanguagePicker.SelectedIndexChanged += OnLanguageChanged;
+            if (_localizationService != null)
+                LanguagePicker.SelectedIndexChanged += OnLanguageChanged;
             _isUpdatingLanguage = false;
         }
     }
     
-    private void OnLanguageChanged(object sender, EventArgs e)
+    private void OnLanguageChanged(object? sender, EventArgs e)
     {
         if (_isUpdatingLanguage || LanguagePicker.SelectedIndex == -1 || _localizationService == null)
             return;
-            
+
         var cultureCode = LanguagePicker.SelectedIndex == 0 ? "es" : "en";
         if (_localizationService.CurrentCulture.Name == cultureCode)
         {

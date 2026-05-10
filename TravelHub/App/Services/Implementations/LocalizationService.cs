@@ -10,9 +10,9 @@ namespace App.Services.Implementations
         private const string PreferenceKey = "App_Language";
         private const string DefaultCulture = "es";
         
-        public CultureInfo CurrentCulture { get; private set; }
+        public CultureInfo CurrentCulture { get; private set; } = CultureInfo.InvariantCulture;
         
-        public event EventHandler LanguageChanged;
+        public event EventHandler? LanguageChanged;
         
         private readonly ResourceManager _resourceManager;
         private readonly IPreferencesService _preferencesService;

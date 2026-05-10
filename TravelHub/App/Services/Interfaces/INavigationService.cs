@@ -2,6 +2,6 @@
 
 public interface INavigationService
 {
-    Task DisplayAlert(string title, string message, string cancel);
+    Task DisplayAlertAsync(string title, string message, string cancel);
     Task GoToAsync(string uri);
 }
