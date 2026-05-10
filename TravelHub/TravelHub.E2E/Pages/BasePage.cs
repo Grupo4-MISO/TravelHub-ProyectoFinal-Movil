@@ -113,16 +113,16 @@ public abstract class BasePage
             element.Click();
         }
         catch { }
-n        element.Clear();
+        element.Clear();
         element.SendKeys(text);
-n        // Hide keyboard if present to ensure subsequent taps land on the app UI, not the keyboard suggestions.
+        // Hide keyboard if present to ensure subsequent taps land on the app UI, not the keyboard suggestions.
         try
         {
             // Appium AndroidDriver exposes HideKeyboard()
             Driver.HideKeyboard();
         }
         catch { }
-n        // Small pause to allow UI to settle after hiding keyboard
+        // Small pause to allow UI to settle after hiding keyboard
         try { System.Threading.Thread.Sleep(200); } catch { }
     }
 
