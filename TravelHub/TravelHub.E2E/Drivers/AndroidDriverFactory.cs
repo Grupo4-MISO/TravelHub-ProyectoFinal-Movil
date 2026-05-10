@@ -1,5 +1,6 @@
 using System.Net.Http;
 using System.Threading.Tasks;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Appium;
 using OpenQA.Selenium.Appium.Android;
 using TravelHub.E2E.Configuration;
