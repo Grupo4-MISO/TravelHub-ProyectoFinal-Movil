@@ -5,7 +5,6 @@ using TravelHub.E2E.Constants;
 using TravelHub.E2E.Pages;
 using TravelHub.E2E.Utilities;
 using Xunit;
-using Xunit.Sdk;
 namespace TravelHub.E2E.Tests;
 
 [Collection("Appium")]
@@ -35,7 +34,7 @@ public abstract class BaseTest : IDisposable
         _testName = GetType().Name;
 
         if (!fixture.IsEnvironmentReady)
-            throw new TestSkippedException(fixture.SkipReason ?? "Entorno de Appium/Android no disponible.");
+            throw new InvalidOperationException(fixture.SkipReason ?? "Entorno de Appium/Android no disponible.");
 
         Driver = fixture.Driver ?? throw new InvalidOperationException("Driver de Appium no inicializado.");
 
