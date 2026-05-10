@@ -35,7 +35,7 @@ public abstract class BaseTest : IDisposable
         _testName = GetType().Name;
 
         if (!fixture.IsEnvironmentReady)
-            throw new SkipException(fixture.SkipReason ?? "Entorno de Appium/Android no disponible.");
+            throw new TestSkippedException(fixture.SkipReason ?? "Entorno de Appium/Android no disponible.");
 
         Driver = fixture.Driver ?? throw new InvalidOperationException("Driver de Appium no inicializado.");
 
