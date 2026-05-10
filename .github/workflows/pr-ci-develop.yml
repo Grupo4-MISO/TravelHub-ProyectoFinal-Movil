@@ -1,0 +1,29 @@
+name: Run Mobile App Unit Tests
+
+on:
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: TravelHub/TravelHub.Tests
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore TravelHub.Tests.csproj
+
+      - name: Run unit tests
+        run: dotnet test TravelHub.Tests.csproj --no-restore --verbosity normal
