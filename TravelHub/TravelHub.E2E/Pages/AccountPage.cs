@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Appium.Android;
@@ -14,7 +16,7 @@ public class AccountPage : BasePage
     public void WaitForPageLoad()
     {
         DismissAlertIfPresent();
-n        // Fast path: if the page root exists, click it to ensure the view has focus without tapping the tab bar.
+        // Fast path: if the page root exists, click it to ensure the view has focus without tapping the tab bar.
         try
         {
             var roots = Driver.FindElements(MobileBy.AccessibilityId(Account.Page));
@@ -52,7 +54,7 @@ public class AccountPage : BasePage
                 File.WriteAllBytes(screenshotPath, screenshot.AsByteArray);
             }
             catch { }
-n            // Retry by tapping a safe area above the tab bar to avoid re-selecting tabs (approx. 30% height)
+            // Retry by tapping a safe area above the tab bar to avoid re-selecting tabs (approx. 30% height)
             try
             {
                 var size = Driver.Manage().Window.Size;
@@ -63,8 +65,8 @@ public class AccountPage : BasePage
                     ["x"] = x,
                     ["y"] = y
                 });
-n                try { Thread.Sleep(400); } catch { }
-n                Wait.Until(d =>
+                try { Thread.Sleep(400); } catch { }
+                Wait.Until(d =>
                 {
                     DismissAlertIfPresent();
                     return IsDisplayed(Account.LoginButton)
