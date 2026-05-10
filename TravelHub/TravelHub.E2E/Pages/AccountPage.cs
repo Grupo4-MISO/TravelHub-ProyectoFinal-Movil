@@ -13,6 +13,19 @@ public class AccountPage : BasePage
 
     public void WaitForPageLoad()
     {
+        DismissAlertIfPresent();
+n        // Fast path: if the page root exists, click it to ensure the view has focus without tapping the tab bar.
+        try
+        {
+            var roots = Driver.FindElements(MobileBy.AccessibilityId(Account.Page));
+            if (roots != null && roots.Count > 0)
+            {
+                try { roots[0].Click(); } catch { }
+                try { Thread.Sleep(300); } catch { }
+            }
+        }
+        catch { }
+
         try
         {
             Wait.Until(d =>
@@ -22,17 +35,36 @@ public class AccountPage : BasePage
                     || IsDisplayed(Account.UserName)
                     || IsDisplayed(Account.LogoutButton);
             });
+            return;
         }
         catch (WebDriverTimeoutException)
         {
-            // First attempt: click the page root element to ensure the view is focused and controls are accessible.
+            // Capture diagnostics to help troubleshoot visibility issues
             try
             {
-                var pageRoot = WaitForElement(Account.Page);
-                pageRoot.Click();
-                Thread.Sleep(500);
-
-                Wait.Until(d =>
+                var ts = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
+                var dir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "TestResults");
+                Directory.CreateDirectory(dir);
+                var pageSourcePath = Path.Combine(dir, $"PageSource_AccountPage_{ts}.xml");
+                File.WriteAllText(pageSourcePath, Driver.PageSource);
+                var screenshot = ((ITakesScreenshot)Driver).GetScreenshot();
+                var screenshotPath = Path.Combine(dir, $"Screenshot_AccountPage_{ts}.png");
+                File.WriteAllBytes(screenshotPath, screenshot.AsByteArray);
+            }
+            catch { }
+n            // Retry by tapping a safe area above the tab bar to avoid re-selecting tabs (approx. 30% height)
+            try
+            {
+                var size = Driver.Manage().Window.Size;
+                var x = size.Width / 2;
+                var y = (int)(size.Height * 0.35);
+                Driver.ExecuteScript("mobile: clickGesture", new Dictionary<string, object>
+                {
+                    ["x"] = x,
+                    ["y"] = y
+                });
+n                try { Thread.Sleep(400); } catch { }
+n                Wait.Until(d =>
                 {
                     DismissAlertIfPresent();
                     return IsDisplayed(Account.LoginButton)
@@ -43,34 +75,8 @@ public class AccountPage : BasePage
             }
             catch (WebDriverTimeoutException)
             {
-                // If page root not found, tap above the tab bar to avoid re-selecting the tab item and retry once.
-                try
-                {
-                    var size = Driver.Manage().Window.Size;
-                    var x = size.Width / 2;
-                    var y = (int)(size.Height * 0.3);
-                    Driver.ExecuteScript("mobile: clickGesture", new Dictionary<string, object>
-                    {
-                        ["x"] = x,
-                        ["y"] = y
-                    });
-
-                    Thread.Sleep(500);
-
-                    Wait.Until(d =>
-                    {
-                        DismissAlertIfPresent();
-                        return IsDisplayed(Account.LoginButton)
-                            || IsDisplayed(Account.UserName)
-                            || IsDisplayed(Account.LogoutButton);
-                    });
-                    return;
-                }
-                catch (WebDriverTimeoutException)
-                {
-                    // propagate original timeout if retry also fails
-                    throw;
-                }
+                // give up and propagate timeout for investigation
+                throw;
             }
         }
     }
