@@ -3,22 +3,41 @@ using OpenQA.Selenium.Appium;
 using OpenQA.Selenium.Appium.Android;
 using OpenQA.Selenium.Support.UI;
 using TravelHub.E2E.Constants;
+using System.Linq;
 
 namespace TravelHub.E2E.Pages;
 
 public abstract class BasePage
 {
+    private const string AppPackage = "travelhubg4.app";
     protected readonly AndroidDriver Driver;
     protected readonly WebDriverWait Wait;
 
-    protected BasePage(AndroidDriver driver, int explicitWaitSeconds = 60)
+    protected BasePage(AndroidDriver driver, int explicitWaitSeconds = 15)
     {
         Driver = driver;
         Wait = new WebDriverWait(driver, TimeSpan.FromSeconds(explicitWaitSeconds));
     }
 
-    private By AutomationIdLocator(string id)
-        => MobileBy.AccessibilityId(id);
+    private static IWebElement? FindByAutomationId(ISearchContext context, string automationId, bool requireEnabled)
+    {
+        var byAccessibilityId = context.FindElements(MobileBy.AccessibilityId(automationId))
+            .FirstOrDefault(e => e.Displayed && (!requireEnabled || e.Enabled));
+        if (byAccessibilityId != null)
+        {
+            return byAccessibilityId;
+        }
+
+        var byResourceId = context.FindElements(MobileBy.Id($"{AppPackage}:id/{automationId}"))
+            .FirstOrDefault(e => e.Displayed && (!requireEnabled || e.Enabled));
+        if (byResourceId != null)
+        {
+            return byResourceId;
+        }
+
+        return context.FindElements(MobileBy.Id(automationId))
+            .FirstOrDefault(e => e.Displayed && (!requireEnabled || e.Enabled));
+    }
 
     protected bool DismissAlertIfPresent()
     {
@@ -39,98 +58,78 @@ public abstract class BasePage
 
         try
         {
-            return Wait.Until(d => d.FindElement(AutomationIdLocator(automationId)));
+            // Wait for presence (not necessarily enabled) to reduce false negatives when element exists but is temporarily disabled
+            var element = Wait.Until(d =>
+            {
+                return FindByAutomationId(d, automationId, requireEnabled: false);
+            });
+            if (element == null)
+            {
+                throw new WebDriverTimeoutException($"No se encontró elemento con AutomationId '{automationId}'.");
+            }
+            return element;
         }
         catch (WebDriverTimeoutException)
         {
-            var contentDescLocator = By.XPath($"//*[@content-desc='{automationId}']");
-            try
-            {
-                return Wait.Until(d => d.FindElement(contentDescLocator));
-            }
-            catch (WebDriverTimeoutException)
-            {
-            }
-
-            var resourceIdLocator = MobileBy.AndroidUIAutomator(
-                $"new UiSelector().resourceIdMatches(\".*{automationId}.*\")");
-            try
-            {
-                return Wait.Until(d => d.FindElement(resourceIdLocator));
-            }
-            catch (WebDriverTimeoutException)
-            {
-            }
-
-            var scrolledLocator = MobileBy.AndroidUIAutomator(
-                $"new UiScrollable(new UiSelector().scrollable(true)).setMaxSearchSwipes(3).scrollIntoView(new UiSelector().description(\"{automationId}\"))");
-            try
-            {
-                return Wait.Until(d => d.FindElement(scrolledLocator));
-            }
-            catch (WebDriverTimeoutException)
-            {
-                // Fallback: search by visible text (useful when AutomationId maps to text)
-                var textLocator = By.XPath($"//*[@text='{automationId}']");
-                try
-                {
-                    return Wait.Until(d => d.FindElement(textLocator));
-                }
-                catch (WebDriverTimeoutException)
-                {
-                    // Save diagnostics for investigation: PageSource + screenshot
-                    try
-                    {
-                        var ts = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
-                        var dir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "TestResults");
-                        Directory.CreateDirectory(dir);
-                        var pageSourcePath = Path.Combine(dir, $"PageSource_{automationId}_{ts}.xml");
-                        File.WriteAllText(pageSourcePath, Driver.PageSource);
-                        var screenshot = ((ITakesScreenshot)Driver).GetScreenshot();
-                        var screenshotPath = Path.Combine(dir, $"Screenshot_{automationId}_{ts}.png");
-                        File.WriteAllBytes(screenshotPath, screenshot.AsByteArray);
-                    }
-                    catch { }
-
-                    throw;
-                }
-            }
+            CaptureDiagnostics(automationId);
+            throw;
         }
     }
 
     protected IReadOnlyCollection<IWebElement> WaitForElements(string automationId)
-        => Wait.Until(d => d.FindElements(AutomationIdLocator(automationId)));
+        => Wait.Until(d =>
+        {
+            var byAccessibilityId = d.FindElements(MobileBy.AccessibilityId(automationId));
+            if (byAccessibilityId.Count > 0)
+            {
+                return byAccessibilityId;
+            }
+
+            var byResourceId = d.FindElements(MobileBy.Id($"{AppPackage}:id/{automationId}"));
+            if (byResourceId.Count > 0)
+            {
+                return byResourceId;
+            }
+
+            return d.FindElements(MobileBy.Id(automationId));
+        });
 
     protected void Tap(string automationId)
-        => WaitForElement(automationId).Click();
+    {
+        // Ensure element is enabled before attempting to click to avoid stale/disabled interaction failures
+        Wait.Until(d => FindByAutomationId(d, automationId, requireEnabled: true) != null);
+        WaitForElement(automationId).Click();
+    }
 
     protected void EnterText(string automationId, string text)
     {
-        var element = WaitForElement(automationId);
-        try
-        {
-            // Ensure field is focused before clearing / typing to avoid suggestions overlay interfering
-            element.Click();
+            // Wait until the element is present and enabled before interacting
+            Wait.Until(d => FindByAutomationId(d, automationId, requireEnabled: true) != null);
+            var element = WaitForElement(automationId);
+            try
+            {
+                // Ensure field is focused before clearing / typing to avoid suggestions overlay interfering
+                element.Click();
+            }
+            catch { }
+            element.Clear();
+            element.Clear();
+            element.SendKeys(text);
+            // Hide keyboard if present to ensure subsequent taps land on the app UI, not the keyboard suggestions.
+            try
+            {
+                // Appium AndroidDriver exposes HideKeyboard()
+                Driver.HideKeyboard();
+            }
+            catch { }
+            // Small pause to allow UI to settle after hiding keyboard
         }
-        catch { }
-        element.Clear();
-        element.SendKeys(text);
-        // Hide keyboard if present to ensure subsequent taps land on the app UI, not the keyboard suggestions.
-        try
-        {
-            // Appium AndroidDriver exposes HideKeyboard()
-            Driver.HideKeyboard();
-        }
-        catch { }
-        // Small pause to allow UI to settle after hiding keyboard
-        try { System.Threading.Thread.Sleep(200); } catch { }
-    }
 
     protected string GetText(string automationId)
         => WaitForElement(automationId).Text;
 
     protected bool IsDisplayed(string automationId)
-        => Driver.FindElements(AutomationIdLocator(automationId)).Count > 0;
+        => FindByAutomationId(Driver, automationId, requireEnabled: false) != null;
 
     protected bool IsEnabled(string automationId)
     {
@@ -162,7 +161,7 @@ public abstract class BasePage
             _ => tabName
         };
 
-        var shortWait = new WebDriverWait(Driver, TimeSpan.FromSeconds(8));
+        var shortWait = new WebDriverWait(Driver, TimeSpan.FromSeconds(6));
         try
         {
             var tabByAccessibilityId = MobileBy.AccessibilityId(tabId);
@@ -205,4 +204,25 @@ public abstract class BasePage
 
     protected void WaitForPageLoad(string pageAutomationId)
         => WaitForElement(pageAutomationId);
+
+    private void CaptureDiagnostics(string automationId)
+    {
+        try
+        {
+            var ts = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
+            var dir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "TestResults");
+            Directory.CreateDirectory(dir);
+
+            var pageSourcePath = Path.Combine(dir, $"PageSource_{automationId}_{ts}.xml");
+            File.WriteAllText(pageSourcePath, Driver.PageSource);
+
+            var screenshot = ((ITakesScreenshot)Driver).GetScreenshot();
+            var screenshotPath = Path.Combine(dir, $"Screenshot_{automationId}_{ts}.png");
+            File.WriteAllBytes(screenshotPath, screenshot.AsByteArray);
+        }
+        catch
+        {
+            // Diagnostics should never mask the original failure.
+        }
+    }
 }

@@ -123,7 +123,7 @@ public class HomeViewModelTests
 
         Assert.Contains("1 habitacion", _viewModel.GuestSummary);
         Assert.Contains("2 Adultos", _viewModel.GuestSummary);
-        Assert.Contains("Sin ninos", _viewModel.GuestSummary);
+        Assert.Contains("Sin niños", _viewModel.GuestSummary);
     }
 
     [Fact]
@@ -135,7 +135,7 @@ public class HomeViewModelTests
 
         Assert.Contains("2 habitaciones", _viewModel.GuestSummary);
         Assert.Contains("2 Adultos", _viewModel.GuestSummary);
-        Assert.Contains("2 Ninos", _viewModel.GuestSummary);
+        Assert.Contains("2 Niños", _viewModel.GuestSummary);
     }
 
     [Fact]

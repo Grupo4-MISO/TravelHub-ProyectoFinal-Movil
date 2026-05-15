@@ -17,10 +17,10 @@
 
             <!-- Header -->
             <Grid Grid.Row="0" Padding="16,14" BackgroundColor="{StaticResource Primary}">
-<Label Text="{local:Translate Account_Titulo}"
-       TextColor="{StaticResource White}"
-       FontFamily="OpenSansSemibold"
-       FontSize="18" />
+                <Label Text="{local:Translate Account_Titulo}"
+                       TextColor="{StaticResource White}"
+                       FontFamily="OpenSansSemibold"
+                       FontSize="18" />
             </Grid>
 
             <ScrollView Grid.Row="1">
@@ -50,7 +50,7 @@
                     </Border>
 
                     <!-- Opciones -->
-                    <Border Padding="0"
+                    <!--<Border Padding="0"
                             BackgroundColor="{StaticResource Surface}"
                             StrokeShape="RoundRectangle 12"
                             Stroke="{StaticResource Gray100}">
@@ -75,35 +75,20 @@
                             </Grid>
                             <BoxView HeightRequest="1" Color="{StaticResource Gray100}" />
                      </VerticalStackLayout>
-                    </Border>
+                    </Border>-->
 
-                    <!-- Idioma / Language -->
-                    <Border Padding="16,14" 
-                            BackgroundColor="{StaticResource Surface}"
-                            StrokeShape="RoundRectangle 12"
-                            Stroke="{StaticResource Gray100}">
-                        <VerticalStackLayout Spacing="8">
-                            <Label Text="{local:Translate Language_Seleccionar}" 
-                                   FontSize="15" 
-                                   FontFamily="OpenSansSemibold" />
-                            <Picker x:Name="LanguagePicker"
-                                    AutomationId="Account_LanguagePicker"
-                                    SelectedIndexChanged="OnLanguageChanged" />
-                        </VerticalStackLayout>
-                    </Border>
-                    
                     <!-- Cerrar Sesion -->
-<Button Text="{local:Translate Account_CerrarSesion}"
-        AutomationId="Account_LogoutButton"
-        Command="{Binding LogoutCommand}"
-        BackgroundColor="{StaticResource Primary}"
-        TextColor="{StaticResource White}"
-        HorizontalOptions="Fill" />
+                    <Button Text="{local:Translate Account_CerrarSesion}"
+                            AutomationId="Account_LogoutButton"
+                            Command="{Binding LogoutCommand}"
+                            BackgroundColor="{StaticResource Primary}"
+                            TextColor="{StaticResource White}"
+                            HorizontalOptions="Fill" />
 
-<Label Text="{local:Translate Account_Version}"
-       Style="{StaticResource Caption}"
-       HorizontalTextAlignment="Center"
-       Margin="0,8,0,0" />
+                    <Label Text="{local:Translate Account_Version}"
+                           Style="{StaticResource Caption}"
+                           HorizontalTextAlignment="Center"
+                           Margin="0,8,0,0" />
                 </VerticalStackLayout>
             </ScrollView>
         </Grid>
@@ -114,9 +99,9 @@
 
                 <VerticalStackLayout Spacing="8" HorizontalOptions="Center" Margin="0,40,0,20">
                     <Image Source="travelhub.png" Aspect="AspectFill" />
-<Label Text="{local:Translate Account_IniciaSesion}"
-       Style="{StaticResource Subtitle}"
-       HorizontalTextAlignment="Center" />
+                    <Label Text="{local:Translate Account_IniciaSesion}"
+                           Style="{StaticResource Subtitle}"
+                           HorizontalTextAlignment="Center" />
                 </VerticalStackLayout>
 
                 <Border Padding="20"
@@ -133,11 +118,11 @@
                                     BackgroundColor="{StaticResource Background}"
                                     StrokeShape="RoundRectangle 10"
                                     Stroke="{StaticResource Gray200}">
-<Entry Placeholder="{local:Translate Account_EmailPlaceholder}"
-       AutomationId="Account_EmailEntry"
-       Text="{Binding Email}"
-       Keyboard="Email" />
-                            </Border>
+                                <Entry Placeholder="{local:Translate Account_EmailPlaceholder}"
+                                       AutomationId="Account_EmailEntry"
+                                       Text="{Binding Email}"
+                                       Keyboard="Email" />
+                             </Border>
                         </VerticalStackLayout>
 
                         <VerticalStackLayout Spacing="4">
@@ -146,27 +131,27 @@
                                     BackgroundColor="{StaticResource Background}"
                                     StrokeShape="RoundRectangle 10"
                                     Stroke="{StaticResource Gray200}">
-<Entry Placeholder="{local:Translate Account_PasswordPlaceholder}"
-       AutomationId="Account_PasswordEntry"
-       Text="{Binding Password}"
-       IsPassword="True" />
+                                <Entry Placeholder="{local:Translate Account_PasswordPlaceholder}"
+                                        AutomationId="Account_PasswordEntry"
+                                        Text="{Binding Password}"
+                                        IsPassword="True" />
                             </Border>
-                        </VerticalStackLayout>
+                         </VerticalStackLayout>
 
-<Button Text="{local:Translate Account_IniciarSesion}"
-        AutomationId="Account_LoginButton"
-        Command="{Binding LoginCommand}"
-        HorizontalOptions="Fill" />
+                                <Button Text="{local:Translate Account_IniciarSesion}"
+                                        AutomationId="Account_LoginButton"
+                                        Command="{Binding LoginCommand}"
+                                        HorizontalOptions="Fill" />
 
-                        <HorizontalStackLayout Spacing="4" HorizontalOptions="Center">
-<Label Text="{local:Translate Account_NoTienesCuenta}"
-       Style="{StaticResource Caption}"
-       VerticalTextAlignment="Center" />
-<Label Text="{local:Translate Account_Registrate}"
-       AutomationId="Account_RegisterLink"
-       TextColor="{StaticResource Primary}"
-       FontFamily="OpenSansSemibold" FontSize="13"
-       VerticalTextAlignment="Center">
+                                                        <HorizontalStackLayout Spacing="4" HorizontalOptions="Center">
+                                <Label Text="{local:Translate Account_NoTienesCuenta}"
+                                        Style="{StaticResource Caption}"
+                                        VerticalTextAlignment="Center" />
+                                <Label Text="{local:Translate Account_Registrate}"
+                                        AutomationId="Account_RegisterLink"
+                                        TextColor="{StaticResource Primary}"
+                                        FontFamily="OpenSansSemibold" FontSize="13"
+                                        VerticalTextAlignment="Center">
                                 <Label.GestureRecognizers>
                                     <TapGestureRecognizer Command="{Binding RegisterCommand}" />
                                 </Label.GestureRecognizers>

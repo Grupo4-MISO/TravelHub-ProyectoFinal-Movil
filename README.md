@@ -143,16 +143,16 @@ Las pruebas E2E se organizan en cuatro suites funcionales:
 
 | Suite | Cantidad | Estado | Funcionalidades |
 |-------|----------|--------|-----------------|
-| **SettingsTests** | 5 | ✅ Funcional | Modo oscuro, tamaño de texto, daltonismo, restaurar predeterminados |
-| **SearchFlowTests** | 4 | 🔨 En desarrollo | Búsqueda con parámetros, resultados, selección de propiedad |
-| **BookingFlowTests** | 3 | 🔨 En desarrollo | Flujo de reserva, resumen, confirmación |
-| **AuthFlowTests** | 5 | 🔨 En desarrollo | Login, registro, validación de credenciales, navegación |
+| **SettingsTests** | 5 |  Funcional | Modo oscuro, tamaño de texto, daltonismo, restaurar predeterminados |
+| **SearchFlowTests** | 4 |  En desarrollo | Búsqueda con parámetros, resultados, selección de propiedad |
+| **BookingFlowTests** | 3 |  En desarrollo | Flujo de reserva, resumen, confirmación |
+| **AuthFlowTests** | 5 |  En desarrollo | Login, registro, validación de credenciales, navegación |
 | **TOTAL** | **17** | - | - |
 
 #### Estado Actual de Ejecución
 
 - **Pruebas Diseñadas**: 17
-- **Pruebas Funcionales**: 5 (SettingsTests) ✅
+- **Pruebas Funcionales**: 5 (SettingsTests)
 - **Pruebas en Desarrollo**: 12 (AuthFlow, SearchFlow, BookingFlow) 🔨
 
 Las pruebas de SettingsTests están completamente operativas y se ejecutan exitosamente, validando la accesibilidad y configuración de la aplicación.
@@ -166,14 +166,6 @@ Se implementa una estrategia incremental para garantizar la estabilidad y calida
 3. **Control mediante Skip**: Utiliza atributos `[Fact(Skip="...")]` de xUnit para desactivar suites no preparadas
 4. **Progresión Ordenada**: SettingsTests → SearchFlowTests → BookingFlowTests → AuthFlowTests
 
-Ejemplo del atributo Skip:
-```csharp
-[Fact(Skip = "Paused until LoginPage passes")]
-public void Login_NavigatesToAccountPage()
-{
-    // Prueba desactivada hasta que dependa de otro paso
-}
-```
 
 #### Estructura del Proyecto E2E
 

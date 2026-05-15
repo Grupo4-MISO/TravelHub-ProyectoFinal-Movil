@@ -16,30 +16,22 @@ public class AccountPage : BasePage
 
     public void WaitForPageLoad()
     {
-        DismissAlertIfPresent();
-        // Fast path: if the page root exists, click it to ensure the view has focus without tapping the tab bar.
-        try
-        {
-            var roots = Driver.FindElements(MobileBy.AccessibilityId(Account.Page));
-            if (roots != null && roots.Count > 0)
-            {
-                try { roots[0].Click(); } catch { }
-                try { Thread.Sleep(300); } catch { }
-            }
-        }
-        catch { }
+DismissAlertIfPresent();
 
-        try
-        {
-            Wait.Until(d =>
-            {
-                DismissAlertIfPresent();
-                return IsDisplayed(Account.LoginButton)
-                    || IsDisplayed(Account.UserName)
-                    || IsDisplayed(Account.LogoutButton);
-            });
-            return;
-        }
+try
+{
+    Wait.Until(d =>
+    {
+        DismissAlertIfPresent();
+        return IsDisplayed(Account.Page)
+            || IsDisplayed(Account.EmailEntry)
+            || IsDisplayed(Account.PasswordEntry)
+            || IsDisplayed(Account.LoginButton)
+            || IsDisplayed(Account.UserName)
+            || IsDisplayed(Account.LogoutButton);
+    });
+    return;
+}
         catch (WebDriverTimeoutException)
         {
             // Capture diagnostics to help troubleshoot visibility issues
@@ -55,7 +47,7 @@ public class AccountPage : BasePage
                 File.WriteAllBytes(screenshotPath, screenshot.AsByteArray);
             }
             catch { }
-            // Retry by tapping a safe area above the tab bar to avoid re-selecting tabs (approx. 30% height)
+// Retry by tapping a safe area above the tab bar to avoid re-selecting tabs.
             try
             {
                 var size = Driver.Manage().Window.Size;
@@ -67,14 +59,18 @@ public class AccountPage : BasePage
                     ["y"] = y
                 });
                 try { Thread.Sleep(400); } catch { }
+
                 Wait.Until(d =>
                 {
                     DismissAlertIfPresent();
-                    return IsDisplayed(Account.LoginButton)
-                        || IsDisplayed(Account.UserName)
-                        || IsDisplayed(Account.LogoutButton);
-                });
-                return;
+    return IsDisplayed(Account.Page)
+        || IsDisplayed(Account.EmailEntry)
+        || IsDisplayed(Account.PasswordEntry)
+        || IsDisplayed(Account.LoginButton)
+        || IsDisplayed(Account.UserName)
+        || IsDisplayed(Account.LogoutButton);
+});
+return;
             }
             catch (WebDriverTimeoutException)
             {

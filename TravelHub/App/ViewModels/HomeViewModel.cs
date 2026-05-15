@@ -107,7 +107,7 @@ public class HomeViewModel : BaseViewModel
                 $"{Rooms} habitacion{(Rooms > 1 ? "es" : "")}",
                 $"{Adults} Adulto{(Adults > 1 ? "s" : "")}"
             };
-            parts.Add(Children > 0 ? $"{Children} Nino{(Children > 1 ? "s" : "")}" : "Sin ninos");
+            parts.Add(Children > 0 ? $"{Children} Niño{(Children > 1 ? "s" : "")}" : "Sin niños");
             return string.Join(" - ", parts);
         }
     }

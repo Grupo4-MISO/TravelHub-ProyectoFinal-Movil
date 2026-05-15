@@ -22,34 +22,34 @@ public partial class TopBar : ContentView
         _appSettingsService = Handler.MauiContext.Services.GetRequiredService<IAppSettingsService>()
             ?? throw new InvalidOperationException("No se pudo resolver IAppSettingsService");
 
-        UpdateCountryDisplay();
+        _ = UpdateCountryDisplayAsync();
         _appSettingsService.CountryChanged += OnCountryChanged;
         _appSettingsService.CurrencyChanged += OnCurrencyChanged;
 
         HandlerChanged -= OnHandlerChanged;
     }
 
-    private void UpdateCountryDisplay()
+    private async Task UpdateCountryDisplayAsync()
     {
         if (_appSettingsService == null) return;
 
-        var country = _appSettingsService.CurrentCountry;
-        CountryFlag.Text = country?.FlagEmoji ?? string.Empty;
-        CountryButton.Text = country?.Code ?? string.Empty;
-        CurrencyCodeButton.Text = _appSettingsService.CurrentCurrencyCode;
+        var country = await _appSettingsService.GetCurrentCountryAsync();
+        MainThread.BeginInvokeOnMainThread(() =>
+        {
+            CountryFlag.Text = country?.FlagEmoji ?? string.Empty;
+            CountryButton.Text = country?.Code ?? string.Empty;
+            CurrencyCodeButton.Text = _appSettingsService.CurrentCurrencyCode;
+        });
     }
 
     private void OnCountryChanged(object? sender, string e)
     {
-        UpdateCountryDisplay();
+        _ = UpdateCountryDisplayAsync();
     }
 
     private void OnCurrencyChanged(object? sender, string e)
     {
-        MainThread.BeginInvokeOnMainThread(() =>
-        {
-            CurrencyCodeButton.Text = _appSettingsService.CurrentCurrencyCode;
-        });
+        _ = UpdateCountryDisplayAsync();
     }
 
     private async void OnCountryButtonClicked(object sender, EventArgs e)

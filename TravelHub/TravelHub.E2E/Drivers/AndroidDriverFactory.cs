@@ -91,8 +91,14 @@ public static class AndroidDriverFactory
             options);
 
         driver.Manage().Timeouts().ImplicitWait =
-            TimeSpan.FromSeconds(10);
+            TimeSpan.FromSeconds(settings.ImplicitWaitSeconds);
 
+        // If fixture requests resetting app between tests, set desired capability to not reuse app state and leave driver running
+        if (settings.ResetAppBetweenTests)
+        {
+            // 'shouldTerminateApp' capability already set; ensure 'noReset' is false to force reinstall/clean start when needed
+            options.AddAdditionalAppiumOption("noReset", false);
+        }
         return driver;
     }
 }

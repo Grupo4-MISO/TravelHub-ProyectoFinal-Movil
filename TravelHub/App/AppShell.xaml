@@ -55,7 +55,7 @@
         </ShellContent>
 
         <ShellContent
-            Title="Configuración"
+            Title="{local:Translate Settings_Title}"
             AutomationId="Shell_SettingsTab"
             SemanticProperties.Description="Shell_SettingsTab"
             AutomationProperties.Name="Shell_SettingsTab"

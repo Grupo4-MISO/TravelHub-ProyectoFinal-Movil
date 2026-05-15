@@ -13,15 +13,27 @@
         <VerticalStackLayout Padding="20" Spacing="25">
             
             <!-- Header -->
-            <Label Text="Accesibilidad" 
+            <Label x:Name="SettingsHeaderLabel"
+                   Text="Accesibilidad" 
                    Style="{DynamicResource Headline}" 
                    HorizontalOptions="Center"
-                   SemanticProperties.Description="Settings_Header" />
-            
+                    SemanticProperties.Description="Settings_Header" />
+
+            <!-- Language -->
+            <Frame Padding="15" CornerRadius="10" BackgroundColor="{DynamicResource Surface}">
+                <VerticalStackLayout Spacing="10">
+                    <Label x:Name="LanguageLabel" Text="Seleccionar idioma" Style="{DynamicResource Title}" />
+                    <Picker x:Name="LanguagePicker"
+                            AutomationId="Settings_LanguagePicker"
+                            SelectedIndexChanged="OnLanguageChanged" />
+                </VerticalStackLayout>
+            </Frame>
+             
             <!-- Dark Mode -->
             <Frame Padding="15" CornerRadius="10" BackgroundColor="{DynamicResource Surface}">
                 <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
-                    <Label Text="Modo Oscuro" 
+                    <Label x:Name="DarkModeLabel"
+                           Text="Modo Oscuro" 
                            Style="{DynamicResource Title}" 
                            HorizontalOptions="StartAndExpand" />
                     <Switch IsToggled="{Binding DarkModeEnabled}" 
@@ -34,28 +46,31 @@
             <!-- Color Blindness Mode -->
             <Frame Padding="15" CornerRadius="10" BackgroundColor="{DynamicResource Surface}">
                 <VerticalStackLayout Spacing="10">
-                    <Label Text="Modo Daltonismo" Style="{DynamicResource Title}" />
-                    <Picker Title="Seleccionar modo"
+                    <Label x:Name="ColorBlindnessLabel" Text="Modo Daltonismo" Style="{DynamicResource Title}" />
+                    <Picker x:Name="ColorBlindnessPicker"
+                             Title="Seleccionar modo"
                              AutomationId="Settings_ColorBlindnessPicker"
                              SemanticProperties.Description="Settings_ColorBlindnessPicker"
                              ItemsSource="{Binding ColorBlindnessOptions}"
-                             SelectedItem="{Binding ColorBlindnessMode}" />
+                             SelectedItem="{Binding SelectedColorBlindnessOption}" />
                 </VerticalStackLayout>
             </Frame>
-            
+             
             <!-- Text Size -->
             <Frame Padding="15" CornerRadius="10" BackgroundColor="{DynamicResource Surface}">
                 <VerticalStackLayout Spacing="10">
-                    <Label Text="Tamaño de Texto" Style="{DynamicResource Title}" />
-                    <Picker Title="Seleccionar tamaño"
+                    <Label x:Name="TextSizeLabel" Text="Tamaño de Texto" Style="{DynamicResource Title}" />
+                    <Picker x:Name="TextSizePicker"
+                            Title="Seleccionar tamaño"
                             AutomationId="Settings_TextSizePicker"
                             ItemsSource="{Binding TextSizeOptions}"
                             SelectedItem="{Binding TextSizeScale}" />
                 </VerticalStackLayout>
             </Frame>
-            
+             
             <!-- Restore Defaults Button -->
-            <Button Text="Restaurar Valores Predeterminados" 
+            <Button x:Name="RestoreDefaultsButton"
+                    Text="Restaurar Valores Predeterminados" 
                     AutomationId="Settings_RestoreDefaultsButton"
                     Command="{Binding RestoreDefaultsCommand}" 
                     Style="{DynamicResource OutlineButton}"

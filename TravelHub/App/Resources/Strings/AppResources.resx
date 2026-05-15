@@ -520,6 +520,44 @@
     <value>Reintentar</value>
   </data>
 
+  <!-- SettingsPage -->
+  <data name="Settings_Title" xml:space="preserve">
+    <value>Configuración</value>
+  </data>
+  <data name="Settings_Header" xml:space="preserve">
+    <value>Accesibilidad</value>
+  </data>
+  <data name="Settings_DarkMode" xml:space="preserve">
+    <value>Modo Oscuro</value>
+  </data>
+  <data name="Settings_ColorBlindnessMode" xml:space="preserve">
+    <value>Modo Daltonismo</value>
+  </data>
+  <data name="Settings_ColorBlindness_SelectMode" xml:space="preserve">
+    <value>Seleccionar modo</value>
+  </data>
+  <data name="Settings_ColorBlindness_None" xml:space="preserve">
+    <value>Ninguno</value>
+  </data>
+  <data name="Settings_ColorBlindness_Protanopia" xml:space="preserve">
+    <value>Protanopía</value>
+  </data>
+  <data name="Settings_ColorBlindness_Deuteranopia" xml:space="preserve">
+    <value>Deuteranopía</value>
+  </data>
+  <data name="Settings_ColorBlindness_Tritanopia" xml:space="preserve">
+    <value>Tritanopía</value>
+  </data>
+  <data name="Settings_TextSize" xml:space="preserve">
+    <value>Tamaño de Texto</value>
+  </data>
+  <data name="Settings_TextSize_SelectSize" xml:space="preserve">
+    <value>Seleccionar tamaño</value>
+  </data>
+  <data name="Settings_RestoreDefaults" xml:space="preserve">
+    <value>Restaurar Valores Predeterminados</value>
+  </data>
+
   <!-- Idioma / Language -->
   <data name="Language_Espanol" xml:space="preserve">
     <value>Español</value>

@@ -81,9 +81,9 @@
                                 <Label Text="{Binding CurrencyCode}"
                                        FontFamily="OpenSansSemibold"
                                        FontSize="16" />
-                                <Label Text="{Binding CurrencySymbol}"
+                                <!--<Label Text="{Binding CurrencySymbol}"
                                        Style="{StaticResource Caption}"
-                                       FontSize="12" />
+                                       FontSize="12" />-->
                             </VerticalStackLayout>
 
                             <!-- Indicador de selección -->

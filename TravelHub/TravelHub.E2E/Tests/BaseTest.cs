@@ -35,6 +35,9 @@ public abstract class BaseTest : IDisposable
 
         if (!fixture.IsEnvironmentReady)
             throw new InvalidOperationException(fixture.SkipReason ?? "Entorno de Appium/Android no disponible.");
+ 
+        // Ensure a clean app state before each test to reduce inter-test flakiness
+        try { fixture.ResetAppState(); } catch { }
 
         Driver = fixture.Driver ?? throw new InvalidOperationException("Driver de Appium no inicializado.");
 
@@ -55,21 +58,50 @@ public abstract class BaseTest : IDisposable
 
     protected void NavigateToTab(string tabName)
     {
-        var wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(15));
-        var tabLocator = By.XPath($"//*[@text='{tabName}']");
-        wait.Until(d =>
+        var tabId = tabName switch
         {
-            try
+            TabNames.Search => "Shell_SearchTab",
+            TabNames.Bookings => "Shell_BookingsTab",
+            TabNames.MyAccount => "Shell_AccountTab",
+            TabNames.Settings => "Shell_SettingsTab",
+            _ => tabName
+        };
+
+        var wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(8));
+        try
+        {
+            var tabByAccessibilityId = OpenQA.Selenium.Appium.MobileBy.AccessibilityId(tabId);
+            wait.Until(d =>
             {
-                var el = d.FindElement(tabLocator);
-                el.Click();
+                var tab = d.FindElements(tabByAccessibilityId).FirstOrDefault(e => e.Displayed && e.Enabled);
+                if (tab == null)
+                {
+                    return false;
+                }
+
+                tab.Click();
                 return true;
-            }
-            catch (StaleElementReferenceException)
+            });
+        }
+        catch (WebDriverTimeoutException)
+        {
+            var size = Driver.Manage().Window.Size;
+            var tabIndex = tabName switch
             {
-                return false;
-            }
-        });
+                TabNames.Search => 0,
+                TabNames.Bookings => 1,
+                TabNames.MyAccount => 2,
+                TabNames.Settings => 3,
+                _ => 0
+            };
+            var x = (int)(size.Width * (0.125 + (tabIndex * 0.25)));
+            var y = (int)(size.Height * 0.95);
+            Driver.ExecuteScript("mobile: clickGesture", new Dictionary<string, object>
+            {
+                ["x"] = x,
+                ["y"] = y
+            });
+        }
     }
 
     protected bool DismissAlertIfPresent()
@@ -95,22 +127,5 @@ public abstract class BaseTest : IDisposable
         {
             ScreenshotCapture.Capture(Driver, _testName);
         }
-
-        try
-        {
-            if (Driver == null) return;
-            var tabLocator = By.XPath($"//*[@text='{TabNames.Settings}']");
-            try
-            {
-                Driver.FindElement(tabLocator).Click();
-            }
-            catch
-            {
-                Driver.PressKeyCode(4);
-                Thread.Sleep(500);
-                Driver.FindElement(tabLocator).Click();
-            }
-        }
-        catch { }
     }
 }

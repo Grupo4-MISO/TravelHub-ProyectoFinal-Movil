@@ -52,6 +52,24 @@ public class AppSettingsService : IAppSettingsService
         }
     }
 
+    public async Task<Country?> GetCurrentCountryAsync()
+    {
+        var country = CurrentCountry;
+        if (country != null)
+        {
+            return country;
+        }
+
+        var countriesResponse = await _countryService.GetCountriesAsync();
+        if (countriesResponse.Error || countriesResponse.Response == null || countriesResponse.Response.Count == 0)
+        {
+            return null;
+        }
+
+        _cachedCountry = _countryService.GetCountryByCode(_currentCountryCode);
+        return _cachedCountry;
+    }
+
     public string CurrentCurrencyCode
     {
         get => _currentCurrencyCode;
