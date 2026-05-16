@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
@@ -12,7 +12,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-
   <!-- AppShell -->
   <data name="Shell_Buscar" xml:space="preserve">
     <value>Buscar</value>
@@ -23,7 +22,6 @@
   <data name="Shell_MiCuenta" xml:space="preserve">
     <value>Mi Cuenta</value>
   </data>
-
   <!-- HomePage -->
   <data name="Home_BuscarHospedaje" xml:space="preserve">
     <value>Buscar Hospedaje</value>
@@ -49,7 +47,6 @@
   <data name="Home_Buscar" xml:space="preserve">
     <value>Buscar</value>
   </data>
-
   <!-- SearchResultsPage -->
   <data name="Search_Filtros" xml:space="preserve">
     <value>Filtros</value>
@@ -96,7 +93,6 @@
   <data name="Search_ModificarFiltros" xml:space="preserve">
     <value>Intenta modificar los filtros de búsqueda</value>
   </data>
-
   <!-- PropertyDetailPage -->
   <data name="Detail_Resenas" xml:space="preserve">
     <value>({0} reseñas)</value>
@@ -119,7 +115,6 @@
   <data name="Detail_ElegirHabitacion" xml:space="preserve">
     <value>Elegir Habitación</value>
   </data>
-
   <!-- RoomSelectionPage -->
   <data name="Room_MaxHuespedes" xml:space="preserve">
     <value>Max {0} huéspedes</value>
@@ -133,7 +128,6 @@
   <data name="Room_Reservar" xml:space="preserve">
     <value>Reservar</value>
   </data>
-
   <!-- TravelerDataPage -->
   <data name="Traveler_PorNoche" xml:space="preserve">
     <value>/ noche</value>
@@ -183,7 +177,6 @@
   <data name="Traveler_Actualizar" xml:space="preserve">
     <value>Actualizar datos</value>
   </data>
-
   <!-- BookingSummaryPage -->
   <data name="Summary_Fechas" xml:space="preserve">
     <value>Fechas</value>
@@ -218,7 +211,6 @@
   <data name="Summary_ReservarAhora" xml:space="preserve">
     <value>Reservar Ahora</value>
   </data>
-
   <!-- BookingDetailsPage -->
   <data name="Details_Titulo" xml:space="preserve">
     <value>Detalle de Reserva</value>
@@ -289,7 +281,6 @@
   <data name="Details_Cancelar" xml:space="preserve">
     <value>Cancelar Reserva</value>
   </data>
-
   <!-- BookingConfirmedPage -->
   <data name="Confirmed_Titulo" xml:space="preserve">
     <value>Reserva Confirmada!</value>
@@ -330,7 +321,6 @@
   <data name="Confirmed_Seleccionado" xml:space="preserve">
     <value>Seleccionado:</value>
   </data>
-
   <!-- ActiveBookingsPage -->
   <data name="Bookings_Titulo" xml:space="preserve">
     <value>Mis Reservas</value>
@@ -350,7 +340,6 @@
   <data name="Bookings_BuscaViaje" xml:space="preserve">
     <value>Busca y reserva tu próximo viaje</value>
   </data>
-
   <!-- AccountPage -->
   <data name="Account_Titulo" xml:space="preserve">
     <value>Mi Cuenta</value>
@@ -391,7 +380,6 @@
   <data name="Account_Registrate" xml:space="preserve">
     <value>Regístrate</value>
   </data>
-
   <!-- AccountLoginPage -->
   <data name="Login_Titulo" xml:space="preserve">
     <value>Inicia sesión para continuar</value>
@@ -417,7 +405,6 @@
   <data name="Login_Registrate" xml:space="preserve">
     <value>Regístrate</value>
   </data>
-
   <!-- AccountRegisterPage -->
   <data name="Register_Titulo" xml:space="preserve">
     <value>Completa tus datos para registrarte</value>
@@ -435,13 +422,13 @@
     <value>Selecciona tu género</value>
   </data>
   <data name="Register_Female" xml:space="preserve">
-    <value>Female</value>
+    <value>Mujer</value>
   </data>
   <data name="Register_Male" xml:space="preserve">
-    <value>Male</value>
+    <value>Hombre</value>
   </data>
   <data name="Register_Other" xml:space="preserve">
-    <value>Other</value>
+    <value>Otro</value>
   </data>
   <data name="Register_Nombre" xml:space="preserve">
     <value>Nombre</value>
@@ -494,7 +481,6 @@
   <data name="Register_IniciaSesion" xml:space="preserve">
     <value>Inicia sesión</value>
   </data>
-
   <!-- CountryPage -->
   <data name="Country_Titulo" xml:space="preserve">
     <value>Seleccionar País</value>
@@ -508,7 +494,6 @@
   <data name="Country_Moneda" xml:space="preserve">
     <value>Moneda: {0}</value>
   </data>
-
   <!-- CurrencyPage -->
   <data name="Currency_Titulo" xml:space="preserve">
     <value>Seleccionar Moneda</value>
@@ -519,7 +504,6 @@
   <data name="Currency_Reintentar" xml:space="preserve">
     <value>Reintentar</value>
   </data>
-
   <!-- SettingsPage -->
   <data name="Settings_Title" xml:space="preserve">
     <value>Configuración</value>
@@ -557,7 +541,6 @@
   <data name="Settings_RestoreDefaults" xml:space="preserve">
     <value>Restaurar Valores Predeterminados</value>
   </data>
-
   <!-- Idioma / Language -->
   <data name="Language_Espanol" xml:space="preserve">
     <value>Español</value>

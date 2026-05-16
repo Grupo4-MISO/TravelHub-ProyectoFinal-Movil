@@ -33,7 +33,6 @@ public class AuthFlowTests : BaseTest
             password);
 
         DismissAlertIfPresent();
-        Account.WaitForPageLoad();
 
         return (email, password);
     }
@@ -43,6 +42,11 @@ public class AuthFlowTests : BaseTest
         DismissAlertIfPresent();
         NavigateToTab(TabNames.MyAccount);
         Account.WaitForPageLoad();
+        if (Account.IsLoginButtonDisplayed())
+        {
+            return;
+        }
+
         if (Account.IsLoggedIn())
         {
             Account.TapLogout();
@@ -50,7 +54,7 @@ public class AuthFlowTests : BaseTest
         }
     }
 
-    [Fact(Skip = "Se ejecuta correctamente")]
+    [Fact]
     public void LoginPage_DisplaysLoginForm()
     {
         GoToAccount();
@@ -59,7 +63,7 @@ public class AuthFlowTests : BaseTest
             "Login button should be visible on account page when not logged in");
     }
 
-    [Fact(Skip = "Se ejecuta correctamente")]
+    [Fact]
     public void Login_NavigatesToAccountPage()
     {
         var credentials = RegisterAccountAndReturnCredentials();
@@ -73,7 +77,7 @@ public class AuthFlowTests : BaseTest
             "User should be logged in after valid credentials");
     }
 
-    [Fact(Skip = "Se ejecuta correctamente")]
+    [Fact]
     public void Login_WithInvalidCredentials_ShowsErrorMessage()
     {
         GoToAccount();
@@ -88,7 +92,7 @@ public class AuthFlowTests : BaseTest
             "User should remain logged out after invalid credentials");
     }
 
-    [Fact(Skip = "Se ejecuta correctamente")]
+    [Fact]
     public void RegisterLink_NavigatesToRegisterPage()
     {
         GoToAccount();
@@ -98,10 +102,11 @@ public class AuthFlowTests : BaseTest
         Assert.NotNull(Driver.PageSource);
     }
 
-    [Fact(Skip = "Se ejecuta correctamente")]
+    [Fact]
     public void Register_CreatesNewAccount()
     {
         RegisterAccountAndReturnCredentials();
+        Account.WaitForPageLoad();
         Assert.True(Account.IsLoginButtonDisplayed(),
             "Account page should return to the login form after successful registration");
     }

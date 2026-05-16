@@ -1,0 +1,292 @@
+﻿╔════════════════════════════════════════════════════════════════════════════╗
+║       DIAGNÓSTICO: Problema de Traducción en Formulario de Género         ║
+║       TravelHub.E2E - AccountRegisterPage                                  ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+🎯 PROBLEMA OBSERVADO
+────────────────────────────────────────────────────────────────────────────
+El diálogo de selección de género muestra literalmente:
+  ✗ {local:Translate Register_Female}
+  ✗ {local:Translate Register_Male}
+  ✗ {local:Translate Register_Other}
+
+En lugar de:
+  ✓ Mujer
+  ✓ Hombre
+  ✓ Otro
+
+🔍 ANÁLISIS TÉCNICO
+────────────────────────────────────────────────────────────────────────────
+
+UBICACIÓN DEL CÓDIGO:
+  Archivo: App/Views/AccountRegisterPage.xaml
+  Líneas: 96-98
+
+  Código problemático:
+  ┌────────────────────────────────────────────────────────────────────┐
+  │ <Picker.Items>                                                     │
+  │     <x:String>{local:Translate Register_Female}</x:String>        │
+  │     <x:String>{local:Translate Register_Male}</x:String>          │
+  │     <x:String>{local:Translate Register_Other}</x:String>         │
+  │ </Picker.Items>                                                    │
+  └────────────────────────────────────────────────────────────────────┘
+
+CAUSA RAÍZ #1: LIMITACIÓN DE XAML
+─────────────────────────────────────────────────────────────────────────
+El problema es que los markup extensions {local:Translate ...} dentro de
+colecciones x:String NO son procesados por el parser de XAML.
+
+Explicación:
+  • Los markup extensions funcionan a nivel de propiedades
+  • Cuando están dentro de x:String, son tratados como texto literal
+  • El parser no interpreta {local:Translate} como un binding
+
+  ANTES (incorrecto):
+    <x:String>{local:Translate Register_Female}</x:String>
+    → Se procesa como texto literal: "{local:Translate Register_Female}"
+
+  LO QUE PASA:
+    1. XAML lee "<x:String>{...}</x:String>"
+    2. Crea un string literal con ese contenido
+    3. El markup extension nunca se evalúa
+    4. Result: el usuario ve "{local:Translate ...}"
+
+CAUSA RAÍZ #2: VALORES EN INGLÉS
+─────────────────────────────────────────────────────────────────────────
+Incluso si se solucionara #1, los valores serían:
+  ✓ Register_Female → "Female"
+  ✓ Register_Male → "Male"
+  ✓ Register_Other → "Other"
+
+No están traducidos al español:
+  ✗ Falta "Mujer"
+  ✗ Falta "Hombre"
+  ✗ Falta "Otro"
+
+📂 VERIFICACIÓN DE RECURSOS
+────────────────────────────────────────────────────────────────────────────
+Archivo: App/Resources/Strings/AppResources.resx
+
+Estado actual:
+  <data name="Register_Female" xml:space="preserve">
+    <value>Female</value>                    ✗ INGLÉS
+  </data>
+
+  <data name="Register_Male" xml:space="preserve">
+    <value>Male</value>                      ✗ INGLÉS
+  </data>
+
+  <data name="Register_Other" xml:space="preserve">
+    <value>Other</value>                     ✗ INGLÉS
+  </data>
+
+REQUERIDO:
+  <data name="Register_Female" xml:space="preserve">
+    <value>Mujer</value>                     ✓ ESPAÑOL
+  </data>
+
+  <data name="Register_Male" xml:space="preserve">
+    <value>Hombre</value>                    ✓ ESPAÑOL
+  </data>
+
+  <data name="Register_Other" xml:space="preserve">
+    <value>Otro</value>                      ✓ ESPAÑOL
+  </data>
+
+✅ SOLUCIONES
+────────────────────────────────────────────────────────────────────────────
+
+SOLUCIÓN #1: Usar ObservableCollection (RECOMENDADO - Corto plazo)
+───────────────────────────────────────────────────────────────────────────
+
+PASO 1: Crear una propiedad en AccountRegisterPageViewModel:
+
+  public class AccountRegisterPageViewModel : BaseViewModel
+  {
+      public ObservableCollection<string> GenderOptions { get; }
+      
+      public AccountRegisterPageViewModel()
+      {
+          GenderOptions = new()
+          {
+              AppResources.Register_Female,   // Mujer
+              AppResources.Register_Male,     // Hombre
+              AppResources.Register_Other     // Otro
+          };
+      }
+  }
+
+PASO 2: Cambiar el XAML:
+
+  Antes:
+    <Picker.Items>
+        <x:String>{local:Translate Register_Female}</x:String>
+        <x:String>{local:Translate Register_Male}</x:String>
+        <x:String>{local:Translate Register_Other}</x:String>
+    </Picker.Items>
+
+  Después:
+    ItemsSource="{Binding GenderOptions}"
+
+  XAML completo:
+    <Picker Grid.Column="1"
+            AutomationId="Register_GenderPicker"
+            Title="{local:Translate Register_GeneroTitle}"
+            SelectedItem="{Binding Gender}"
+            ItemsSource="{Binding GenderOptions}" />
+
+VENTAJAS:
+  ✓ Permite traducción dinámica
+  ✓ Traducciones se actualizan al cambiar idioma
+  ✓ Vinculable desde ViewModel
+
+SOLUCIÓN #2: Code-Behind (Alternativa - Si necesita rápido)
+───────────────────────────────────────────────────────────────────────────
+
+PASO 1: Modificar AccountRegisterPage.xaml:
+
+  <Picker Grid.Column="1"
+          AutomationId="Register_GenderPicker"
+          Title="{local:Translate Register_GeneroTitle}"
+          SelectedItem="{Binding Gender}"
+          x:Name="GenderPicker" />
+
+PASO 2: En AccountRegisterPage.xaml.cs:
+
+  public partial class AccountRegisterPage : ContentPage
+  {
+      public AccountRegisterPage()
+      {
+          InitializeComponent();
+          InitializeGenderPicker();
+      }
+
+      private void InitializeGenderPicker()
+      {
+          GenderPicker.Items.Clear();
+          GenderPicker.Items.Add(AppResources.Register_Female);   // Mujer
+          GenderPicker.Items.Add(AppResources.Register_Male);     // Hombre
+          GenderPicker.Items.Add(AppResources.Register_Other);    // Otro
+      }
+  }
+
+VENTAJAS:
+  ✓ Implementación inmediata
+  ✗ No reacciona a cambios de idioma dinámico
+  ✗ Lógica en code-behind
+
+🔧 CORRECCIONES REQUERIDAS
+────────────────────────────────────────────────────────────────────────────
+
+CORRECCIÓN #1: Actualizar AppResources.resx (CRÍTICA)
+──────────────────────────────────────────────────────
+
+Buscar en: App/Resources/Strings/AppResources.resx
+
+Cambiar:
+  <data name="Register_Female" xml:space="preserve">
+    <value>Female</value>
+  </data>
+
+Por:
+  <data name="Register_Female" xml:space="preserve">
+    <value>Mujer</value>
+  </data>
+
+Cambiar:
+  <data name="Register_Male" xml:space="preserve">
+    <value>Male</value>
+  </data>
+
+Por:
+  <data name="Register_Male" xml:space="preserve">
+    <value>Hombre</value>
+  </data>
+
+Cambiar:
+  <data name="Register_Other" xml:space="preserve">
+    <value>Other</value>
+  </data>
+
+Por:
+  <data name="Register_Other" xml:space="preserve">
+    <value>Otro</value>
+  </data>
+
+CORRECCIÓN #2: Arreglar el XAML (CRÍTICA)
+──────────────────────────────────────────────────────
+
+Opción A (RECOMENDADA): Usar ItemsSource + ViewModel
+  • Eliminar <Picker.Items> bloque
+  • Agregar ItemsSource="{Binding GenderOptions}"
+  • Implementar GenderOptions en ViewModel
+
+Opción B (RÁPIDA): Usar code-behind
+  • Mantener <Picker x:Name="GenderPicker" />
+  • Inicializar en constructor con AppResources
+
+PRUEBA DE VALIDACIÓN
+────────────────────────────────────────────────────────────────────────────
+
+Después de aplicar las correcciones:
+
+1. Recompilar la app
+2. Navegar a: Cuenta → Registrarse
+3. Abrir diálogo de género
+4. Verificar que muestre:
+   ✓ Mujer
+   ✓ Hombre
+   ✓ Otro
+
+   (Antes mostraba: {local:Translate ...})
+
+IMPACTO
+────────────────────────────────────────────────────────────────────────────
+Severidad:     ALTO - Interfaz rota
+Usuarios:      Todos los que intenten registrarse
+E2E Tests:     BookingFlowTests se verá afectado si selecciona género
+Sprint:        DEBE CORREGIRSE EN ITERACIÓN ACTUAL
+Tiempo Est:    15-20 minutos
+
+═══════════════════════════════════════════════════════════════════════════════
+📝 CHECKLIST DE CORRECCIÓN
+═══════════════════════════════════════════════════════════════════════════════
+
+PASO 1: Actualizar Traducciones
+  ☐ Abrir: App/Resources/Strings/AppResources.resx
+  ☐ Cambiar Register_Female: "Female" → "Mujer"
+  ☐ Cambiar Register_Male: "Male" → "Hombre"
+  ☐ Cambiar Register_Other: "Other" → "Otro"
+  ☐ Guardar el archivo
+
+PASO 2: Elegir Solución (Opción A recomendada)
+
+  OPCIÓN A: ViewModel + ObservableCollection
+  ☐ Abrir: App/ViewModels/AccountRegisterPageViewModel.cs
+  ☐ Agregar propiedad GenderOptions
+  ☐ Inicializar en constructor
+  ☐ Abrir: App/Views/AccountRegisterPage.xaml
+  ☐ Reemplazar <Picker.Items> por ItemsSource="{Binding GenderOptions}"
+  
+  OPCIÓN B: Code-Behind
+  ☐ Abrir: App/Views/AccountRegisterPage.xaml.cs
+  ☐ Agregar método InitializeGenderPicker()
+  ☐ Llamar en constructor
+  ☐ Verificar que Items.Add() funcione correctamente
+
+PASO 3: Compilar y Prueba
+  ☐ Ejecutar: dotnet build App\App.csproj
+  ☐ Corregir any compilation errors
+  ☐ Ejecutar app en emulador
+  ☐ Navegar a Registro
+  ☐ Abrir diálogo de género
+  ☐ Verificar que muestre: Mujer, Hombre, Otro
+
+PASO 4: Tests E2E
+  ☐ Ejecutar AuthFlowTests
+  ☐ Ejecutar BookingFlowTests
+  ☐ Verificar que no falten datos al seleccionar género
+
+════════════════════════════════════════════════════════════════════════════
+Diagnóstico completado: 2026-05-15 23:05:00
+════════════════════════════════════════════════════════════════════════════

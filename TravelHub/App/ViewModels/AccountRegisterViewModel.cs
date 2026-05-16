@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using App.DTOs;
 using App.Services.Interfaces;
 
@@ -86,6 +87,8 @@ public class AccountRegisterViewModel : BaseViewModel
         set => SetProperty(ref _countryFlag, value);
     }
 
+    public ObservableCollection<string> GenderOptions { get; }
+
     public Command RegisterCommand { get; }
     public Command GoToLoginCommand { get; }
 
@@ -96,6 +99,15 @@ public class AccountRegisterViewModel : BaseViewModel
         _authService = authService ?? throw new ArgumentNullException(nameof(authService));
         Title = "Registro";
         LoadPhoneCode();
+        
+        // Initialize gender options with Spanish translations
+        GenderOptions = new()
+        {
+            "Mujer",   // Register_Female
+            "Hombre",  // Register_Male
+            "Otro"     // Register_Other
+        };
+        
         RegisterCommand = new Command(async () => await Register());
         GoToLoginCommand = new Command(async () => await GoToLogin());
     }

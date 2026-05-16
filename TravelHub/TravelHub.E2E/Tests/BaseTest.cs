@@ -37,9 +37,9 @@ public abstract class BaseTest : IDisposable
             throw new InvalidOperationException(fixture.SkipReason ?? "Entorno de Appium/Android no disponible.");
  
         // Ensure a clean app state before each test to reduce inter-test flakiness
-        try { fixture.ResetAppState(); } catch { }
-
-        Driver = fixture.Driver ?? throw new InvalidOperationException("Driver de Appium no inicializado.");
+        if (!fixture.ResetAppState())
+            throw new InvalidOperationException("No se pudo reiniciar el estado de la app antes de la prueba.");
+        Driver = fixture.RestartDriver();
 
         Home = new HomePage(Driver);
         Login = new AccountLoginPage(Driver);

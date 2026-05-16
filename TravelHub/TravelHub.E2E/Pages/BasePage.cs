@@ -101,29 +101,44 @@ public abstract class BasePage
         WaitForElement(automationId).Click();
     }
 
+    protected void SelectVisibleOption(string expectedText)
+    {
+        var wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(8));
+        var option = wait.Until(d =>
+        {
+            var candidates = d.FindElements(MobileBy.ClassName("android.widget.CheckedTextView"))
+                .Concat(d.FindElements(MobileBy.ClassName("android.widget.TextView")));
+
+            return candidates.FirstOrDefault(e =>
+                e.Displayed &&
+                e.Enabled &&
+                string.Equals(e.Text?.Trim(), expectedText.Trim(), StringComparison.Ordinal));
+        });
+
+        if (option == null)
+        {
+            throw new WebDriverTimeoutException($"No se encontró la opción visible '{expectedText}'.");
+        }
+
+        option.Click();
+    }
+
     protected void EnterText(string automationId, string text)
     {
-            // Wait until the element is present and enabled before interacting
-            Wait.Until(d => FindByAutomationId(d, automationId, requireEnabled: true) != null);
-            var element = WaitForElement(automationId);
-            try
-            {
-                // Ensure field is focused before clearing / typing to avoid suggestions overlay interfering
-                element.Click();
-            }
-            catch { }
-            element.Clear();
-            element.Clear();
-            element.SendKeys(text);
-            // Hide keyboard if present to ensure subsequent taps land on the app UI, not the keyboard suggestions.
-            try
-            {
-                // Appium AndroidDriver exposes HideKeyboard()
-                Driver.HideKeyboard();
-            }
-            catch { }
-            // Small pause to allow UI to settle after hiding keyboard
+        Wait.Until(d => FindByAutomationId(d, automationId, requireEnabled: true) != null);
+        var element = WaitForElement(automationId);
+        element.Click();
+        element.Clear();
+        element.SendKeys(text);
+
+        try
+        {
+            Driver.HideKeyboard();
         }
+        catch (WebDriverException)
+        {
+        }
+    }
 
     protected string GetText(string automationId)
         => WaitForElement(automationId).Text;

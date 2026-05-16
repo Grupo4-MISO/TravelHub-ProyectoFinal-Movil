@@ -88,16 +88,11 @@
                                             Color="{StaticResource Gray400}" />
                                     </Image.Source>
                                 </Image>
-<Picker Grid.Column="1"
+                <Picker Grid.Column="1"
         AutomationId="Register_GenderPicker"
         Title="{local:Translate Register_GeneroTitle}"
-        SelectedItem="{Binding Gender}">
-    <Picker.Items>
-        <x:String>{local:Translate Register_Female}</x:String>
-        <x:String>{local:Translate Register_Male}</x:String>
-        <x:String>{local:Translate Register_Other}</x:String>
-    </Picker.Items>
-</Picker>
+        SelectedItem="{Binding Gender}"
+        ItemsSource="{Binding GenderOptions}" />
                             </Grid>
                         </Border>
                     </VerticalStackLayout>
