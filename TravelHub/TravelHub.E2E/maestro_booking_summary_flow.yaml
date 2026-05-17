@@ -1,0 +1,86 @@
+appId: com.travelhub.app
+name: BookingSummary - Requires Terms (PoC)
+---
+# Ensure app is clean
+- runFlow: ./maestro_reset_app.yaml
+
+# Optional: reuse login if the booking flow requires an authenticated user
+- runFlow:
+    file: ./maestro_login_subflow.yaml
+    env:
+      EMAIL: "[email protected]"
+      PASSWORD: "P@ssw0rd"
+
+# Navigate to Search tab and perform a search
+- tapOn:
+    id: "Shell_SearchTab"
+- waitForAnimationToEnd:
+    timeout: 3000
+- assertVisible:
+    id: "Home_SearchButton"
+- tapOn:
+    id: "Home_SearchButton"
+
+# Wait for results
+- assertVisible:
+    id: "SearchResults_ResultItem"
+
+# Select first result
+- tapOn:
+    id: "SearchResults_ResultItem"
+    index: 0
+
+# Property detail -> choose room
+- waitForAnimationToEnd:
+    timeout: 3000
+- tapOn:
+    id: "PropertyDetail_ChooseRoomButton"
+
+# Room selection -> select first room and reserve
+- assertVisible:
+    id: "RoomSelection_SelectRoomButton"
+- tapOn:
+    id: "RoomSelection_SelectRoomButton"
+    index: 0
+- tapOn:
+    id: "RoomSelection_ReserveButton"
+
+# Fill traveler data
+- assertVisible:
+    id: "TravelerData_FirstNameEntry"
+- inputText:
+    id: "TravelerData_FirstNameEntry"
+    text: "Test"
+- inputText:
+    id: "TravelerData_LastNameEntry"
+    text: "User"
+- inputText:
+    id: "TravelerData_DocumentEntry"
+    text: "A12345678"
+- inputText:
+    id: "TravelerData_PhoneEntry"
+    text: "+1234567890"
+- inputText:
+    id: "TravelerData_EmailEntry"
+    text: "[email protected]"
+- tapOn:
+    id: "TravelerData_ContinueButton"
+
+# On Booking Summary, assert reserve disabled before accepting terms
+- waitForAnimationToEnd:
+    timeout: 3000
+- assertVisible:
+    id: "BookingSummary_Page"
+- assertNotVisible:
+    id: "BookingSummary_TermsCheckBox_checked"
+- assertVisible:
+    id: "BookingSummary_ReserveButton"
+
+# Verify reserve button is disabled (Maestro doesn't expose enabled state directly in commands; use assertWithAI or try tapping and expect no navigation)
+- tapOn:
+    id: "BookingSummary_ReserveButton"
+- waitForAnimationToEnd:
+    timeout: 2000
+- assertVisible:
+    id: "BookingSummary_Page"
+- takeScreenshot: booking_summary_before_terms.png

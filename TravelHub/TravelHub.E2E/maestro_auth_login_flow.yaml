@@ -1,0 +1,29 @@
+appId: com.travelhub.app
+name: Auth - Register and Login (PoC)
+env:
+  TEST_EMAIL: "[email protected]"
+  TEST_PASSWORD: "P@ssw0rd"
+---
+# Reset app state and ensure main UI ready
+- runFlow: ./maestro_reset_app.yaml
+
+# Register a new account (optional) using script for dynamic credentials
+- runScript:
+    file: ./generate_credentials.js
+- runFlow:
+    file: ./maestro_register_subflow.yaml
+    env:
+      EMAIL: ${output.email}
+      PASSWORD: ${output.password}
+
+# Login with the created credentials
+- runFlow:
+    file: ./maestro_login_subflow.yaml
+    env:
+      EMAIL: ${output.email}
+      PASSWORD: ${output.password}
+
+# Verify logged in
+- assertVisible:
+    id: "Account_Page"
+- takeScreenshot: auth_poc_after_login.png
