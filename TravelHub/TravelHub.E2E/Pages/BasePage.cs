@@ -167,54 +167,24 @@ public abstract class BasePage
     protected void NavigateToTab(string tabName)
     {
         DismissAlertIfPresent();
-        var tabId = tabName switch
+
+        var size = Driver.Manage().Window.Size;
+        var tabIndex = tabName switch
         {
-            TabNames.Search => "Shell_SearchTab",
-            TabNames.Bookings => "Shell_BookingsTab",
-            TabNames.MyAccount => "Shell_AccountTab",
-            TabNames.Settings => "Shell_SettingsTab",
-            _ => tabName
+            TabNames.Search => 0,
+            TabNames.Bookings => 1,
+            TabNames.MyAccount => 2,
+            TabNames.Settings => 3,
+            _ => 0
         };
 
-        var shortWait = new WebDriverWait(Driver, TimeSpan.FromSeconds(6));
-        try
+        var x = (int)(size.Width * (0.125 + (tabIndex * 0.25)));
+        var y = (int)(size.Height * 0.95);
+        Driver.ExecuteScript("mobile: clickGesture", new Dictionary<string, object>
         {
-            var tabByAccessibilityId = MobileBy.AccessibilityId(tabId);
-
-            shortWait.Until(d =>
-            {
-                var tab = d.FindElements(tabByAccessibilityId)
-                    .FirstOrDefault(e => e.Displayed && e.Enabled);
-                if (tab == null)
-                {
-                    return false;
-                }
-
-                tab.Click();
-                return true;
-            });
-            return;
-        }
-        catch (WebDriverTimeoutException)
-        {
-            var size = Driver.Manage().Window.Size;
-            var tabIndex = tabName switch
-            {
-                TabNames.Search => 0,
-                TabNames.Bookings => 1,
-                TabNames.MyAccount => 2,
-                TabNames.Settings => 3,
-                _ => 0
-            };
-
-            var x = (int)(size.Width * (0.125 + (tabIndex * 0.25)));
-            var y = (int)(size.Height * 0.95);
-            Driver.ExecuteScript("mobile: clickGesture", new Dictionary<string, object>
-            {
-                ["x"] = x,
-                ["y"] = y
-            });
-        }
+            ["x"] = x,
+            ["y"] = y
+        });
     }
 
     protected void WaitForPageLoad(string pageAutomationId)

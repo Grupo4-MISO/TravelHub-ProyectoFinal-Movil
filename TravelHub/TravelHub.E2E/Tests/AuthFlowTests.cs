@@ -42,16 +42,6 @@ public class AuthFlowTests : BaseTest
         DismissAlertIfPresent();
         NavigateToTab(TabNames.MyAccount);
         Account.WaitForPageLoad();
-        if (Account.IsLoginButtonDisplayed())
-        {
-            return;
-        }
-
-        if (Account.IsLoggedIn())
-        {
-            Account.TapLogout();
-            Account.WaitForPageLoad();
-        }
     }
 
     [Fact]
@@ -85,8 +75,8 @@ public class AuthFlowTests : BaseTest
         Account.EnterPassword(TestDataFactory.Users.InvalidUser.Password);
         Account.TapLogin();
 
-        DismissAlertIfPresent();
-        NavigateToTab(TabNames.MyAccount);
+        var alertDismissed = DismissAlertIfPresent();
+        Assert.True(alertDismissed, "Invalid credentials should trigger an error alert.");
         Account.WaitForPageLoad();
         Assert.False(Account.IsLoggedIn(),
             "User should remain logged out after invalid credentials");

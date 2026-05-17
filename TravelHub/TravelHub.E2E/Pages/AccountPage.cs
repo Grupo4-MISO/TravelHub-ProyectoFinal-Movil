@@ -1,4 +1,6 @@
+using OpenQA.Selenium;
 using OpenQA.Selenium.Appium.Android;
+using OpenQA.Selenium.Appium;
 using static TravelHub.E2E.Constants.AutomationIds;
 
 namespace TravelHub.E2E.Pages;
@@ -35,8 +37,10 @@ public class AccountPage : BasePage
         => Tap(Account.LogoutButton);
 
     public bool IsLoggedIn()
-        => IsDisplayed(Account.LogoutButton);
+        => Driver.FindElements(MobileBy.AccessibilityId(Account.LogoutButton))
+            .Any(e => e.Displayed);
 
     public bool IsLoginButtonDisplayed()
-        => IsDisplayed(Account.LoginButton);
+        => Driver.FindElements(MobileBy.AccessibilityId(Account.LoginButton))
+            .Any(e => e.Displayed);
 }

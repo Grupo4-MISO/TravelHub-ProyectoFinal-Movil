@@ -1,6 +1,5 @@
 using OpenQA.Selenium;
 using OpenQA.Selenium.Appium.Android;
-using OpenQA.Selenium.Support.UI;
 using TravelHub.E2E.Constants;
 using TravelHub.E2E.Pages;
 using TravelHub.E2E.Utilities;
@@ -58,50 +57,23 @@ public abstract class BaseTest : IDisposable
 
     protected void NavigateToTab(string tabName)
     {
-        var tabId = tabName switch
+        var size = Driver.Manage().Window.Size;
+        var tabIndex = tabName switch
         {
-            TabNames.Search => "Shell_SearchTab",
-            TabNames.Bookings => "Shell_BookingsTab",
-            TabNames.MyAccount => "Shell_AccountTab",
-            TabNames.Settings => "Shell_SettingsTab",
-            _ => tabName
+            TabNames.Search => 0,
+            TabNames.Bookings => 1,
+            TabNames.MyAccount => 2,
+            TabNames.Settings => 3,
+            _ => 0
         };
 
-        var wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(8));
-        try
+        var x = (int)(size.Width * (0.125 + (tabIndex * 0.25)));
+        var y = (int)(size.Height * 0.95);
+        Driver.ExecuteScript("mobile: clickGesture", new Dictionary<string, object>
         {
-            var tabByAccessibilityId = OpenQA.Selenium.Appium.MobileBy.AccessibilityId(tabId);
-            wait.Until(d =>
-            {
-                var tab = d.FindElements(tabByAccessibilityId).FirstOrDefault(e => e.Displayed && e.Enabled);
-                if (tab == null)
-                {
-                    return false;
-                }
-
-                tab.Click();
-                return true;
-            });
-        }
-        catch (WebDriverTimeoutException)
-        {
-            var size = Driver.Manage().Window.Size;
-            var tabIndex = tabName switch
-            {
-                TabNames.Search => 0,
-                TabNames.Bookings => 1,
-                TabNames.MyAccount => 2,
-                TabNames.Settings => 3,
-                _ => 0
-            };
-            var x = (int)(size.Width * (0.125 + (tabIndex * 0.25)));
-            var y = (int)(size.Height * 0.95);
-            Driver.ExecuteScript("mobile: clickGesture", new Dictionary<string, object>
-            {
-                ["x"] = x,
-                ["y"] = y
-            });
-        }
+            ["x"] = x,
+            ["y"] = y
+        });
     }
 
     protected bool DismissAlertIfPresent()
