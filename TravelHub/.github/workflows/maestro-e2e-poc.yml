@@ -1,66 +1,140 @@
-﻿name: Maestro E2E PoC
+name: Maestro E2E PoC
 on:
   workflow_dispatch:
 
 jobs:
-  android:
+  android-build-and-test:
     runs-on: ubuntu-latest
+    env:
+      DOTNET_ROOT: /usr/share/dotnet
     steps:
       - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '7.0.x'
+
+      - name: Setup Java (for Android)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+
+      - name: Install Android SDK command-line tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y unzip wget
+          mkdir -p $HOME/android-sdk/cmdline-tools
+          cd $HOME/android-sdk/cmdline-tools
+          wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O cmdline-tools.zip
+          unzip cmdline-tools.zip -d $HOME/android-sdk/cmdline-tools
+          export ANDROID_SDK_ROOT=$HOME/android-sdk
+          yes | $HOME/android-sdk/cmdline-tools/cmdline-tools/bin/sdkmanager --sdk_root=$HOME/android-sdk "platform-tools" "platforms;android-33" "build-tools;33.0.2"
+
+      - name: Add Android tools to PATH
+        run: |
+          echo "export ANDROID_SDK_ROOT=$HOME/android-sdk" >> $GITHUB_ENV
+          echo "$HOME/android-sdk/platform-tools" >> $GITHUB_PATH
+          echo "$HOME/android-sdk/cmdline-tools/cmdline-tools/bin" >> $GITHUB_PATH
+
+      - name: Install MAUI workloads
+        run: |
+          dotnet workload install maui-android --skip-manifest-update || true
+
+      - name: Restore and publish Android APK
+        run: |
+          dotnet restore
+          dotnet publish App/App.csproj -f net7.0-android -c Release -o ./artifacts/android || dotnet publish App/App.csproj -f net7.0-android -c Release -o ./artifacts/android
+
+      - name: Locate APK
+        run: |
+          mkdir -p ./artifacts/android
+          APK=$(find ./artifacts/android -name "*.apk" | head -n 1 || true)
+          if [ -z "$APK" ]; then APK=$(find ./ -path "*/bin/*/net7.0-android/*/*.apk" | head -n1 || true); fi
+          if [ -z "$APK" ]; then echo "No APK found after build"; ls -R . | sed -n '1,200p'; exit 1; fi
+          cp "$APK" ./artifacts/android/app.apk
+
       - name: Install Maestro CLI
         run: |
           curl -sSfL https://get.maestro.dev | bash
-      - name: Check for APK
+
+      - name: Start emulator (if available)
         run: |
-          if [ ! -f "./artifacts/android/app.apk" ]; then echo "APK not found in ./artifacts/android/app.apk. Add your built APK to that path or modify the workflow."; exit 1; fi
-      - name: Start Android emulator (manual step required)
+          echo "If an emulator is available on the runner, ensure it's started. This workflow does not create an AVD automatically."
+
+      - name: Install APK on device
         run: |
-          echo "Ensure an Android emulator is available. This job expects an emulator to be predefined or runner has device attached."
-      - name: Install APK
+          if command -v adb >/dev/null 2>&1; then adb devices; adb install -r ./artifacts/android/app.apk || true; else echo "adb not found, skipping install"; fi
+
+      - name: Run Maestro Auth Flow (Android)
         run: |
-          adb devices
-          adb install -r ./artifacts/android/app.apk || true
-      - name: Run Auth Flow
+          maestro test TravelHub/TravelHub.E2E/maestro_auth_login_flow.yaml
+
+      - name: Run Maestro Booking Flow (Android)
         run: |
-          maestro test TravelHub.E2E\\maestro_auth_login_flow.yaml
-      - name: Run Booking Flow
-        run: |
-          maestro test TravelHub.E2E\\maestro_booking_summary_flow.yaml
+          maestro test TravelHub/TravelHub.E2E/maestro_booking_summary_flow.yaml
+
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: maestro-artifacts
+          name: maestro-artifacts-android
           path: |
-            TravelHub.E2E\\auth_poc_after_login.png
-            TravelHub.E2E\\booking_summary_before_terms.png
+            TravelHub/TravelHub.E2E/auth_poc_after_login.png
+            TravelHub/TravelHub.E2E/booking_summary_before_terms.png
 
-  ios:
+  ios-build-and-test:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '7.0.x'
+
+      - name: Install MAUI workloads (iOS)
+        run: |
+          dotnet workload install maui-ios --skip-manifest-update || true
+
+      - name: Restore and publish iOS simulator app
+        run: |
+          dotnet restore
+          dotnet publish App/App.csproj -f net7.0-ios -c Release -p:RuntimeIdentifier=iossimulator-x64 -o ./artifacts/ios || true
+
+      - name: Locate .app
+        run: |
+          APP=$(find ./artifacts/ios -name "*.app" | head -n1 || true)
+          if [ -z "$APP" ]; then APP=$(find ./ -path "*/bin/*/net7.0-ios/*/*.app" | head -n1 || true); fi
+          if [ -z "$APP" ]; then echo "No .app found after build"; ls -R . | sed -n '1,200p'; exit 1; fi
+          mkdir -p ./artifacts/ios
+          cp -R "$APP" ./artifacts/ios/YourApp.app
+
       - name: Install Maestro CLI
         run: |
           curl -sSfL https://get.maestro.dev | bash
-      - name: Check for Simulator app
-        run: |
-          if [ ! -d "./artifacts/ios/YourApp.app" ]; then echo "iOS app not found at ./artifacts/ios/YourApp.app. Add your built .app here or modify the workflow."; exit 1; fi
+
       - name: Boot simulator
         run: |
           xcrun simctl list devices
           xcrun simctl bootstatus booted || true
+
       - name: Install app on simulator
         run: |
-          xcrun simctl install booted ./artifacts/ios/YourApp.app
-      - name: Run Auth Flow (iOS)
+          xcrun simctl install booted ./artifacts/ios/YourApp.app || true
+
+      - name: Run Maestro Auth Flow (iOS)
         run: |
-          maestro test TravelHub.E2E/maestro_auth_login_flow.yaml
-      - name: Run Booking Flow (iOS)
+          maestro test TravelHub/TravelHub.E2E/maestro_auth_login_flow.yaml
+
+      - name: Run Maestro Booking Flow (iOS)
         run: |
-          maestro test TravelHub.E2E/maestro_booking_summary_flow.yaml
+          maestro test TravelHub/TravelHub.E2E/maestro_booking_summary_flow.yaml
+
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: maestro-artifacts-ios
           path: |
-            TravelHub.E2E/auth_poc_after_login.png
-            TravelHub.E2E/booking_summary_before_terms.png
+            TravelHub/TravelHub.E2E/auth_poc_after_login.png
+            TravelHub/TravelHub.E2E/booking_summary_before_terms.png
