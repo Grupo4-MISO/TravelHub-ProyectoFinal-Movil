@@ -36,7 +36,7 @@
 			<!-- Arquitectura arm64 únicamente (Play Store genera APKs por dispositivo desde el AAB/APK) -->
 			<RuntimeIdentifiers>android-arm64</RuntimeIdentifiers>
 			<AndroidSupportedAbis>arm64-v8a</AndroidSupportedAbis>
-			<AndroidPackageFormat>aab</AndroidPackageFormat>
+			<AndroidPackageFormat>apk</AndroidPackageFormat>
 			<AndroidEnableMultiDex>False</AndroidEnableMultiDex>
 			<AndroidUseAapt2>True</AndroidUseAapt2>
 			<AndroidCreatePackagePerAbi>False</AndroidCreatePackagePerAbi>
@@ -54,7 +54,7 @@
 		<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0-android|AnyCPU'">
 		  <AndroidUseAapt2>True</AndroidUseAapt2>
 		  <AndroidCreatePackagePerAbi>False</AndroidCreatePackagePerAbi>
-		  <AndroidPackageFormat>aab</AndroidPackageFormat>
+		  <AndroidPackageFormat>apk</AndroidPackageFormat>
 		</PropertyGroup>
 	
 

@@ -1,7 +1,14 @@
+appId: travelhubg4.app
+
+---
 # Reset app state subflow
+
 - clearState
+
 - launchApp
+
 - waitForAnimationToEnd:
     timeout: 3000
+
 - assertVisible:
     id: "Home_Page"

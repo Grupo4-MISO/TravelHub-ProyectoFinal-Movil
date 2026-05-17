@@ -1,38 +1,56 @@
+appId: travelhubg4.app
+
+---
 # Register subflow
 # Expects env.EMAIL and env.PASSWORD
+
 - launchApp
+
 - tapOn:
     id: "Shell_AccountTab"
+
 - waitForAnimationToEnd:
     timeout: 2000
+
 - tapOn:
     id: "Account_RegisterLink"
+
 - waitForAnimationToEnd:
     timeout: 2000
+
 - inputText:
     id: "Register_FirstNameEntry"
     text: "Test"
+
 - inputText:
     id: "Register_LastNameEntry"
     text: "User"
+
 - inputText:
     id: "Register_DocumentEntry"
     text: "A12345678"
+
 - inputText:
     id: "Register_PhoneEntry"
     text: "+1234567890"
+
 - inputText:
     id: "Register_EmailEntry"
     text: ${EMAIL}
+
 - inputText:
     id: "Register_PasswordEntry"
     text: ${PASSWORD}
+
 - inputText:
     id: "Register_ConfirmPasswordEntry"
     text: ${PASSWORD}
+
 - tapOn:
     id: "Register_RegisterButton"
+
 - waitForAnimationToEnd:
     timeout: 5000
+
 - assertVisible:
     id: "Account_Page"

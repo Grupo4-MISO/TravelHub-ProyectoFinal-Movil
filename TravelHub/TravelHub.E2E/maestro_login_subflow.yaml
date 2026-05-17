@@ -1,23 +1,36 @@
+appId: travelhubg4.app
+
+---
 # Login subflow (reusable)
 # Expects env.EMAIL and env.PASSWORD
+
 - launchApp
+
 - waitForAnimationToEnd:
     timeout: 3000
+
 - tapOn:
     id: "Shell_AccountTab"
+
 - waitForAnimationToEnd:
     timeout: 2000
+
 - assertVisible:
     id: "Account_Page"
+
 - inputText:
     id: "Login_EmailEntry"
     text: ${EMAIL}
+
 - inputText:
     id: "Login_PasswordEntry"
     text: ${PASSWORD}
+
 - tapOn:
     id: "Login_LoginButton"
+
 - waitForAnimationToEnd:
     timeout: 5000
+
 - assertVisible:
     id: "Account_Page"

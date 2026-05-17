@@ -1,4 +1,4 @@
-appId: com.travelhub.app
+appId: travelhubg4.app
 name: Auth - Register and Login (PoC)
 env:
   TEST_EMAIL: "[email protected]"
