@@ -1,0 +1,66 @@
+﻿name: Maestro E2E PoC
+on:
+  workflow_dispatch:
+
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Maestro CLI
+        run: |
+          curl -sSfL https://get.maestro.dev | bash
+      - name: Check for APK
+        run: |
+          if [ ! -f "./artifacts/android/app.apk" ]; then echo "APK not found in ./artifacts/android/app.apk. Add your built APK to that path or modify the workflow."; exit 1; fi
+      - name: Start Android emulator (manual step required)
+        run: |
+          echo "Ensure an Android emulator is available. This job expects an emulator to be predefined or runner has device attached."
+      - name: Install APK
+        run: |
+          adb devices
+          adb install -r ./artifacts/android/app.apk || true
+      - name: Run Auth Flow
+        run: |
+          maestro test TravelHub.E2E\\maestro_auth_login_flow.yaml
+      - name: Run Booking Flow
+        run: |
+          maestro test TravelHub.E2E\\maestro_booking_summary_flow.yaml
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: maestro-artifacts
+          path: |
+            TravelHub.E2E\\auth_poc_after_login.png
+            TravelHub.E2E\\booking_summary_before_terms.png
+
+  ios:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Maestro CLI
+        run: |
+          curl -sSfL https://get.maestro.dev | bash
+      - name: Check for Simulator app
+        run: |
+          if [ ! -d "./artifacts/ios/YourApp.app" ]; then echo "iOS app not found at ./artifacts/ios/YourApp.app. Add your built .app here or modify the workflow."; exit 1; fi
+      - name: Boot simulator
+        run: |
+          xcrun simctl list devices
+          xcrun simctl bootstatus booted || true
+      - name: Install app on simulator
+        run: |
+          xcrun simctl install booted ./artifacts/ios/YourApp.app
+      - name: Run Auth Flow (iOS)
+        run: |
+          maestro test TravelHub.E2E/maestro_auth_login_flow.yaml
+      - name: Run Booking Flow (iOS)
+        run: |
+          maestro test TravelHub.E2E/maestro_booking_summary_flow.yaml
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: maestro-artifacts-ios
+          path: |
+            TravelHub.E2E/auth_poc_after_login.png
+            TravelHub.E2E/booking_summary_before_terms.png
