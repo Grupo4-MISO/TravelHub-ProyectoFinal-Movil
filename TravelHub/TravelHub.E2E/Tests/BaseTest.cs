@@ -9,21 +9,21 @@ namespace TravelHub.E2E.Tests;
 [Collection("Appium")]
 public abstract class BaseTest : IDisposable
 {
-    protected readonly AndroidDriver Driver;
+    protected AndroidDriver Driver { get; private set; } = null!;
     protected readonly AppiumFixture Fixture;
-    protected readonly HomePage Home;
-    protected readonly AccountLoginPage Login;
-    protected readonly AccountRegisterPage Register;
-    protected readonly AccountPage Account;
-    protected readonly SearchResultsPage SearchResults;
-    protected readonly PropertyDetailPage PropertyDetail;
-    protected readonly RoomSelectionPage RoomSelection;
-    protected readonly TravelerDataPage TravelerData;
-    protected readonly BookingSummaryPage BookingSummary;
-    protected readonly BookingConfirmedPage BookingConfirmed;
-    protected readonly PaymentPage Payment;
-    protected readonly SettingsPage Settings;
-    protected readonly ActiveBookingsPage ActiveBookings;
+    protected HomePage Home { get; private set; } = null!;
+    protected AccountLoginPage Login { get; private set; } = null!;
+    protected AccountRegisterPage Register { get; private set; } = null!;
+    protected AccountPage Account { get; private set; } = null!;
+    protected SearchResultsPage SearchResults { get; private set; } = null!;
+    protected PropertyDetailPage PropertyDetail { get; private set; } = null!;
+    protected RoomSelectionPage RoomSelection { get; private set; } = null!;
+    protected TravelerDataPage TravelerData { get; private set; } = null!;
+    protected BookingSummaryPage BookingSummary { get; private set; } = null!;
+    protected BookingConfirmedPage BookingConfirmed { get; private set; } = null!;
+    protected PaymentPage Payment { get; private set; } = null!;
+    protected SettingsPage Settings { get; private set; } = null!;
+    protected ActiveBookingsPage ActiveBookings { get; private set; } = null!;
 
     private readonly string _testName;
 
@@ -36,10 +36,42 @@ public abstract class BaseTest : IDisposable
             throw new InvalidOperationException(fixture.SkipReason ?? "Entorno de Appium/Android no disponible.");
  
         // Ensure a clean app state before each test to reduce inter-test flakiness
-        if (!fixture.ResetAppState())
-            throw new InvalidOperationException("No se pudo reiniciar el estado de la app antes de la prueba.");
-        Driver = fixture.RestartDriver();
+        var resetOk = false;
+        for (int i = 0; i < 3; i++)
+        {
+            if (fixture.ResetAppState())
+            {
+                resetOk = true;
+                break;
+            }
+            Thread.Sleep(3000);
+        }
 
+        if (!resetOk)
+            throw new InvalidOperationException("No se pudo reiniciar el estado de la app antes de la prueba.");
+
+        Driver = null!;
+        for (int i = 0; i < 3; i++)
+        {
+            try
+            {
+                Driver = fixture.RestartDriver();
+                break;
+            }
+            catch (WebDriverException) when (i < 2)
+            {
+                Thread.Sleep(5000);
+            }
+        }
+
+        if (Driver == null)
+            throw new InvalidOperationException("No se pudo inicializar el driver Appium después de varios intentos.");
+
+        InitializePages();
+    }
+
+    private void InitializePages()
+    {
         Home = new HomePage(Driver);
         Login = new AccountLoginPage(Driver);
         Register = new AccountRegisterPage(Driver);
@@ -53,6 +85,32 @@ public abstract class BaseTest : IDisposable
         Payment = new PaymentPage(Driver);
         Settings = new SettingsPage(Driver);
         ActiveBookings = new ActiveBookingsPage(Driver);
+    }
+
+    protected void RetryOnCrash(Action testBody, int maxRetries = 3)
+    {
+        for (int attempt = 1; attempt <= maxRetries; attempt++)
+        {
+            try
+            {
+                testBody();
+                return;
+            }
+            catch (WebDriverException ex) when (attempt < maxRetries && IsConnectionLost(ex))
+            {
+                Driver = Fixture.RestartDriver();
+                InitializePages();
+            }
+        }
+    }
+
+    private static bool IsConnectionLost(WebDriverException ex)
+    {
+        var msg = ex.Message;
+        return msg.Contains("socket hang up") ||
+               msg.Contains("ECONNREFUSED") ||
+               msg.Contains("code 255") ||
+               msg.Contains("process exited");
     }
 
     protected void NavigateToTab(string tabName)
@@ -84,6 +142,10 @@ public abstract class BaseTest : IDisposable
             return true;
         }
         catch (NoAlertPresentException)
+        {
+            return false;
+        }
+        catch (WebDriverException)
         {
             return false;
         }

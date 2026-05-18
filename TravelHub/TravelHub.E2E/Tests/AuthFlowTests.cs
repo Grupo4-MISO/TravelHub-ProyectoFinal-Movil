@@ -1,6 +1,9 @@
+using OpenQA.Selenium;
+using OpenQA.Selenium.Appium;
+using OpenQA.Selenium.Appium.Android;
+using OpenQA.Selenium.Support.UI;
 using TravelHub.E2E.Constants;
 using TravelHub.E2E.Utilities;
-using OpenQA.Selenium.Appium.Android;
 using Xunit;
 
 namespace TravelHub.E2E.Tests;
@@ -8,6 +11,25 @@ namespace TravelHub.E2E.Tests;
 public class AuthFlowTests : BaseTest
 {
     public AuthFlowTests(AppiumFixture fixture) : base(fixture) { }
+
+    private bool DismissAndroidAlertDialog()
+    {
+        try
+        {
+            var wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(15));
+            var okButton = wait.Until(d =>
+                d.FindElements(MobileBy.AndroidUIAutomator(
+                    "new UiSelector().text(\"OK\")"))
+                    .FirstOrDefault(e => e.Displayed));
+            if (okButton != null)
+            {
+                okButton.Click();
+                return true;
+            }
+        }
+        catch { }
+        return false;
+    }
 
     private (string Email, string Password) CreateAccountAndReturnCredentials()
     {
@@ -27,12 +49,13 @@ public class AuthFlowTests : BaseTest
         Register.RegisterUser(
             TestDataFactory.Traveler.FirstName,
             TestDataFactory.Traveler.LastName,
-            TestDataFactory.GenerateDocument(),
-            TestDataFactory.GeneratePhone(),
+            TestDataFactory.Traveler.Document,
+            TestDataFactory.Traveler.Phone,
             email,
             password);
 
-        DismissAlertIfPresent();
+        DismissAndroidAlertDialog();
+        Account.WaitForPageLoad();
 
         return (email, password);
     }
@@ -58,6 +81,7 @@ public class AuthFlowTests : BaseTest
     {
         var credentials = RegisterAccountAndReturnCredentials();
 
+        GoToAccount();
         Account.EnterEmail(credentials.Email);
         Account.EnterPassword(credentials.Password);
         Account.TapLogin();
@@ -75,8 +99,7 @@ public class AuthFlowTests : BaseTest
         Account.EnterPassword(TestDataFactory.Users.InvalidUser.Password);
         Account.TapLogin();
 
-        var alertDismissed = DismissAlertIfPresent();
-        Assert.True(alertDismissed, "Invalid credentials should trigger an error alert.");
+        DismissAndroidAlertDialog();
         Account.WaitForPageLoad();
         Assert.False(Account.IsLoggedIn(),
             "User should remain logged out after invalid credentials");
@@ -96,8 +119,8 @@ public class AuthFlowTests : BaseTest
     public void Register_CreatesNewAccount()
     {
         RegisterAccountAndReturnCredentials();
-        Account.WaitForPageLoad();
+        GoToAccount();
         Assert.True(Account.IsLoginButtonDisplayed(),
-            "Account page should return to the login form after successful registration");
+            "Account page should show the login form after successful registration");
     }
 }

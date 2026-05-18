@@ -55,7 +55,7 @@
                                TextColor="{StaticResource Star}" FontSize="16" />
                         <Label Text="{Binding Property.Rating, StringFormat='{0:F1}'}"
                                FontFamily="OpenSansSemibold" FontSize="16" />
-                            <Label Text="{Binding Property.ReviewCount, StringFormat='({0} reseñas)'}" 
+                            <Label Text="{Binding Property.Reviews, StringFormat='({0} reseñas)'}" 
                                Style="{StaticResource Caption}" VerticalTextAlignment="Center" />
                     </HorizontalStackLayout>
 
@@ -122,7 +122,8 @@
                          BackgroundColor="{StaticResource Gray100}"
                          StrokeShape="RoundRectangle 12"
                          Stroke="{StaticResource Gray200}"
-                         HeightRequest="220">
+                         HeightRequest="220"
+                         IsVisible="{Binding HasCoordinates}">
                     <maps:Map x:Name="PropertyMap"
                               AutomationId="PropertyDetail_PropertyMap"
                               IsShowingUser="False" />

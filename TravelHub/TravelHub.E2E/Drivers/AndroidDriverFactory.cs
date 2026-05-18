@@ -31,6 +31,9 @@ public static class AndroidDriverFactory
         options.AutomationName = "UiAutomator2";
         options.DeviceName = "Android";
 
+        if (!string.IsNullOrEmpty(settings.Udid))
+            options.AddAdditionalAppiumOption("udid", settings.Udid);
+
         if (!string.IsNullOrEmpty(settings.AppPath))
             options.App = settings.AppPath;
 

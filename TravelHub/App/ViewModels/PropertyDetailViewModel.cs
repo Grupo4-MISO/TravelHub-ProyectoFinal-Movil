@@ -19,8 +19,11 @@ public class PropertyDetailViewModel : BaseViewModel, IQueryAttributable
             if (SetProperty(ref _property, value))
             {
                 ImageUrls.Clear();
-                foreach (var img in value.Images)
-                    ImageUrls.Add(img.Url);
+                if (value.Images != null)
+                {
+                    foreach (var img in value.Images)
+                        ImageUrls.Add(img.Url);
+                }
                 OnPropertyChanged(nameof(HasCoordinates));
             }
         }
@@ -131,6 +134,11 @@ public class PropertyDetailViewModel : BaseViewModel, IQueryAttributable
 
             Property = propertyFromApi;
             Title = propertyFromApi.Name;
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error loading property detail: {ex.Message}");
+            ErrorMessage = "Ocurrió un error al cargar los detalles del alojamiento.";
         }
         finally
         {

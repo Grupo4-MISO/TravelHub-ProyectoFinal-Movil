@@ -1,13 +1,14 @@
 using OpenQA.Selenium;
 using OpenQA.Selenium.Appium.Android;
 using OpenQA.Selenium.Appium;
+using OpenQA.Selenium.Support.UI;
 using static TravelHub.E2E.Constants.AutomationIds;
 
 namespace TravelHub.E2E.Pages;
 
 public class AccountPage : BasePage
 {
-    private const int AccountPageWaitSeconds = 120;
+    private const int AccountPageWaitSeconds = 30;
 
     public AccountPage(AndroidDriver driver, int explicitWaitSeconds = AccountPageWaitSeconds)
         : base(driver, explicitWaitSeconds) { }
@@ -37,10 +38,21 @@ public class AccountPage : BasePage
         => Tap(Account.LogoutButton);
 
     public bool IsLoggedIn()
-        => Driver.FindElements(MobileBy.AccessibilityId(Account.LogoutButton))
-            .Any(e => e.Displayed);
+    {
+        try
+        {
+            var wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(15));
+            return wait.Until(d =>
+                FindByAutomationId(d, Account.LogoutButton, requireEnabled: false)) != null;
+        }
+        catch
+        {
+            return false;
+        }
+    }
 
     public bool IsLoginButtonDisplayed()
-        => Driver.FindElements(MobileBy.AccessibilityId(Account.LoginButton))
-            .Any(e => e.Displayed);
+    {
+        return IsDisplayed(Account.LoginButton);
+    }
 }

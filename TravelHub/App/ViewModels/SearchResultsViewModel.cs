@@ -217,10 +217,20 @@ public class SearchResultsViewModel : BaseViewModel, IQueryAttributable
 
     private async void OnPropertySelected(SearchAccommodationDto? property)
     {
-        if (property == null) return;
+        if (property == null || IsBusy) return;
         IsBusy = true;
-        var navParams = new Dictionary<string, object> { { "property", property } };
-        await Shell.Current.GoToAsync("PropertyDetailPage", navParams);
-        IsBusy = false;
+        try
+        {
+            var navParams = new Dictionary<string, object> { { "property", property } };
+            await Shell.Current.GoToAsync("PropertyDetailPage", navParams);
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Error navigating to PropertyDetail: {ex.Message}");
+        }
+        finally
+        {
+            IsBusy = false;
+        }
     }
 }

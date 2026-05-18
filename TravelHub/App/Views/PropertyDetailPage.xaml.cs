@@ -39,21 +39,26 @@ public partial class PropertyDetailPage : ContentPage
 
     private void UpdateMap()
     {
-        var property = _viewModel.Property;
-        if (property == null || (property.Latitude == 0 && property.Longitude == 0))
+        try
         {
-            return;
+            var property = _viewModel.Property;
+            if (property == null || (property.Latitude == 0 && property.Longitude == 0))
+                return;
+
+            var location = new Location(property.Latitude, property.Longitude);
+            PropertyMap?.Pins.Clear();
+            PropertyMap?.Pins.Add(new Pin
+            {
+                Label = property.Name,
+                Address = property.Address,
+                Location = location
+            });
+
+            PropertyMap?.MoveToRegion(MapSpan.FromCenterAndRadius(location, Distance.FromKilometers(1)));
         }
-
-        var location = new Location(property.Latitude, property.Longitude);
-        PropertyMap.Pins.Clear();
-        PropertyMap.Pins.Add(new Pin
+        catch (Exception ex)
         {
-            Label = property.Name,
-            Address = property.Address,
-            Location = location
-        });
-
-        PropertyMap.MoveToRegion(MapSpan.FromCenterAndRadius(location, Distance.FromKilometers(1)));
+            System.Diagnostics.Debug.WriteLine($"Error updating map: {ex.Message}");
+        }
     }
 }

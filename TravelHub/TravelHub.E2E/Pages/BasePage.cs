@@ -9,7 +9,7 @@ namespace TravelHub.E2E.Pages;
 
 public abstract class BasePage
 {
-    private const string AppPackage = "travelhubg4.app";
+    protected const string AppPackage = "travelhubg4.app";
     protected readonly AndroidDriver Driver;
     protected readonly WebDriverWait Wait;
 
@@ -19,20 +19,20 @@ public abstract class BasePage
         Wait = new WebDriverWait(driver, TimeSpan.FromSeconds(explicitWaitSeconds));
     }
 
-    private static IWebElement? FindByAutomationId(ISearchContext context, string automationId, bool requireEnabled)
+    protected static IWebElement? FindByAutomationId(ISearchContext context, string automationId, bool requireEnabled)
     {
-        var byAccessibilityId = context.FindElements(MobileBy.AccessibilityId(automationId))
-            .FirstOrDefault(e => e.Displayed && (!requireEnabled || e.Enabled));
-        if (byAccessibilityId != null)
-        {
-            return byAccessibilityId;
-        }
-
         var byResourceId = context.FindElements(MobileBy.Id($"{AppPackage}:id/{automationId}"))
             .FirstOrDefault(e => e.Displayed && (!requireEnabled || e.Enabled));
         if (byResourceId != null)
         {
             return byResourceId;
+        }
+
+        var byAccessibilityId = context.FindElements(MobileBy.AccessibilityId(automationId))
+            .FirstOrDefault(e => e.Displayed && (!requireEnabled || e.Enabled));
+        if (byAccessibilityId != null)
+        {
+            return byAccessibilityId;
         }
 
         return context.FindElements(MobileBy.Id(automationId))
@@ -47,6 +47,10 @@ public abstract class BasePage
             return true;
         }
         catch (NoAlertPresentException)
+        {
+            return false;
+        }
+        catch (WebDriverException)
         {
             return false;
         }
@@ -79,16 +83,16 @@ public abstract class BasePage
     protected IReadOnlyCollection<IWebElement> WaitForElements(string automationId)
         => Wait.Until(d =>
         {
-            var byAccessibilityId = d.FindElements(MobileBy.AccessibilityId(automationId));
-            if (byAccessibilityId.Count > 0)
-            {
-                return byAccessibilityId;
-            }
-
             var byResourceId = d.FindElements(MobileBy.Id($"{AppPackage}:id/{automationId}"));
             if (byResourceId.Count > 0)
             {
                 return byResourceId;
+            }
+
+            var byAccessibilityId = d.FindElements(MobileBy.AccessibilityId(automationId));
+            if (byAccessibilityId.Count > 0)
+            {
+                return byAccessibilityId;
             }
 
             return d.FindElements(MobileBy.Id(automationId));
@@ -96,9 +100,8 @@ public abstract class BasePage
 
     protected void Tap(string automationId)
     {
-        // Ensure element is enabled before attempting to click to avoid stale/disabled interaction failures
-        Wait.Until(d => FindByAutomationId(d, automationId, requireEnabled: true) != null);
-        WaitForElement(automationId).Click();
+        var element = Wait.Until(d => FindByAutomationId(d, automationId, requireEnabled: true));
+        element?.Click();
     }
 
     protected void SelectVisibleOption(string expectedText)
@@ -190,7 +193,7 @@ public abstract class BasePage
     protected void WaitForPageLoad(string pageAutomationId)
         => WaitForElement(pageAutomationId);
 
-    private void CaptureDiagnostics(string automationId)
+    protected void CaptureDiagnostics(string automationId)
     {
         try
         {
