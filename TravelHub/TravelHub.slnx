@@ -2,6 +2,8 @@
   <Project Path="App/App.csproj">
     <Deploy />
   </Project>
+  <Project Path="TravelHub.E2E/TravelHub.E2E.csproj">
+    <Build Solution="Debug|*" Project="false" />
+  </Project>
   <Project Path="TravelHub.Tests/TravelHub.Tests.csproj" />
-  <Project Path="TravelHub.E2E/TravelHub.E2E.csproj" />
 </Solution>

@@ -202,10 +202,13 @@ public class TravelerDataViewModel : BaseViewModel, IQueryAttributable
 
     public async Task EnsureAuthenticatedAndLoadTravelerAsync()
     {
+        await _userSessionService.ValidateSessionAsync();
+
         if (!_userSessionService.IsAuthenticated)
         {
             if (_loginNavigationInProgress)
             {
+                _loginNavigationInProgress = false;
                 return;
             }
 
@@ -274,6 +277,15 @@ public class TravelerDataViewModel : BaseViewModel, IQueryAttributable
 
     private async void OnUpdateTravelerData()
     {
+        if (!_userSessionService.IsAuthenticated)
+        {
+            await Shell.Current.GoToAsync(nameof(AccountLoginPage), new Dictionary<string, object>
+            {
+                { "returnTo", nameof(TravelerDataPage) }
+            });
+            return;
+        }
+
         if (!HasPendingTravelerChanges)
         {
             return;
@@ -338,6 +350,15 @@ public class TravelerDataViewModel : BaseViewModel, IQueryAttributable
 
     private async void OnContinue()
     {
+        if (!_userSessionService.IsAuthenticated)
+        {
+            await Shell.Current.GoToAsync(nameof(AccountLoginPage), new Dictionary<string, object>
+            {
+                { "returnTo", nameof(TravelerDataPage) }
+            });
+            return;
+        }
+
         if (HasPendingTravelerChanges)
         {
             return;

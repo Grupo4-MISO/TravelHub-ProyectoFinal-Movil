@@ -13,7 +13,7 @@ public static class JwtDecoder
         {
             var expiration = GetExpirationFromToken(token);
             if (expiration == null)
-                return false;
+                return true;
 
             return expiration.Value <= DateTimeOffset.UtcNow;
         }

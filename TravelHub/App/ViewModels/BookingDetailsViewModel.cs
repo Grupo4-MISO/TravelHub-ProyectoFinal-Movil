@@ -38,6 +38,7 @@ public partial class BookingDetailsViewModel : BaseViewModel, IQueryAttributable
             if (SetProperty(ref _booking, value))
             {
                 OnPropertyChanged(nameof(CanCancel));
+                OnPropertyChanged(nameof(CanPay));
             }
         }
     }
@@ -121,6 +122,9 @@ public partial class BookingDetailsViewModel : BaseViewModel, IQueryAttributable
         (string.Equals(Booking.Estado, "pendiente", StringComparison.OrdinalIgnoreCase) ||
          string.Equals(Booking.Estado, "confirmada", StringComparison.OrdinalIgnoreCase));
 
+    public bool CanPay => Booking != null &&
+        string.Equals(Booking.Estado, "pendiente", StringComparison.OrdinalIgnoreCase);
+
     public ICommand DownloadVoucherCommand { get; }
     public ICommand DownloadConfirmationCommand { get; }
     public ICommand DownloadInvoiceCommand { get; }
@@ -128,6 +132,7 @@ public partial class BookingDetailsViewModel : BaseViewModel, IQueryAttributable
     public ICommand EmailHotelCommand { get; }
     public ICommand ModifyBookingCommand { get; }
     public ICommand CancelBookingCommand { get; }
+    public ICommand PayCommand { get; }
 
     public BookingDetailsViewModel(IBookingService bookingService, IPropertyDetailService propertyDetailService, IAppSettingsService appSettingsService)
     {
@@ -142,6 +147,7 @@ public partial class BookingDetailsViewModel : BaseViewModel, IQueryAttributable
         EmailHotelCommand = new Command(async () => await EmailHotel());
         ModifyBookingCommand = new Command(async () => await ModifyBooking());
         CancelBookingCommand = new Command(async () => await CancelBooking());
+        PayCommand = new Command(OnPay);
     }
 
     public void ApplyQueryAttributes(IDictionary<string, object> query)
@@ -314,6 +320,19 @@ public partial class BookingDetailsViewModel : BaseViewModel, IQueryAttributable
         {
             IsBusy = false;
         }
+    }
+
+    private async void OnPay()
+    {
+        var navParams = new Dictionary<string, object>
+        {
+            { "amount", TotalPrice },
+            { "referenceId", Booking.Id },
+            { "description", $"Pago reserva {Booking.PublicId}" },
+            { "currency", _appSettingsService.CurrentCurrencyCode },
+            { "returnRoute", "//bookings" }
+        };
+        await Shell.Current.GoToAsync("PaymentPage", navParams);
     }
 }
 

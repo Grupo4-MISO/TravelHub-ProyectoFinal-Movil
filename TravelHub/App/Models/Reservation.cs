@@ -19,4 +19,6 @@ public class Reservation
     public string HotelImage { get; set; } = string.Empty;
 
     public int Nights => (CheckOut - CheckIn).Days;
+
+    public bool CanCheckIn => string.Equals(Status, "confirmada", StringComparison.OrdinalIgnoreCase);
 }

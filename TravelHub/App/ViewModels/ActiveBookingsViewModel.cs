@@ -147,20 +147,21 @@ public class ActiveBookingsViewModel : BaseViewModel
 
     private async void OnCheckIn(Reservation? reservation)
     {
-        if (reservation == null) return;
 
-        var status = await Permissions.CheckStatusAsync<Permissions.Camera>();
-        if (status != PermissionStatus.Granted)
-        {
-            status = await Permissions.RequestAsync<Permissions.Camera>();
-            if (status != PermissionStatus.Granted)
-            {
-                await Shell.Current.DisplayAlertAsync("Permiso requerido", "Se requiere acceso a la cámara para escanear el código QR", "OK");
-                return;
-            }
-        }
         try
         {
+            if (reservation == null) return;
+
+            var status = await Permissions.CheckStatusAsync<Permissions.Camera>();
+            if (status != PermissionStatus.Granted)
+            {
+                status = await Permissions.RequestAsync<Permissions.Camera>();
+                if (status != PermissionStatus.Granted)
+                {
+                    await Shell.Current.DisplayAlertAsync("Permiso requerido", "Se requiere acceso a la cámara para escanear el código QR", "OK");
+                    return;
+                }
+            }
 
             _qrScanResultService.Clear();
             _tcs = new TaskCompletionSource<string?>();

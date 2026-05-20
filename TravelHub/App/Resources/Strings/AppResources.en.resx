@@ -128,7 +128,7 @@
     <value>Select</value>
   </data>
   <data name="Room_Seleccionada" xml:space="preserve">
-    <value>Selected: {0}</value>
+    <value>Selected: </value>
   </data>
   <data name="Room_Reservar" xml:space="preserve">
     <value>Book Now</value>

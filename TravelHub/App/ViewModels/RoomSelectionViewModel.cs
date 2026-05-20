@@ -1,5 +1,7 @@
 using App.DTOs;
 using App.Models;
+using App.Services.Interfaces;
+using App.Views;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
@@ -7,6 +9,8 @@ namespace App.ViewModels;
 
 public class RoomSelectionViewModel : BaseViewModel, IQueryAttributable
 {
+    private readonly IUserSessionService _userSessionService;
+
     private AccommodationDetailDto _property = new();
     public AccommodationDetailDto Property
     {
@@ -32,8 +36,9 @@ public class RoomSelectionViewModel : BaseViewModel, IQueryAttributable
     public ICommand SelectRoomCommand { get; }
     public ICommand BookCommand { get; }
 
-    public RoomSelectionViewModel()
+    public RoomSelectionViewModel(IUserSessionService userSessionService)
     {
+        _userSessionService = userSessionService ?? throw new ArgumentNullException(nameof(userSessionService));
         Title = "Elegir Habitacion";
         SelectRoomCommand = new Command<AccommodationDetailRoomDto>(OnSelectRoom);
         BookCommand = new Command(OnBook);
@@ -58,6 +63,18 @@ public class RoomSelectionViewModel : BaseViewModel, IQueryAttributable
     private async void OnBook()
     {
         if (SelectedRoom == null) return;
+
+        await _userSessionService.ValidateSessionAsync();
+
+        if (!_userSessionService.IsAuthenticated)
+        {
+            await Shell.Current.GoToAsync(nameof(AccountLoginPage), new Dictionary<string, object>
+            {
+                { "returnTo", nameof(TravelerDataPage) }
+            });
+            return;
+        }
+
         var navParams = new Dictionary<string, object>
         {
             { "property", Property },

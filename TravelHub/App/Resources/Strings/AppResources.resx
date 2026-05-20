@@ -123,7 +123,7 @@
     <value>Seleccionar</value>
   </data>
   <data name="Room_Seleccionada" xml:space="preserve">
-    <value>Seleccionada: {0}</value>
+    <value>Seleccionada: </value>
   </data>
   <data name="Room_Reservar" xml:space="preserve">
     <value>Reservar</value>

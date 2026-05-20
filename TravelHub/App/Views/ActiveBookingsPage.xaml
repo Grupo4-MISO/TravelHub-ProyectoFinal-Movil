@@ -102,6 +102,7 @@
                                                     Padding="12,6" FontSize="12"
                                                     MinimumHeightRequest="36" />-->
                                     <Button Grid.Column="1" Text="{local:Translate Bookings_HacerCheckIn}"
+                                            IsVisible="{Binding CanCheckIn}"
                                             Command="{Binding BindingContext.CheckInCommand, Source={x:Reference activeBookingsPage}}"
                                             CommandParameter="{Binding .}"
                                             Padding="12,6" FontSize="12"
